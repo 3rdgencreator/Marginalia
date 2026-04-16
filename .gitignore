@@ -1,0 +1,21 @@
+# Claude Code local settings (per-user)
+.claude/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Editor
+.vscode/
+.idea/
+*.swp
+
+# Node (when we start building)
+node_modules/
+.next/
+.wrangler/
+dist/
+build/
+*.log
+.env
+.env.local

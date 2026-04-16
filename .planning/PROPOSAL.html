@@ -1,0 +1,765 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Marginalia — Website Proposal</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Syne:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #0a0a0a;
+      --fg: #f0ede8;
+      --accent: #c8b89a;
+      --muted: rgba(240, 237, 232, 0.35);
+      --rule: rgba(240, 237, 232, 0.12);
+      --highlight-bg: rgba(200, 184, 154, 0.06);
+    }
+
+    html { font-size: 16px; scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--fg);
+      font-family: 'Syne', sans-serif;
+      font-weight: 400;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      padding: 0;
+    }
+
+    /* ── PAGE WRAPPER ── */
+    .page {
+      max-width: 780px;
+      margin: 0 auto;
+      padding: 80px 40px 120px;
+    }
+
+    /* ── COVER ── */
+    .cover {
+      padding-bottom: 80px;
+      border-bottom: 1px solid var(--rule);
+      margin-bottom: 80px;
+    }
+
+    .label-tag {
+      font-family: 'Syne', sans-serif;
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 48px;
+      display: block;
+    }
+
+    .cover-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(72px, 12vw, 120px);
+      font-weight: 300;
+      line-height: 0.92;
+      letter-spacing: -0.02em;
+      color: var(--fg);
+      margin-bottom: 32px;
+    }
+
+    .cover-subtitle {
+      font-family: 'Syne', sans-serif;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 72px;
+    }
+
+    .cover-meta {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0;
+      border-top: 1px solid var(--rule);
+      padding-top: 28px;
+    }
+
+    .cover-meta-item {
+      padding: 16px 0;
+    }
+
+    .cover-meta-item:first-child {
+      border-right: 1px solid var(--rule);
+      padding-right: 40px;
+    }
+
+    .cover-meta-item:last-child {
+      padding-left: 40px;
+    }
+
+    .meta-label {
+      font-size: 9px;
+      font-weight: 600;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--muted);
+      display: block;
+      margin-bottom: 6px;
+    }
+
+    .meta-value {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--fg);
+    }
+
+    .meta-value.placeholder {
+      color: var(--accent);
+      font-style: italic;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 16px;
+      font-weight: 400;
+    }
+
+    /* ── SECTIONS ── */
+    .section {
+      margin-bottom: 80px;
+    }
+
+    .section-header {
+      display: flex;
+      align-items: baseline;
+      gap: 20px;
+      margin-bottom: 36px;
+    }
+
+    .section-num {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--accent);
+      white-space: nowrap;
+      padding-top: 2px;
+    }
+
+    .section-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 28px;
+      font-weight: 400;
+      letter-spacing: -0.01em;
+      color: var(--fg);
+      flex: 1;
+      border-bottom: 1px solid var(--rule);
+      padding-bottom: 16px;
+    }
+
+    /* ── BODY TEXT ── */
+    .body-text {
+      font-size: 15px;
+      line-height: 1.8;
+      color: rgba(240, 237, 232, 0.82);
+      max-width: 600px;
+    }
+
+    .body-text strong {
+      color: var(--fg);
+      font-weight: 600;
+    }
+
+    .lead-text {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 22px;
+      font-weight: 300;
+      line-height: 1.65;
+      color: rgba(240, 237, 232, 0.9);
+      font-style: italic;
+    }
+
+    /* ── SITE SECTIONS LIST ── */
+    .site-list {
+      list-style: none;
+      margin-top: 8px;
+    }
+
+    .site-list-item {
+      display: grid;
+      grid-template-columns: 160px 1fr;
+      gap: 0;
+      padding: 18px 0;
+      border-bottom: 1px solid var(--rule);
+      align-items: baseline;
+    }
+
+    .site-list-item:first-child {
+      border-top: 1px solid var(--rule);
+    }
+
+    .site-page-name {
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--fg);
+    }
+
+    .site-page-desc {
+      font-size: 13px;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+
+    /* ── INCLUDED / NOT INCLUDED ── */
+    .checklist {
+      list-style: none;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0 40px;
+    }
+
+    .checklist-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+      padding: 12px 0;
+      border-bottom: 1px solid var(--rule);
+      font-size: 13px;
+      color: rgba(240, 237, 232, 0.8);
+      line-height: 1.4;
+    }
+
+    .check-icon {
+      color: var(--accent);
+      font-size: 10px;
+      margin-top: 3px;
+      flex-shrink: 0;
+      letter-spacing: 0;
+    }
+
+    .cross-icon {
+      color: var(--muted);
+      font-size: 12px;
+      margin-top: 2px;
+      flex-shrink: 0;
+    }
+
+    .not-included-list {
+      list-style: none;
+    }
+
+    .not-included-list .checklist-item {
+      border-bottom: 1px solid var(--rule);
+    }
+
+    /* ── TIMELINE ── */
+    .timeline {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 8px;
+    }
+
+    .timeline tr {
+      border-bottom: 1px solid var(--rule);
+    }
+
+    .timeline tr:first-child {
+      border-top: 1px solid var(--rule);
+    }
+
+    .timeline td {
+      padding: 16px 0;
+      font-size: 13px;
+      vertical-align: top;
+    }
+
+    .timeline td:first-child {
+      width: 24px;
+      color: var(--accent);
+      font-size: 10px;
+      font-weight: 700;
+      padding-right: 20px;
+      padding-top: 18px;
+    }
+
+    .timeline td:nth-child(2) {
+      color: var(--fg);
+      font-weight: 600;
+      font-size: 12px;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      width: 220px;
+      padding-right: 30px;
+    }
+
+    .timeline td:last-child {
+      color: var(--muted);
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 16px;
+      font-style: italic;
+    }
+
+    .timeline-footer {
+      margin-top: 24px;
+      font-size: 12px;
+      color: var(--muted);
+      font-style: italic;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 16px;
+    }
+
+    .timeline-footer strong {
+      color: var(--accent);
+      font-style: normal;
+      font-family: 'Syne', sans-serif;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    /* ── PRICING ── */
+    .pricing-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 1px;
+      background: var(--rule);
+      border: 1px solid var(--rule);
+      margin-bottom: 32px;
+    }
+
+    .pricing-tier {
+      background: var(--bg);
+      padding: 32px 28px;
+      position: relative;
+    }
+
+    .pricing-tier.recommended {
+      background: var(--highlight-bg);
+    }
+
+    .recommended-badge {
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      font-size: 8px;
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--accent);
+      background: rgba(200, 184, 154, 0.1);
+      padding: 4px 8px;
+    }
+
+    .tier-name {
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 16px;
+      display: block;
+    }
+
+    .tier-price {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 48px;
+      font-weight: 300;
+      line-height: 1;
+      color: var(--fg);
+      margin-bottom: 20px;
+      letter-spacing: -0.02em;
+    }
+
+    .tier-price .currency {
+      font-size: 24px;
+      vertical-align: super;
+      margin-right: 2px;
+    }
+
+    .tier-desc {
+      font-size: 12px;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    .pricing-note {
+      font-size: 12px;
+      color: var(--muted);
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
+      font-size: 15px;
+    }
+
+    .pricing-note strong {
+      font-style: normal;
+      font-family: 'Syne', sans-serif;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--fg);
+    }
+
+    /* ── NEXT STEPS ── */
+    .steps-list {
+      list-style: none;
+      counter-reset: steps;
+    }
+
+    .step-item {
+      counter-increment: steps;
+      display: grid;
+      grid-template-columns: 48px 1fr;
+      gap: 0;
+      padding: 20px 0;
+      border-bottom: 1px solid var(--rule);
+      align-items: center;
+    }
+
+    .step-item:first-child {
+      border-top: 1px solid var(--rule);
+    }
+
+    .step-num {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 32px;
+      font-weight: 300;
+      color: var(--rule);
+      line-height: 1;
+    }
+
+    .step-text {
+      font-size: 14px;
+      color: rgba(240, 237, 232, 0.8);
+      line-height: 1.5;
+    }
+
+    .step-text strong {
+      color: var(--fg);
+      font-weight: 600;
+      display: block;
+      margin-bottom: 2px;
+    }
+
+    /* ── FOOTER ── */
+    .footer {
+      margin-top: 100px;
+      padding-top: 32px;
+      border-top: 1px solid var(--rule);
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+    }
+
+    .footer-left {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 13px;
+      color: var(--muted);
+      line-height: 1.8;
+    }
+
+    .footer-left a {
+      color: var(--accent);
+      text-decoration: none;
+    }
+
+    .footer-right {
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: rgba(240, 237, 232, 0.2);
+      text-align: right;
+      line-height: 1.8;
+    }
+
+    /* ── PRINT ── */
+    @media print {
+      body { background: #fff; color: #0a0a0a; }
+      .page { padding: 40px; }
+      :root {
+        --bg: #fff;
+        --fg: #0a0a0a;
+        --accent: #8a6f45;
+        --muted: rgba(10,10,10,0.45);
+        --rule: rgba(10,10,10,0.12);
+        --highlight-bg: rgba(138, 111, 69, 0.05);
+      }
+    }
+
+    @media (max-width: 600px) {
+      .page { padding: 40px 24px 80px; }
+      .cover-meta { grid-template-columns: 1fr; }
+      .cover-meta-item:first-child { border-right: none; padding-right: 0; border-bottom: 1px solid var(--rule); }
+      .cover-meta-item:last-child { padding-left: 0; }
+      .checklist { grid-template-columns: 1fr; }
+      .pricing-grid { grid-template-columns: 1fr; }
+      .site-list-item { grid-template-columns: 1fr; gap: 4px; }
+      .site-page-name { font-size: 11px; }
+      .footer { flex-direction: column; gap: 20px; align-items: flex-start; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="page">
+
+  <!-- COVER -->
+  <header class="cover">
+    <span class="label-tag">Website Proposal — Confidential</span>
+
+    <h1 class="cover-title">Marginalia</h1>
+    <p class="cover-subtitle">Custom Digital Platform · April 2026</p>
+
+    <div class="cover-meta">
+      <div class="cover-meta-item">
+        <span class="meta-label">Prepared by</span>
+        <span class="meta-value placeholder">[ Your Name ]</span>
+      </div>
+      <div class="cover-meta-item">
+        <span class="meta-label">Prepared for</span>
+        <span class="meta-value">ELIF · Marginalia</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- 01 — THE PROJECT -->
+  <section class="section">
+    <div class="section-header">
+      <span class="section-num">01</span>
+      <h2 class="section-title">The Project</h2>
+    </div>
+    <p class="lead-text">
+      You built something real. Marginalia has gone from concept to Beatport's Hype Label of the Month in under two years. The existing site doesn't reflect where the label is now.
+    </p>
+    <br>
+    <p class="body-text">
+      This proposal is for a fully custom platform — built to the same standard as the music. Not a template, not a page builder. A proper site that grows with the label, that you control completely, that looks as good as what you put out.
+    </p>
+  </section>
+
+  <!-- 02 — WHAT WE'RE BUILDING -->
+  <section class="section">
+    <div class="section-header">
+      <span class="section-num">02</span>
+      <h2 class="section-title">What We're Building</h2>
+    </div>
+    <ul class="site-list">
+      <li class="site-list-item">
+        <span class="site-page-name">Home</span>
+        <span class="site-page-desc">Hero, featured releases, artist roster teaser, press accolades</span>
+      </li>
+      <li class="site-list-item">
+        <span class="site-page-name">Releases</span>
+        <span class="site-page-desc">Full catalog with artwork grid, audio embeds, platform links</span>
+      </li>
+      <li class="site-list-item">
+        <span class="site-page-name">Artists</span>
+        <span class="site-page-desc">Roster pages with bio, photo, social links</span>
+      </li>
+      <li class="site-list-item">
+        <span class="site-page-name">Podcasts / Mixes</span>
+        <span class="site-page-desc">Embedded audio, episode list</span>
+      </li>
+      <li class="site-list-item">
+        <span class="site-page-name">Press</span>
+        <span class="site-page-desc">Coverage archive — every feature, every mention</span>
+      </li>
+      <li class="site-list-item">
+        <span class="site-page-name">Showcases</span>
+        <span class="site-page-desc">Upcoming and past events with ticket links</span>
+      </li>
+      <li class="site-list-item">
+        <span class="site-page-name">Demos</span>
+        <span class="site-page-desc">Submission form — streaming link directly to your inbox</span>
+      </li>
+      <li class="site-list-item">
+        <span class="site-page-name">About</span>
+        <span class="site-page-desc">Label story, philosophy, the Marginalia concept</span>
+      </li>
+      <li class="site-list-item">
+        <span class="site-page-name">Merch</span>
+        <span class="site-page-desc">Direct link to your existing store</span>
+      </li>
+    </ul>
+  </section>
+
+  <!-- 03 — CONTENT MANAGEMENT -->
+  <section class="section">
+    <div class="section-header">
+      <span class="section-num">03</span>
+      <h2 class="section-title">Content Management</h2>
+    </div>
+    <p class="lead-text">
+      Everything on the site is editable by you — no developer needed for day-to-day updates.
+    </p>
+    <br>
+    <p class="body-text">
+      Add a new release, update an artist bio, post a showcase — all through a clean admin panel at your domain. Content lives in your own codebase, not locked in a third-party database. You own it entirely. When you push new content, the site rebuilds automatically.
+    </p>
+  </section>
+
+  <!-- 04 — WHAT'S INCLUDED -->
+  <section class="section">
+    <div class="section-header">
+      <span class="section-num">04</span>
+      <h2 class="section-title">What's Included</h2>
+    </div>
+    <ul class="checklist">
+      <li class="checklist-item"><span class="check-icon">✦</span>Full custom design system</li>
+      <li class="checklist-item"><span class="check-icon">✦</span>CMS admin panel</li>
+      <li class="checklist-item"><span class="check-icon">✦</span>Responsive across all devices</li>
+      <li class="checklist-item"><span class="check-icon">✦</span>Audio embeds (SoundCloud, Spotify)</li>
+      <li class="checklist-item"><span class="check-icon">✦</span>Platform links per release</li>
+      <li class="checklist-item"><span class="check-icon">✦</span>Demo submission form</li>
+      <li class="checklist-item"><span class="check-icon">✦</span>Newsletter subscribe integration</li>
+      <li class="checklist-item"><span class="check-icon">✦</span>Management contact form</li>
+      <li class="checklist-item"><span class="check-icon">✦</span>SEO — structured data, Open Graph, sitemap</li>
+      <li class="checklist-item"><span class="check-icon">✦</span>Deployed to Cloudflare (free hosting, forever)</li>
+      <li class="checklist-item"><span class="check-icon">✦</span>1 month post-launch support</li>
+      <li class="checklist-item"><span class="check-icon">✦</span>Full handover — you own everything</li>
+    </ul>
+  </section>
+
+  <!-- 05 — WHAT'S NOT INCLUDED -->
+  <section class="section">
+    <div class="section-header">
+      <span class="section-num">05</span>
+      <h2 class="section-title">Not Included</h2>
+    </div>
+    <ul class="not-included-list">
+      <li class="checklist-item"><span class="cross-icon">—</span>Content entry — migrating existing releases and artists from Squarespace into the CMS</li>
+      <li class="checklist-item"><span class="cross-icon">—</span>Copywriting or photography</li>
+      <li class="checklist-item"><span class="cross-icon">—</span>Mix & mastering or lesson booking (available as a future phase)</li>
+    </ul>
+  </section>
+
+  <!-- 06 — TIMELINE -->
+  <section class="section">
+    <div class="section-header">
+      <span class="section-num">06</span>
+      <h2 class="section-title">Timeline</h2>
+    </div>
+    <table class="timeline">
+      <tbody>
+        <tr>
+          <td>1</td>
+          <td>Foundation & Setup</td>
+          <td>Week 1</td>
+        </tr>
+        <tr>
+          <td>2</td>
+          <td>Design System</td>
+          <td>Week 1–2</td>
+        </tr>
+        <tr>
+          <td>3</td>
+          <td>Releases</td>
+          <td>Week 2–3</td>
+        </tr>
+        <tr>
+          <td>4</td>
+          <td>Artists</td>
+          <td>Week 3</td>
+        </tr>
+        <tr>
+          <td>5</td>
+          <td>All Other Pages</td>
+          <td>Week 3–4</td>
+        </tr>
+        <tr>
+          <td>6</td>
+          <td>Forms & Email</td>
+          <td>Week 4</td>
+        </tr>
+        <tr>
+          <td>7</td>
+          <td>SEO & Launch</td>
+          <td>Week 5</td>
+        </tr>
+      </tbody>
+    </table>
+    <p class="timeline-footer"><strong>Estimated:</strong> 5–6 weeks from kickoff · Timeline begins once the brief is complete and the first payment is received.</p>
+  </section>
+
+  <!-- 07 — INVESTMENT -->
+  <section class="section">
+    <div class="section-header">
+      <span class="section-num">07</span>
+      <h2 class="section-title">Investment</h2>
+    </div>
+    <div class="pricing-grid">
+      <div class="pricing-tier">
+        <span class="tier-name">Essential</span>
+        <div class="tier-price"><span class="currency">€</span>2,500</div>
+        <p class="tier-desc">Core site — all 9 sections, CMS, deployment. Content entry not included.</p>
+      </div>
+      <div class="pricing-tier recommended">
+        <span class="recommended-badge">Recommended</span>
+        <span class="tier-name">Full</span>
+        <div class="tier-price"><span class="currency">€</span>3,500</div>
+        <p class="tier-desc">Everything in Essential, plus 1 month post-launch support and priority response.</p>
+      </div>
+      <div class="pricing-tier">
+        <span class="tier-name">Complete</span>
+        <div class="tier-price"><span class="currency">€</span>4,500</div>
+        <p class="tier-desc">Everything in Full, plus content entry — we migrate your releases and artists into the CMS. 2 months support.</p>
+      </div>
+    </div>
+    <p class="pricing-note"><strong>Payment:</strong> 50% on project start · 50% on launch</p>
+  </section>
+
+  <!-- 08 — NEXT STEPS -->
+  <section class="section">
+    <div class="section-header">
+      <span class="section-num">08</span>
+      <h2 class="section-title">Next Steps</h2>
+    </div>
+    <ol class="steps-list">
+      <li class="step-item">
+        <span class="step-num">1</span>
+        <span class="step-text">
+          <strong>Answer the brief</strong>
+          Complete the attached questionnaire — this locks the scope and design direction.
+        </span>
+      </li>
+      <li class="step-item">
+        <span class="step-num">2</span>
+        <span class="step-text">
+          <strong>Sign off on this proposal</strong>
+          Confirm the tier and terms. A simple email confirmation is enough.
+        </span>
+      </li>
+      <li class="step-item">
+        <span class="step-num">3</span>
+        <span class="step-text">
+          <strong>First payment</strong>
+          50% invoice issued on sign-off. Work begins on receipt.
+        </span>
+      </li>
+      <li class="step-item">
+        <span class="step-num">4</span>
+        <span class="step-text">
+          <strong>Kickoff call</strong>
+          We align on visual direction, walk through the brief answers, set the timeline.
+        </span>
+      </li>
+    </ol>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="footer-left">
+      Questions or amendments —<br>
+      <a href="mailto:your@email.com">[ your@email.com ]</a>
+    </div>
+    <div class="footer-right">
+      Marginalia<br>
+      [ Your Name ] · 2026
+    </div>
+  </footer>
+
+</div>
+
+</body>
+</html>
