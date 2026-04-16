@@ -19,3 +19,17 @@ build/
 *.log
 .env
 .env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Cloudflare Workers build output
+.open-next/
+.wrangler/
+
+# Vercel
+.vercel
+
+# TypeScript
+*.tsbuildinfo
+next-env.d.ts
