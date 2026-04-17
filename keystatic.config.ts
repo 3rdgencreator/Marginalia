@@ -278,11 +278,12 @@ export default config({
               directory: 'public/images/showcases',
               publicPath: '/images/showcases/',
             }),
+            caption: fields.text({ label: 'Caption (optional)' }),
           }),
           {
             label: 'Recap Photos',
             description: 'Event photos for past events',
-            itemLabel: () => 'Photo',
+            itemLabel: (props) => props.fields.caption.value || 'Photo',
           }
         ),
       },
