@@ -54,9 +54,9 @@
 **Plans:** 3 plans
 
 Plans:
-- [ ] 01-01-PLAN.md — Next.js 15 scaffold + Cloudflare Workers config + dependencies
-- [ ] 01-02-PLAN.md — Complete Keystatic CMS schema (all collections + singletons + admin routes)
-- [ ] 01-03-PLAN.md — OpenNext build verification + image path test + CMS workflow docs
+- [x] 01-01-PLAN.md — Next.js 15 scaffold + Cloudflare Workers config + dependencies
+- [x] 01-02-PLAN.md — Complete Keystatic CMS schema (all collections + singletons + admin routes)
+- [x] 01-03-PLAN.md — OpenNext build verification + image path test + CMS workflow docs
 
 ---
 
@@ -78,7 +78,7 @@ Plans:
 **Plans:** 3 plans
 
 Plans:
-- [ ] 01-01-PLAN.md — Next.js 15 scaffold + Cloudflare Workers config + dependencies
+- [x] 01-01-PLAN.md — Next.js 15 scaffold + Cloudflare Workers config + dependencies
 - [ ] 01-02-PLAN.md — Complete Keystatic CMS schema (all collections + singletons + admin routes)
 - [ ] 01-03-PLAN.md — OpenNext build verification + image path test + CMS workflow docs
 
