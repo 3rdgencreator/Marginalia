@@ -272,14 +272,17 @@ export default config({
           description: 'YouTube URL for past events',
         }),
         recapPhotos: fields.array(
-          fields.image({
-            label: 'Photo',
-            directory: 'public/images/showcases',
-            publicPath: '/images/showcases/',
+          fields.object({
+            image: fields.image({
+              label: 'Photo',
+              directory: 'public/images/showcases',
+              publicPath: '/images/showcases/',
+            }),
           }),
           {
             label: 'Recap Photos',
             description: 'Event photos for past events',
+            itemLabel: () => 'Photo',
           }
         ),
       },
