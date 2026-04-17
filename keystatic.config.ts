@@ -85,6 +85,13 @@ export default config({
         deezerUrl: fields.url({ label: 'Deezer URL' }),
         boomkatUrl: fields.url({ label: 'Boomkat URL' }),
         junoUrl: fields.url({ label: 'Juno URL' }),
+        amazonUrl: fields.url({ label: 'Amazon Music URL' }),
+        anghamiUrl: fields.url({ label: 'Anghami URL' }),
+        mixcloudUrl: fields.url({ label: 'MixCloud URL' }),
+        netEaseUrl: fields.url({ label: 'NetEase URL' }),
+        pandoraUrl: fields.url({ label: 'Pandora URL' }),
+        saavnUrl: fields.url({ label: 'Saavn URL' }),
+        facebookUrl: fields.url({ label: 'Facebook URL' }),
         soundcloudPodcastUrl: fields.url({
           label: 'Related Podcast SoundCloud URL',
           description: 'Linked podcast SC URL for related episodes',
