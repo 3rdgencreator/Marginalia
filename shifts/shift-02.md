@@ -101,8 +101,34 @@ d440d9e  fix(01-03): wrap recapPhotos image in object for array compatibility
 ### Pending Decisions
 
 - **Waiting on Ozge:** Color palette, typography, logo files and brand guidelines
-- **Waiting on Fabio:** Full Proton Distribution platform list, HypeEdit account status
+- **Waiting on Fabio:** HypeEdit account status (platform list received — see below)
 - **RecapPhotos:** Multi-image deferred — single photo per item is sufficient for now
+
+### Resolved This Shift
+
+- **Fabio — Proton Distribution platform list received (2026-04-17):**
+
+  Full store list delivered via Proton dashboard screenshot:
+
+  | Platform | Type | In Schema |
+  |----------|------|-----------|
+  | Amazon | Store | ✓ Added |
+  | Anghami | Store | ✓ Added |
+  | Audible Magic | Metadata/fingerprinting | — (no URL) |
+  | Beatport | Store | ✓ Already present |
+  | Deezer | Store | ✓ Already present |
+  | Facebook | Social/store | ✓ Added |
+  | iTunes / Apple Music | Store | ✓ Already present |
+  | Juno | Store | ✓ Already present |
+  | MixCloud | Store | ✓ Added |
+  | Music Reports International | Royalty reporting | — (no URL) |
+  | NetEase | Store | ✓ Added |
+  | Pandora | Store | ✓ Added |
+  | Saavn | Store | ✓ Added |
+  | SoundCloud | Store | ✓ Already present |
+  | Spotify | Store | ✓ Already present |
+
+  Keystatic `releases` schema updated with 7 new URL fields. Content entry not yet started — schema change is safe.
 
 ---
 
