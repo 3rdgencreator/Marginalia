@@ -1,78 +1,78 @@
 # Marginalia Web Site — Shift 1
 
-## Shift 1 — 16 Nisan 2026
+## Shift 1 — April 16, 2026
 
-**Süre:** ~3-4 saat
-**Durum:** Wave 1 tamamlandı ✓ / Wave 2-3 sıradaki
-
----
-
-### Başlangıç Durumu
-
-- Boş git reposu (`/Users/koz/Documents/Marginalia Web Site`)
-- MRGNL GitHub reposundan `.planning/` klasörü clone edildi (souchefsoul/MRGNL)
-- Placeholder dosyalar vardı: `index.html`, `css/style.css`, `js/main.js`
-- Hiç kod yoktu
+**Duration:** ~3–4 hours
+**Status:** Wave 1 complete ✓ / Waves 2–3 queued
 
 ---
 
-### Ne Yapıldı
+### Starting State
 
-#### 1. Proje Araştırması Okundu ve Sindirildi
-`.planning/research/` altındaki 5 araştırma dosyası incelendi:
-- `STACK.md` — Next.js 15, Tailwind v4, Keystatic 0.5.x, @opennextjs/cloudflare kararları
-- `ARCHITECTURE.md` — Proje yapısı, route tablosu, Keystatic pattern'leri
-- `FEATURES.md` — Content model tanımları, özellik önceliklendirmesi
-- `PITFALLS.md` — Kritik tuzaklar (Vercel ticari kısıt, Keystatic image path, static export yasağı vb.)
-- `SUMMARY.md` — Genel proje özeti
+- Empty git repo (`/Users/koz/Documents/Marginalia Web Site`)
+- `.planning/` directory cloned from MRGNL GitHub repo (souchefsoul/MRGNL)
+- Placeholder files present: `index.html`, `css/style.css`, `js/main.js`
+- No code whatsoever
 
-#### 2. Q&A Okundu
-Elif'in doldurduğu `Marginalia Website Q&A` (2026-04-04 tarihli) tüm sorularıyla incelendi. Temel kararlar çıkarıldı:
+---
 
-- **Releases:** Her zaman birden fazla artist. Katalog numarası (MRGNL001 formatı). Tip: Single/EP/Album/Compilation/Edit. Platformlar: Proton Distribution + Bandcamp + SoundCloud + Laylo.
-- **Artists:** Roster'da ELIF, Liminal, Predex. Her artist için: Bio, Fotoğraf, SoundCloud, Spotify, Beatport, Instagram, RA, YouTube, Laylo, Booking e-posta.
-- **Podcasts:** "Marginalia Podcasts" adıyla SoundCloud'da. Her release'e bağlı (035 gibi bazılarında yok). A/B/C varyantları olabiliyor.
-- **Demo formu:** Sadece SC link (download enabled private). elif@marginalialabel.com adresine.
-- **Nav yapısı:** Home · About · Releases · Free Downloads · Merch · Podcasts · Showcases · Demo · Subscribe · Press + Incubation: Management · Mix&Master · Production · Mentoring
-- **CMS yönetimi:** Fabio (günlük), ELIF (onay)
-- **Domain:** marginalialabel.com (Squarespace'i replace edecek)
-- **Stack:** Belirlendi — Next.js 15 + Keystatic + Cloudflare Workers (ücretsiz tier)
+### What Was Done
 
-#### 3. Memory Dosyaları Oluşturuldu
-`.claude/projects/.../memory/` altına 2 memory dosyası yazıldı:
-- `project_marginalia.md` — Stack, roadmap, kritik kararlar
-- `project_qa_notes.md` — Q&A'dan çıkarılan tüm içerik kararları
+#### 1. Project Research Read and Digested
+5 research files under `.planning/research/` reviewed:
+- `STACK.md` — Next.js 15, Tailwind v4, Keystatic 0.5.x, @opennextjs/cloudflare decisions
+- `ARCHITECTURE.md` — Project structure, route table, Keystatic patterns
+- `FEATURES.md` — Content model definitions, feature prioritization
+- `PITFALLS.md` — Critical pitfalls (Vercel commercial restriction, Keystatic image path, static export ban, etc.)
+- `SUMMARY.md` — General project overview
 
-#### 4. Phase 1 İçin Context ve Research Oluşturuldu
-`.planning/phases/01-infrastructure-schema-foundation/` klasörü oluşturuldu.
+#### 2. Q&A Reviewed
+Elif's `Marginalia Website Q&A` (dated 2026-04-04) reviewed in full. Key decisions extracted:
 
-- `01-CONTEXT.md` — Q&A'dan türetildi. Her collection için tam field listesi, singleton tanımları, nav yapısı, CMS workflow, placeholder dosya bilgisi.
-- `01-RESEARCH.md` — Global araştırmadan Phase 1'e özel derlendi. Stack tablosu, kritik pitfall'lar, proje yapısı, Keystatic route pattern'i, build komutları, validation checkpoints.
+- **Releases:** Always multiple artists. Catalog number (MRGNL001 format). Types: Single/EP/Album/Compilation/Edit. Platforms: Proton Distribution + Bandcamp + SoundCloud + Laylo.
+- **Artists:** Roster includes ELIF, Liminal, Predex. Per artist: Bio, Photo, SoundCloud, Spotify, Beatport, Instagram, RA, YouTube, Laylo, Booking email.
+- **Podcasts:** "Marginalia Podcasts" on SoundCloud. Linked per release (some like 035 have none). A/B/C variants possible.
+- **Demo form:** SC link only (download-enabled private track). Sends to elif@marginalialabel.com.
+- **Nav structure:** Home · About · Releases · Free Downloads · Merch · Podcasts · Showcases · Demo · Subscribe · Press + Incubation: Management · Mix&Master · Production · Mentoring
+- **CMS management:** Fabio (day-to-day), ELIF (approval)
+- **Domain:** marginalialabel.com (replacing Squarespace)
+- **Stack:** Confirmed — Next.js 15 + Keystatic + Cloudflare Workers (free tier)
 
-#### 5. Phase 1 Planlandı (gsd-planner ile)
-3 plan oluşturuldu, plan checker'dan geçirildi (0 blocker, 2 uyarı düzeltildi):
+#### 3. Memory Files Created
+2 memory files written to `.claude/projects/.../memory/`:
+- `project_marginalia.md` — Stack, roadmap, critical decisions
+- `project_qa_notes.md` — All content decisions extracted from Q&A
 
-| Plan | Wave | İçerik |
-|------|------|--------|
-| 01-01 | 1 | Next.js 15 scaffold + tüm bağımlılıklar + wrangler.jsonc + content/image dizinleri |
-| 01-02 | 2 | Keystatic schema (5 collection + 2 singleton) + admin rotaları + reader |
-| 01-03 | 3 | OpenNext build verify + image path testi + CMS workflow dökümantasyonu |
+#### 4. Phase 1 Context and Research Created
+`.planning/phases/01-infrastructure-schema-foundation/` directory created.
 
-Plan checker uyarıları:
-- `app/keystatic/keystatic-app.tsx` eksikti `files_modified` listesinde → eklendi
-- `01-VALIDATION.md` yoktu → 14 checkpoint ile oluşturuldu
+- `01-CONTEXT.md` — Derived from Q&A. Full field list per collection, singleton definitions, nav structure, CMS workflow, placeholder file info.
+- `01-RESEARCH.md` — Compiled from global research, scoped to Phase 1. Stack table, critical pitfalls, project structure, Keystatic route pattern, build commands, validation checkpoints.
 
-#### 6. Wave 1 Execute Edildi — TAMAMLANDI ✓
-`gsd-executor` agent worktree'de çalıştırıldı. Bir deviation:
-- `create-next-app` dolu dizini reddetti → geçici dizinde scaffold edildi, dosyalar taşındı
-- Sonuç aynı, sorun yok
+#### 5. Phase 1 Planned (via gsd-planner)
+3 plans created, passed through plan checker (0 blockers, 2 warnings fixed):
 
-**Wave 1 sonunda main branch'e merge edilenler:**
+| Plan | Wave | Content |
+|------|------|---------|
+| 01-01 | 1 | Next.js 15 scaffold + all dependencies + wrangler.jsonc + content/image directories |
+| 01-02 | 2 | Keystatic schema (5 collections + 2 singletons) + admin routes + reader |
+| 01-03 | 3 | OpenNext build verify + image path test + CMS workflow documentation |
+
+Plan checker warnings:
+- `app/keystatic/keystatic-app.tsx` missing from `files_modified` list → added
+- `01-VALIDATION.md` missing → created with 14 checkpoints
+
+#### 6. Wave 1 Executed — COMPLETE ✓
+`gsd-executor` agent ran in a worktree. One deviation:
+- `create-next-app` rejected non-empty directory → scaffolded in temp dir, files moved over
+- Result identical, no issue
+
+**Files merged to main after Wave 1:**
 
 ```
-package.json             Next.js 15 + 20+ bağımlılık
+package.json             Next.js 15 + 20+ dependencies
 tsconfig.json
-next.config.ts           output: 'export' YOK (kritik)
+next.config.ts           No output: 'export' (critical)
 wrangler.jsonc           Cloudflare Workers config (marginalia-label)
 app/layout.tsx           Root layout
 app/page.tsx             "Marginalia" placeholder homepage
@@ -93,7 +93,7 @@ package-lock.json
 
 ---
 
-### Kurulu Bağımlılıklar
+### Installed Dependencies
 
 ```
 # Core
@@ -120,7 +120,7 @@ prettier, prettier-plugin-tailwindcss, @next/bundle-analyzer
 
 ---
 
-### Commit Geçmişi (bu shift)
+### Commit History (this shift)
 
 ```
 68138c2  docs(01-01): complete project scaffold and cloudflare config plan
@@ -132,34 +132,34 @@ f32f791  docs(01): create phase 1 execution plans
 
 ---
 
-### Bekleyen Kararlar
+### Pending Decisions
 
-- **Ozge'den bekleniyor:**
-  - Renk paleti (arka plan rengi / release artwork'e göre değişken mi?)
-  - Tipografi / font seçimi
-  - Logo dosyaları ve brand guidelines (Keystatic'e yüklenecek)
+- **Waiting on Ozge:**
+  - Color palette (fixed background vs. artwork-adaptive?)
+  - Typography / font selection
+  - Logo files and brand guidelines (to be uploaded via Keystatic)
 
-- **Fabio'dan bekleniyor:**
-  - Proton Distribution'ın dağıttığı tam platform listesi (Tidal, Deezer, Boomkat, Juno vs.)
-  - HypeEdit hesabı durumu (eski label manager'dan devralınacak mı, yoksa native sistem mi?)
+- **Waiting on Fabio:**
+  - Full platform list distributed by Proton Distribution (Tidal, Deezer, Boomkat, Juno, etc.)
+  - HypeEdit account status (transfer from old label manager or set up fresh?)
 
 ---
 
-### Sıradaki Session — Devam Komutu
+### Next Session — Resume Command
 
 ```
 /gsd-execute-phase 1 --wave 2
 ```
-→ Keystatic schema tanımlanacak. Tahminen 10-15 dk.
+→ Keystatic schema will be defined. Estimated 10–15 min.
 
-Sonra:
+Then:
 ```
 /gsd-execute-phase 1 --wave 3
 ```
-→ Build verify + **SEN bir test görseli upload edeceksin** `/keystatic` admin'den (birkaç tıklama). Sonra workflow dökümantasyonu yazılacak.
+→ Build verify + **you will upload a test image** via `/keystatic` admin (a few clicks). Then workflow documentation will be written.
 
-Wave 3 bitince Phase 1 tamamdır. Phase 2'ye geçilir: Design System (Ozge'nin brand dosyaları geldikten sonra).
+Once Wave 3 is done, Phase 1 is complete. Move to Phase 2: Design System (after Ozge's brand files arrive).
 
 ---
 
-*Shift 1 kaydedildi: 2026-04-16*
+*Shift 1 recorded: 2026-04-16*

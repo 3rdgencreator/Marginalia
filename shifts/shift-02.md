@@ -1,27 +1,27 @@
 # Marginalia Web Site — Shift 2
 
-## Shift 2 — 17 Nisan 2026
+## Shift 2 — April 17, 2026
 
-**Süre:** ~2-3 saat
-**Durum:** Phase 1 tamamlandı ✓ / Phase 2 sıradaki
-
----
-
-### Başlangıç Durumu
-
-- Wave 2 worktree (`worktree-agent-a41d5f17`) merge edilmemişti — session başında merge edildi
-- Wave 3 henüz çalıştırılmamıştı
+**Duration:** ~2–3 hours
+**Status:** Phase 1 complete ✓ / Phase 2 queued
 
 ---
 
-### Ne Yapıldı
+### Starting State
 
-#### 1. Wave 2 Worktree Merge Edildi
+- Wave 2 worktree (`worktree-agent-a41d5f17`) had not been merged — merged at session start
+- Wave 3 had not been executed yet
 
-Wave 2'de oluşturulan 6 Keystatic dosyası main'e merge edildi:
+---
+
+### What Was Done
+
+#### 1. Wave 2 Worktree Merged
+
+6 Keystatic files created in Wave 2 merged into main:
 
 ```
-keystatic.config.ts          356 satır — 5 collection + 2 singleton tam şema
+keystatic.config.ts          356 lines — full schema: 5 collections + 2 singletons
 lib/keystatic.ts             createReader export
 app/keystatic/layout.tsx
 app/keystatic/keystatic-app.tsx
@@ -29,63 +29,63 @@ app/keystatic/[[...params]]/page.tsx
 app/api/keystatic/[...params]/route.ts
 ```
 
-#### 2. Wave 3 Execute Edildi — TAMAMLANDI ✓
+#### 2. Wave 3 Executed — COMPLETE ✓
 
-Executor agent worktree'de çalıştı. Yapılanlar:
+Executor agent ran in a worktree. What was done:
 
-- `npx @opennextjs/cloudflare build` başarıyla çalıştı → `open-next.config.ts` oluşturuldu (gerekliydi, plan'da yoktu — deviation)
-- Test image (`public/images/releases/test-image.png`) oluşturuldu → `/images/releases/test-image.png` HTTP 200 döndü → silindi
-- `app/page.tsx` güncellendi: "Marginalia / Coming soon" placeholder
-- `CMS-WORKFLOW.md` oluşturuldu (78 satır): Fabio ve ELIF için günlük workflow
+- `npx @opennextjs/cloudflare build` completed successfully → `open-next.config.ts` created (required but missing from plan — deviation handled)
+- Test image (`public/images/releases/test-image.png`) created → served at `/images/releases/test-image.png` with HTTP 200 → cleaned up
+- `app/page.tsx` updated: "Marginalia / Coming soon" placeholder
+- `CMS-WORKFLOW.md` created (78 lines): daily workflow guide for Fabio and ELIF
 
 #### 3. Human Checkpoint — PASSED ✓
 
-Kullanıcı Safari'de doğruladı:
+Verified in Safari:
 
-- `http://localhost:3000` → "Marginalia" (Coming soon henüz merge edilmemişti — normal)
-- `http://localhost:3000/keystatic` → CMS admin tam çalışıyor
-- Dashboard'da tüm bölümler:
+- `http://localhost:3000` → "Marginalia" (Coming soon not yet visible — merge was pending, normal)
+- `http://localhost:3000/keystatic` → CMS admin fully working
+- Dashboard showed all sections:
   - Collections: Releases, Artists, Podcasts, Press, Showcases
   - Singletons: Site Config, Home Page
-- Releases ve Artists alanları doğrulandı ✓
+- Releases and Artists fields verified ✓
 
 #### 4. RecapPhotos Bug Fix
 
-**Sorun:** Showcases > Create'te Recap Photos'a ikinci fotoğraf eklenince birincisi siliniyor.
+**Issue:** Adding a second photo in Showcases > Create > Recap Photos replaced the first one.
 
-**Kök neden:** `fields.array(fields.image(...))` Keystatic'te item key çakışması yapıyor.
+**Root cause:** `fields.array(fields.image(...))` causes item key collision in Keystatic.
 
-**Fix (2 aşama):**
-1. `fields.array(fields.object({ image: fields.image(...) }))` — kısmi düzeltti (1 eklenebiliyor)
-2. Caption text field eklendi → her item'a unique key sağladı
+**Fix (2 stages):**
+1. Wrapped image in `fields.object` → partial fix (one image addable)
+2. Added `caption` text field → provides a unique key per item
 
-**Final durum:** Şimdilik tek fotoğraf ekleniyor (kullanıcı kararı). Multi-image deferred.
+**Final state:** Single photo per item for now (user decision). Multi-image deferred to a later phase.
 
 #### 5. Package Name Fix
 
-`package.json` içindeki `"name": "tmp-scaffold"` → `"name": "marginalia-label"` düzeltildi.
+`package.json` `"name"` corrected from `"tmp-scaffold"` → `"marginalia-label"`.
 
 #### 6. Phase 1 Verification — PASSED ✓
 
-`gsd-verifier` tüm must-have'leri doğruladı:
+`gsd-verifier` confirmed all must-haves:
 
-| Kriter | Sonuç |
-|--------|-------|
-| 5 collection + 2 singleton tam şema | ✓ |
-| Image directory/publicPath eşlemesi | ✓ |
+| Criterion | Result |
+|-----------|--------|
+| 5 collections + 2 singletons, full schema | ✓ |
+| Image directory/publicPath pairing correct | ✓ |
 | wrangler.jsonc — marginalia-label, nodejs_compat | ✓ |
-| next.config.ts — output:export YOK | ✓ |
+| next.config.ts — no output:export | ✓ |
 | lib/keystatic.ts reader export | ✓ |
 | Keystatic API route | ✓ |
-| CMS-WORKFLOW.md (78 satır) | ✓ |
-| Tailwind v4 CSS-first | ✓ |
-| OpenNext build (.open-next/worker.js) | ✓ |
+| CMS-WORKFLOW.md (78 lines) | ✓ |
+| Tailwind v4 CSS-first (no tailwind.config file) | ✓ |
+| OpenNext build (.open-next/worker.js exists) | ✓ |
 
 **Phase 1: COMPLETE** ✓
 
 ---
 
-### Commit Geçmişi (bu shift)
+### Commit History (this shift)
 
 ```
 e91caa0  fix: rename package from tmp-scaffold to marginalia-label
@@ -98,24 +98,24 @@ d440d9e  fix(01-03): wrap recapPhotos image in object for array compatibility
 
 ---
 
-### Bekleyen Kararlar
+### Pending Decisions
 
-- **Ozge'den bekleniyor:** Renk paleti, tipografi, logo ve brand guidelines
-- **Fabio'dan bekleniyor:** Proton Distribution tam platform listesi, HypeEdit durumu
-- **RecapPhotos:** Multi-image deferred — tek fotoğraf şimdilik yeterli
+- **Waiting on Ozge:** Color palette, typography, logo files and brand guidelines
+- **Waiting on Fabio:** Full Proton Distribution platform list, HypeEdit account status
+- **RecapPhotos:** Multi-image deferred — single photo per item is sufficient for now
 
 ---
 
-### Sıradaki Session — Devam Komutu
+### Next Session — Resume Command
 
-Phase 2: Design System — Ozge'nin brand dosyaları gelince başlanacak.
+Phase 2: Design System — to begin once Ozge's brand files arrive.
 
 ```
 /gsd-plan-phase 2
 ```
 
-→ Typography, color system, component library (Tailwind v4 ile).
+→ Typography, color system, component library (Tailwind v4).
 
 ---
 
-*Shift 2 kaydedildi: 2026-04-17*
+*Shift 2 recorded: 2026-04-17*
