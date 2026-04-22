@@ -4,6 +4,9 @@ import SiteNav from '@/components/layout/SiteNav';
 import SiteFooter from '@/components/layout/SiteFooter';
 
 export const metadata: Metadata = {
+  metadataBase: new URL(
+    process.env.NEXT_PUBLIC_SITE_URL ?? 'https://marginalialabel.com'
+  ),
   title: 'Marginalia — Melodic House & Techno Label',
   description: 'Barcelona-based label for melodic house and techno.',
 };
