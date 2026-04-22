@@ -1,26 +1,108 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+/* ─── Nimbus Sans Self-Hosted Font ─────────────────────────── */
+@font-face {
+  font-family: 'Nimbus Sans';
+  src: url('/fonts/NimbusSans-Regular.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Nimbus Sans';
+  src: url('/fonts/NimbusSans-Bold.woff2') format('woff2');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+/* ─── Design Tokens ─────────────────────────────────────────── */
+@theme {
+  /* Colors — Core */
+  --color-bg:              #1F1F21;
+  --color-surface:         #2A2A2C;
+  --color-accent-violet:   #580AFF;
+  --color-accent-lime:     #9EFF0A;
+  --color-surface-purple:  #8656FF;
+
+  /* Colors — Text */
+  --color-text-primary:    #FFFFFF;
+  --color-text-secondary:  #D2D2DB;
+  --color-text-muted:      #CAC9F9;
+
+  /* Colors — Semantic */
+  --color-destructive:     #ef6b8e;
+
+  /* Colors — Tag palette (11 accent colors for genre chips) */
+  --color-tag-pink:        #ef6b8e;
+  --color-tag-orange:      #f29753;
+  --color-tag-yellow:      #f9c432;
+  --color-tag-olive:       #c0c020;
+  --color-tag-mint:        #66cc99;
+  --color-tag-green-light: #7ed35e;
+  --color-tag-green-dark:  #599f56;
+  --color-tag-lavender:    #b088d0;
+  --color-tag-purple:      #bd63ee;
+  --color-tag-blue:        #2086c0;
+  --color-tag-sky:         #a9c2e7;
+
+  /* Typography */
+  --font-sans: 'Nimbus Sans', 'Helvetica Neue', Arial, sans-serif;
+
+  --text-label:   0.75rem;   /* 12px */
+  --text-body:    1rem;      /* 16px */
+  --text-heading: 1.5rem;    /* 24px — scales to 2rem/32px on desktop */
+  --text-display: 3rem;      /* 48px — scales to 4rem/64px on desktop */
+
+  --leading-tight:  1.1;
+  --leading-snug:   1.2;
+  --leading-normal: 1.5;
+  --leading-label:  1.4;
+
+  --tracking-tight: -0.02em;
+
+  /* Spacing */
+  --space-xs:  0.25rem;   /* 4px */
+  --space-sm:  0.5rem;    /* 8px */
+  --space-md:  1rem;      /* 16px */
+  --space-lg:  1.5rem;    /* 24px */
+  --space-xl:  2rem;      /* 32px */
+  --space-2xl: 3rem;      /* 48px */
+  --space-3xl: 4rem;      /* 64px */
+
+  /* Layout */
+  --max-width-content: 1280px;
+  --nav-height-desktop: 64px;
+  --nav-height-mobile:  56px;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+/* ─── Base ───────────────────────────────────────────────────── */
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+html {
+  background-color: var(--color-bg);
+  color: var(--color-text-primary);
+  font-family: var(--font-sans);
+  font-size: 16px;
+  color-scheme: dark;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  min-height: 100vh;
+  overflow-x: clip; /* AMENDMENT 2: was 'hidden' — 'clip' preserves position: sticky on descendants */
+  background-color: var(--color-bg);
+}
+
+@supports not (overflow-x: clip) {
+  body { overflow-x: hidden; }
+}
+
+/* ─── Focus ──────────────────────────────────────────────────── */
+:focus-visible {
+  outline: 2px solid var(--color-accent-lime);
+  outline-offset: 3px;
 }
