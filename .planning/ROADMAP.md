@@ -25,7 +25,7 @@
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Infrastructure & Schema Foundation | 0/3 | Planned | - |
-| 2. Design System & Layout Shell | 0/? | Not started | - |
+| 2. Design System & Layout Shell | 0/4 | Planned | - |
 | 3. Releases | 0/? | Not started | - |
 | 4. Artists | 0/? | Not started | - |
 | 5. Secondary Content Pages | 0/? | Not started | - |
@@ -75,12 +75,13 @@ Plans:
 4. Resizing from 375px to 1440px shows no broken layouts, overflow, or content clipping on any page shell
 5. There is no `tailwind.config.js` file in the project — all token definitions live in `globals.css` under `@theme {}`
 
-**Plans:** 3 plans
+**Plans:** 4 plans (waves 1, 1, 2, 3)
 
 Plans:
-- [x] 01-01-PLAN.md — Next.js 15 scaffold + Cloudflare Workers config + dependencies
-- [x] 01-02-PLAN.md — Complete Keystatic CMS schema (all collections + singletons + admin routes)
-- [x] 01-03-PLAN.md — OpenNext build verification + image path test + CMS workflow docs
+- [ ] 02-01-PLAN.md — globals.css @theme tokens + @font-face + public/fonts/.gitkeep (Wave 1, DSYS-01/02/03)
+- [ ] 02-02-PLAN.md — Container + Logo + SocialIcon primitives (Wave 1, DSYS-05)
+- [ ] 02-03-PLAN.md — SiteNav + NavLinks + MobileMenu navigation system (Wave 2, DSYS-04/05)
+- [ ] 02-04-PLAN.md — SiteFooter (async reader with fallback) + app/layout.tsx wiring + font preload (Wave 3, DSYS-03/04/05)
 
 ---
 
@@ -258,6 +259,12 @@ All 48 v1 requirements are mapped to exactly one phase. No orphans.
 | SEO-02 | Phase 7 |
 | SEO-03 | Phase 7 |
 | SEO-04 | Phase 7 |
+| CMS-01 | Phase 1 |
+| CMS-02 | Phase 1 |
+| CMS-03 | Phase 1 |
+| CMS-04 | Phase 1 |
+| CMS-05 | Phase 1 |
+| CMS-06 | Phase 1 |
 
 ---
 
@@ -277,4 +284,5 @@ All 48 v1 requirements are mapped to exactly one phase. No orphans.
 ---
 
 *Roadmap created: 2026-04-04*
-*Next: `/gsd:plan-phase 1`*
+*Phase 2 plans added: 2026-04-22*
+*Next: `/gsd-execute-phase 2`*
