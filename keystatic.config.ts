@@ -1,4 +1,5 @@
 import { config, collection, singleton, fields } from '@keystatic/core';
+import { platformLinksField } from '@/lib/platform-links-field';
 
 export default config({
   storage: { kind: 'local' },
@@ -66,32 +67,9 @@ export default config({
           label: 'Featured on Homepage',
           defaultValue: false,
         }),
-        // Platform URLs (all optional)
-        beatportUrl: fields.url({ label: 'Beatport URL' }),
-        spotifyUrl: fields.url({ label: 'Spotify URL' }),
-        appleMusicUrl: fields.url({ label: 'Apple Music URL' }),
-        soundcloudUrl: fields.url({
-          label: 'SoundCloud URL',
-          description: 'Premiere link (not embed)',
-        }),
-        bandcampUrl: fields.url({ label: 'Bandcamp URL' }),
-        traxsourceUrl: fields.url({ label: 'Traxsource URL' }),
-        layloUrl: fields.url({
-          label: 'Laylo URL',
-          description: 'Presave stage link',
-        }),
-        youtubeUrl: fields.url({ label: 'YouTube URL' }),
-        tidalUrl: fields.url({ label: 'Tidal URL' }),
-        deezerUrl: fields.url({ label: 'Deezer URL' }),
-        boomkatUrl: fields.url({ label: 'Boomkat URL' }),
-        junoUrl: fields.url({ label: 'Juno URL' }),
-        amazonUrl: fields.url({ label: 'Amazon Music URL' }),
-        anghamiUrl: fields.url({ label: 'Anghami URL' }),
-        mixcloudUrl: fields.url({ label: 'MixCloud URL' }),
-        netEaseUrl: fields.url({ label: 'NetEase URL' }),
-        pandoraUrl: fields.url({ label: 'Pandora URL' }),
-        saavnUrl: fields.url({ label: 'Saavn URL' }),
-        facebookUrl: fields.url({ label: 'Facebook URL' }),
+        // All platform URLs + UPC + Laylo in one compound field with Odesli auto-fill
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        platformLinks: platformLinksField() as any,
         soundcloudPodcastUrl: fields.url({
           label: 'Related Podcast SoundCloud URL',
           description: 'Linked podcast SC URL for related episodes',

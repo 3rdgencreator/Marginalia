@@ -74,26 +74,29 @@ export default async function ReleaseDetailPage({ params }: Props) {
   const artistStr = artistNames.join(', ');
   const descPlain = plainTextFromDocument(entry.description, 500);
 
+  // platformLinks is the compound custom field (all URLs + UPC live there)
+  const pl = (entry.platformLinks ?? {}) as Record<string, string | undefined>;
+
   // Build the full platform URL map for PlatformIconRow and MorePlatforms
   const urls: Partial<Record<ReleasePlatform, string | null | undefined>> = {
-    beatport: entry.beatportUrl,
-    spotify: entry.spotifyUrl,
-    soundcloud: entry.soundcloudUrl,
-    appleMusic: entry.appleMusicUrl,
-    deezer: entry.deezerUrl,
-    bandcamp: entry.bandcampUrl,
-    tidal: entry.tidalUrl,
-    traxsource: entry.traxsourceUrl,
-    juno: entry.junoUrl,
-    boomkat: entry.boomkatUrl,
-    amazon: entry.amazonUrl,
-    youtube: entry.youtubeUrl,
-    anghami: entry.anghamiUrl,
-    mixcloud: entry.mixcloudUrl,
-    netEase: entry.netEaseUrl,
-    pandora: entry.pandoraUrl,
-    saavn: entry.saavnUrl,
-    facebook: entry.facebookUrl,
+    beatport: pl.beatportUrl,
+    spotify: pl.spotifyUrl,
+    soundcloud: pl.soundcloudUrl,
+    appleMusic: pl.appleMusicUrl,
+    deezer: pl.deezerUrl,
+    bandcamp: pl.bandcampUrl,
+    tidal: pl.tidalUrl,
+    traxsource: pl.traxsourceUrl,
+    juno: pl.junoUrl,
+    boomkat: pl.boomkatUrl,
+    amazon: pl.amazonUrl,
+    youtube: pl.youtubeUrl,
+    anghami: pl.anghamiUrl,
+    mixcloud: pl.mixcloudUrl,
+    netEase: pl.netEaseUrl,
+    pandora: pl.pandoraUrl,
+    saavn: pl.saavnUrl,
+    facebook: pl.facebookUrl,
   };
 
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://marginalialabel.com';
@@ -159,9 +162,9 @@ export default async function ReleaseDetailPage({ params }: Props) {
               releaseDate={entry.releaseDate}
             />
 
-            {entry.layloUrl && (
+            {pl.layloUrl && (
               <LayloButton
-                url={entry.layloUrl}
+                url={pl.layloUrl}
                 releaseTitle={entry.title}
                 releaseDate={entry.releaseDate}
               />
@@ -169,8 +172,8 @@ export default async function ReleaseDetailPage({ params }: Props) {
 
             <PlatformIconRow releaseTitle={entry.title} urls={urls} />
 
-            {entry.soundcloudUrl && (
-              <SoundCloudEmbed embedUrl={buildSoundCloudEmbedUrl(entry.soundcloudUrl)} />
+            {pl.soundcloudUrl && (
+              <SoundCloudEmbed embedUrl={buildSoundCloudEmbedUrl(pl.soundcloudUrl)} />
             )}
 
             {entry.description && Array.isArray(entry.description) && entry.description.length > 0 && (
