@@ -21,9 +21,9 @@ as placeholder `href="/"` or correct route strings — the pages they link to ar
 ## Implementation Decisions
 
 ### Logo Treatment
-- **D-01:** The real Marginalia logo SVG file is available (user has it). It will be provided before execution starts (beginning of next shift).
-- **D-02:** Logo renders as an **inline SVG component** — a React component that outputs raw `<svg>` JSX. Color controlled via `currentColor` so CSS hover states work. Used in both `SiteNav` and `SiteFooter`.
-- **D-03:** Logo file placed at `public/logo.svg`; component at `components/ui/Logo.tsx`.
+- **D-01:** Logo file is `public/logo.png` — RGBA PNG, transparent background, 1839×579px. Already committed.
+- **D-02:** Logo renders via **`next/image`** (`<Image>` component) — NOT inline SVG. The file is a raster PNG (not SVG), so `next/image` is the correct approach. Used in both `SiteNav` and `SiteFooter`.
+- **D-03:** `components/ui/Logo.tsx` wraps `<Image src="/logo.png" alt="Marginalia" width={160} height={50} priority />` with an optional `className` prop. No SVG, no `currentColor`.
 
 ### Active Nav Link
 - **D-04:** Active link detection implemented in Phase 2 using a **thin client wrapper**: a `NavLinks` Client Component that calls `usePathname()` and applies the lime bottom border (`border-b-2 border-[--color-accent-lime]`) to the matching link.
