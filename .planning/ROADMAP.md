@@ -152,11 +152,11 @@ Plans:
 **Plans:** 5 plans
 
 Plans:
-- [ ] 05-01-PLAN.md — Keystatic schema additions (heroVideoUrl, heroVideoMobileUrl, about singleton) + seed YAML files (Wave 1)
-- [ ] 05-02-PLAN.md — Press page + PressEntry component + Showcases page + ShowcaseCard component (Wave 2)
-- [ ] 05-03-PLAN.md — About page with DocumentRenderer + Merch iframe page (Wave 2)
-- [ ] 05-04-PLAN.md — Podcasts page + PodcastAccordion + PodcastRow client components (Wave 2)
-- [ ] 05-05-PLAN.md — Homepage: YouTube video hero + Beatport badge + featured releases + artist teaser (Wave 2)
+- [x] 05-01-PLAN.md — Keystatic schema additions (heroVideoUrl, heroVideoMobileUrl, about singleton) + seed YAML files (Wave 1)
+- [x] 05-02-PLAN.md — Press page + PressEntry component + Showcases page + ShowcaseCard component (Wave 2)
+- [x] 05-03-PLAN.md — About page with DocumentRenderer + Merch iframe page (Wave 2)
+- [x] 05-04-PLAN.md — Podcasts page + PodcastAccordion + PodcastRow client components (Wave 2)
+- [x] 05-05-PLAN.md — Homepage: YouTube video hero + Beatport badge + featured releases + artist teaser (Wave 2)
 
 ---
 
