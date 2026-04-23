@@ -169,7 +169,7 @@ export default async function HomePage() {
           <ul className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-(--space-sm)">
             {artists.map(({ slug, entry }) => (
               <li key={slug}>
-                <ArtistCard slug={slug} entry={entry} />
+                <ArtistCard slug={slug} name={entry.name} role={entry.role ?? null} photo={entry.photo ?? null} />
               </li>
             ))}
           </ul>
