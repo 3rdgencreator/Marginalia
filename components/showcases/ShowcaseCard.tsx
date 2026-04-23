@@ -50,16 +50,18 @@ export default function ShowcaseCard({ entry, variant }: ShowcaseCardProps) {
         {[entry.venue, entry.city, entry.country].filter(Boolean).join(', ')}
       </p>
 
-      {/* Date */}
-      <p
-        className={`text-(--text-label) mt-(--space-sm) ${
-          variant === 'upcoming'
-            ? 'text-(--color-accent-lime)'
-            : 'text-(--color-text-muted)'
-        }`}
-      >
-        {entry.date}
-      </p>
+      {/* Date — only render when non-null to avoid empty paragraph spacing */}
+      {entry.date && (
+        <p
+          className={`text-(--text-label) mt-(--space-sm) ${
+            variant === 'upcoming'
+              ? 'text-(--color-accent-lime)'
+              : 'text-(--color-text-muted)'
+          }`}
+        >
+          {entry.date}
+        </p>
+      )}
 
       {/* Ticket button — upcoming only */}
       {variant === 'upcoming' && safeHref(entry.ticketUrl) && (
