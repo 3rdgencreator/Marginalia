@@ -15,7 +15,7 @@ export default function PlatformIconRow({
 
   return (
     <ul
-      className="flex flex-wrap items-center gap-4"
+      className="flex flex-col gap-2"
       aria-label="Listen on"
     >
       {PRIMARY_PLATFORMS.map((platform) => {

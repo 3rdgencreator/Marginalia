@@ -23,7 +23,7 @@ export function platformLinksField() {
     formKind: undefined,
     label: 'Platform Links',
     Input: PlatformLinksField,
-    defaultValue: (): PlatformLinksValue => ({}),
+    defaultValue: (): PlatformLinksValue => ({ layloUrl: 'https://laylo.com/marginalialabel/QER7RS@b0t' }),
     parse: (value: unknown): PlatformLinksValue => toValue(value as StoredValue),
     serialize: (value: PlatformLinksValue) => ({ value }),
     validate: (value: PlatformLinksValue) => value,

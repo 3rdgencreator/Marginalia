@@ -3,6 +3,7 @@ import { reader } from '@/lib/keystatic';
 import { buildSoundCloudEmbedUrl, resolveArtistNames } from '@/lib/releases';
 import Container from '@/components/layout/Container';
 import PodcastAccordion from '@/components/podcasts/PodcastAccordion';
+import RandomBackground from '@/components/ui/RandomBackground';
 
 export const metadata: Metadata = {
   title: 'Podcasts & Mixes — Marginalia',
@@ -38,17 +39,16 @@ export default async function PodcastsPage() {
   );
 
   return (
-    <Container className="py-(--space-3xl)">
-      <h1 className="mb-8 text-(--text-heading) md:text-[2rem] font-bold tracking-[-0.02em] text-(--color-text-primary) uppercase">
-        Podcasts & Mixes
-      </h1>
-      {episodes.length === 0 ? (
-        <p className="py-16 text-center text-(--text-body) text-(--color-text-muted)">
-          No episodes yet.
-        </p>
-      ) : (
-        <PodcastAccordion episodes={episodes} />
-      )}
-    </Container>
+    <RandomBackground>
+      <Container className="py-(--space-3xl)">
+        {episodes.length === 0 ? (
+          <p className="py-16 text-center text-(--text-body) text-(--color-text-muted)">
+            No episodes yet.
+          </p>
+        ) : (
+          <PodcastAccordion episodes={episodes} />
+        )}
+      </Container>
+    </RandomBackground>
   );
 }

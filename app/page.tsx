@@ -17,9 +17,12 @@ function buildYouTubeEmbedUrl(url: string | null | undefined): string | null {
     mute: '1',
     loop: '1',
     controls: '0',
-    playlist: match[1], // Required for loop=1 to work on YouTube iframes
+    playlist: match[1],
     playsinline: '1',
     rel: '0',
+    showinfo: '0',
+    iv_load_policy: '3',
+    modestbranding: '1',
   });
   return `https://www.youtube.com/embed/${match[1]}?${params.toString()}`;
 }
@@ -38,6 +41,7 @@ export default async function HomePage() {
   const heroVideoMobileUrl = homeData?.heroVideoMobileUrl ?? null;
   const beatportAccolade = homeData?.beatportAccolade ?? null;
   const featuredArtistSlugs = homeData?.featuredArtistSlugs ?? [];
+  const heroLayloEmbedUrl = homeData?.heroLayloEmbedUrl ?? null;
 
   // Build YouTube embed URLs server-side — extract video ID via regex, never pass raw URL as src.
   const desktopEmbedUrl = buildYouTubeEmbedUrl(heroVideoUrl);
@@ -73,36 +77,59 @@ export default async function HomePage() {
 
   return (
     <main>
+      {/* <SplashScreen /> */}
       {/* HERO — full viewport, YouTube video background, Logo centered */}
       <section className="relative h-[100dvh] overflow-hidden bg-(--color-bg)">
-        {/* Desktop video (16:9) — hidden on mobile, visible on md+ */}
+        {/* Desktop video — 300% wide trick clips YouTube title/logo at edges */}
         {desktopEmbedUrl && (
-          <iframe
-            className="hidden md:block absolute inset-0 w-full h-full"
-            src={desktopEmbedUrl}
-            title="Marginalia hero background video"
-            aria-hidden="true"
-            allow="autoplay; encrypted-media"
-            loading="lazy"
-          />
+          <div className="hidden md:block absolute inset-0 overflow-hidden">
+            <div style={{ position: 'relative', width: '300%', left: '-100%', height: '100%' }}>
+              <iframe
+                style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', pointerEvents: 'none' }}
+                src={desktopEmbedUrl}
+                title="Marginalia hero background video"
+                aria-hidden="true"
+                allow="autoplay; encrypted-media"
+                loading="eager"
+              />
+            </div>
+          </div>
         )}
-        {/* Mobile video (9:16) — visible on mobile, hidden on md+ */}
+        {/* Mobile video — same trick */}
         {mobileEmbedUrl && (
-          <iframe
-            className="block md:hidden absolute inset-0 w-full h-full"
-            src={mobileEmbedUrl}
-            title="Marginalia hero background video"
-            aria-hidden="true"
-            allow="autoplay; encrypted-media"
-            loading="lazy"
-          />
+          <div className="block md:hidden absolute inset-0 overflow-hidden">
+            <div style={{ position: 'relative', width: '300%', left: '-100%', height: '100%' }}>
+              <iframe
+                style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', pointerEvents: 'none' }}
+                src={mobileEmbedUrl}
+                title="Marginalia hero background video"
+                aria-hidden="true"
+                allow="autoplay; encrypted-media"
+                loading="eager"
+              />
+            </div>
+          </div>
         )}
         {/* Dark overlay — ensures logo legibility over video */}
         <div className="absolute inset-0 bg-black/30" aria-hidden="true" />
-        {/* Logo centered absolutely over video */}
+        {/* Logo centered over video */}
         <div className="absolute inset-0 flex items-center justify-center">
           <Logo className="h-16 md:h-24 w-auto" />
         </div>
+        {/* Laylo CTA — bottom-left */}
+        {heroLayloEmbedUrl && (
+          <a
+            href={heroLayloEmbedUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="absolute bottom-20 left-1/2 -translate-x-1/2 group flex items-center gap-3 rounded-xl px-5 py-3 bg-gradient-to-r from-[#580AFF] to-[#9B30FF] text-white hover:from-[#4A08D6] hover:to-[#8B25EE] transition-all duration-150"
+          >
+            <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="currentColor" className="shrink-0">
+              <path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-6V11c0-3.07-1.63-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.64 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z" />
+            </svg>
+            <span className="text-sm font-semibold tracking-tight">Stay in the loop</span>
+          </a>
+        )}
       </section>
 
       {/* BEATPORT ACCOLADE BADGE — omit section entirely when field is empty (per D-06) */}

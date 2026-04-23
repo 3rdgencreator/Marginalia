@@ -19,32 +19,43 @@ export default function ReleaseLink({
 
   const iconPath = PLATFORM_ICON_PATHS[platform];
   const label = PLATFORM_LABELS[platform];
-  const ariaLabel = `${label} — ${releaseTitle}`;
 
   return (
     <a
       href={url}
       target="_blank"
       rel="noopener noreferrer"
-      aria-label={ariaLabel}
-      className="inline-flex items-center justify-center p-3 text-[--color-text-secondary] hover:text-[--color-accent-lime] transition-colors duration-150"
+      aria-label={`Listen on ${label} — ${releaseTitle}`}
+      className="group flex items-center gap-4 rounded-lg border border-(--color-surface) bg-(--color-surface) px-5 py-4 text-(--color-text-primary) hover:border-(--color-accent-lime) hover:text-(--color-accent-lime) transition-all duration-150"
     >
-      {iconPath ? (
+      {iconPath && (
         <svg
-          width="20"
-          height="20"
+          width="22"
+          height="22"
           viewBox="0 0 24 24"
           fill="currentColor"
           aria-hidden="true"
           xmlns="http://www.w3.org/2000/svg"
+          className="shrink-0"
         >
           <path d={iconPath} />
         </svg>
-      ) : (
-        <span className="text-[--text-label] underline-offset-2 hover:underline">
-          {label}
-        </span>
       )}
+      <span className="text-base font-semibold tracking-tight">
+        Listen on {label}
+      </span>
+      <svg
+        aria-hidden="true"
+        width="14"
+        height="14"
+        viewBox="0 0 12 12"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2"
+        className="ml-auto shrink-0 opacity-40 group-hover:opacity-100 group-hover:translate-x-0.5 transition-all duration-150"
+      >
+        <path d="M2 6h8M6 2l4 4-4 4" />
+      </svg>
     </a>
   );
 }

@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { reader } from '@/lib/keystatic';
 import Container from '@/components/layout/Container';
 import ShowcaseCard from '@/components/showcases/ShowcaseCard';
+import RandomBackground from '@/components/ui/RandomBackground';
 
 export const metadata: Metadata = {
   title: 'Showcases — Marginalia',
@@ -20,11 +21,8 @@ export default async function ShowcasesPage() {
   const past = sorted.filter(s => s.entry.status === 'past');
 
   return (
-    <Container className="py-(--space-3xl)">
-      <h1 className="mb-8 text-(--text-heading) md:text-[2rem] font-bold tracking-[-0.02em] text-(--color-text-primary) uppercase">
-        Showcases
-      </h1>
-
+    <RandomBackground>
+      <Container className="py-(--space-3xl)">
       {/* UPCOMING section — omit entirely if no upcoming events (D-18, per UI-SPEC) */}
       {upcoming.length > 0 && (
         <section aria-labelledby="upcoming-heading" className="mb-(--space-3xl)">
@@ -69,6 +67,7 @@ export default async function ShowcasesPage() {
           No showcases yet.
         </p>
       )}
-    </Container>
+      </Container>
+    </RandomBackground>
   );
 }

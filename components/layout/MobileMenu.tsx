@@ -47,7 +47,7 @@ export default function MobileMenu({
         aria-label={open ? 'Close navigation menu' : 'Open navigation menu'}
         aria-expanded={open}
         aria-controls="mobile-nav-overlay"
-        className="p-3 text-[--color-text-primary]"
+        className="p-3 text-(--color-text-primary)"
       >
         <svg
           width="24"
@@ -71,7 +71,7 @@ export default function MobileMenu({
         role="dialog"
         aria-modal="true"
         aria-hidden={!open}
-        className={`fixed inset-0 z-40 bg-[--color-bg] transition-all duration-200 ease-in-out ${
+        className={`fixed inset-0 z-40 bg-(--color-bg) transition-all duration-200 ease-in-out ${
           open
             ? 'opacity-100 translate-y-0'
             : 'opacity-0 -translate-y-4 pointer-events-none'
@@ -85,8 +85,8 @@ export default function MobileMenu({
             <Link
               key={href}
               href={href}
-              className={`text-[--text-heading] font-bold text-[--color-text-primary] ${
-                pathname === href ? 'text-[--color-accent-lime]' : ''
+              className={`text-(--text-heading) font-bold text-(--color-text-primary) ${
+                pathname === href ? 'text-(--color-accent-lime)' : ''
               }`}
               aria-current={pathname === href ? 'page' : undefined}
             >

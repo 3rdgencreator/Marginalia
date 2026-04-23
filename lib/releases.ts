@@ -53,11 +53,7 @@ export async function resolveArtistNames(
     artistSlugs.map(async (slug) => {
       try {
         const artist = await reader.collections.artists.read(slug);
-        if (artist) {
-          const displayName = (artist as unknown as { displayName?: string })
-            .displayName;
-          return displayName ?? slug;
-        }
+        if (artist) return (artist.name as string) ?? slug;
         return slug;
       } catch {
         return slug;

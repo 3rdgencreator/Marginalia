@@ -36,9 +36,11 @@ const LABELS: Record<Platform, string> = {
 export default function SocialIcon({
   platform,
   url,
+  size = 20,
 }: {
   platform: Platform;
   url: string | null | undefined;
+  size?: number;
 }) {
   if (!url) return null;
 
@@ -48,11 +50,11 @@ export default function SocialIcon({
       target="_blank"
       rel="noopener noreferrer"
       aria-label={`${LABELS[platform]} — Marginalia`}
-      className="inline-flex items-center justify-center p-3 text-[--color-text-secondary] hover:text-[--color-accent-lime] transition-colors duration-150"
+      className="inline-flex items-center justify-center p-2 text-(--color-text-secondary) hover:text-(--color-accent-lime) transition-colors duration-150"
     >
       <svg
-        width="20"
-        height="20"
+        width={size}
+        height={size}
         viewBox="0 0 24 24"
         fill="currentColor"
         aria-hidden="true"

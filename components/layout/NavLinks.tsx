@@ -22,9 +22,9 @@ export default function NavLinks({
           <li key={href}>
             <Link
               href={href}
-              className={`text-[--text-label] text-[--color-text-primary] hover:text-[--color-surface-purple] transition-colors duration-150 py-2 ${
+              className={`whitespace-nowrap text-(--text-label) text-(--color-text-primary) hover:text-(--color-surface-purple) transition-colors duration-150 py-2 ${
                 isActive
-                  ? 'border-b-2 border-[--color-accent-lime]'
+                  ? 'border-b-2 border-(--color-accent-lime)'
                   : ''
               }`}
               aria-current={isActive ? 'page' : undefined}

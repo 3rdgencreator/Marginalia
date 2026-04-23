@@ -22,9 +22,9 @@ export default function MorePlatforms({
         className="
           list-none cursor-pointer
           inline-flex items-center gap-2
-          text-[--text-label] text-[--color-text-secondary]
+          text-(--text-label) text-(--color-text-secondary)
           uppercase tracking-[0.08em]
-          hover:text-[--color-text-primary]
+          hover:text-(--color-text-primary)
           transition-colors duration-150
         "
       >
@@ -41,7 +41,7 @@ export default function MorePlatforms({
         Also available on
       </summary>
       <ul
-        className="mt-4 flex flex-wrap items-center gap-3"
+        className="mt-4 flex flex-col gap-2"
         aria-label="Also available on"
       >
         {SECONDARY_PLATFORMS.map((platform) => {

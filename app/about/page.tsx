@@ -4,6 +4,7 @@ import { reader } from '@/lib/keystatic';
 import { plainTextFromDocument } from '@/lib/releases';
 import Container from '@/components/layout/Container';
 import { DocumentRenderer } from '@keystatic/core/renderer';
+import RandomBackground from '@/components/ui/RandomBackground';
 
 export async function generateMetadata(): Promise<Metadata> {
   const about = await reader.singletons.about.read();
@@ -19,15 +20,9 @@ export default async function AboutPage() {
   const about = await reader.singletons.about.read();
 
   return (
-    <Container className="py-(--space-3xl)">
+    <RandomBackground>
+      <Container className="py-(--space-3xl)">
       <div className="mx-auto max-w-[65ch]">
-
-        {/* Headline — render if present; page still renders if null (graceful empty state per D-24) */}
-        {about?.headline && (
-          <h1 className="mb-(--space-xl) text-(--text-display) font-bold uppercase text-(--color-text-primary)">
-            {about.headline}
-          </h1>
-        )}
 
         {/* Optional photo of Elif — render only if photo field is set */}
         {about?.photo && (
@@ -55,6 +50,7 @@ export default async function AboutPage() {
         {/* When body is empty, page renders headline + photo only — no filler text (per D-24) */}
 
       </div>
-    </Container>
+      </Container>
+    </RandomBackground>
   );
 }

@@ -17,10 +17,14 @@ export default config({
       format: { data: 'yaml' },
       entryLayout: 'form',
       schema: {
+        // All platform URLs + UPC + Laylo in one compound field with auto-fill
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        platformLinks: platformLinksField() as any,
         title: fields.slug({ name: { label: 'Title' } }),
         catalogNumber: fields.text({
           label: 'Catalog Number',
           description: 'MRGNL format, e.g. MRGNL001',
+          validation: { length: { min: 1 } },
         }),
         releaseDate: fields.date({ label: 'Release Date' }),
         releaseType: fields.select({
@@ -34,29 +38,10 @@ export default config({
           ],
           defaultValue: 'single',
         }),
-        artistSlugs: fields.array(
-          fields.text({ label: 'Artist Slug' }),
-          {
-            label: 'Artists',
-            description:
-              'Slugs of artists on this release (must match artist collection slugs)',
-            itemLabel: (props) => props.value,
-          }
-        ),
         coverArt: fields.image({
           label: 'Cover Art',
           directory: 'public/images/releases',
           publicPath: '/images/releases/',
-        }),
-        genres: fields.multiselect({
-          label: 'Genres',
-          options: [
-            { label: 'Melodic House', value: 'melodic-house' },
-            { label: 'Techno', value: 'techno' },
-            { label: 'Indie Dance', value: 'indie-dance' },
-            { label: 'Organic House', value: 'organic-house' },
-            { label: 'Afro House', value: 'afro-house' },
-          ],
         }),
         description: fields.document({
           label: 'Description',
@@ -66,13 +51,6 @@ export default config({
         featured: fields.checkbox({
           label: 'Featured on Homepage',
           defaultValue: false,
-        }),
-        // All platform URLs + UPC + Laylo in one compound field with Odesli auto-fill
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        platformLinks: platformLinksField() as any,
-        soundcloudPodcastUrl: fields.url({
-          label: 'Related Podcast SoundCloud URL',
-          description: 'Linked podcast SC URL for related episodes',
         }),
       },
     }),
@@ -294,7 +272,12 @@ export default config({
         facebookUrl: fields.url({ label: 'Facebook URL' }),
         merchUrl: fields.url({
           label: 'Merch Store URL',
-          description: 'External merch store link',
+          description: 'External merch store link (used as fallback link)',
+        }),
+        shopifyBuyButtonCode: fields.text({
+          label: 'Shopify Buy Button Embed Code',
+          description: 'Shopify Admin → Sales Channels → Buy Button → Create → Copy code. Paste the full embed code here.',
+          multiline: true,
         }),
         demoEmail: fields.text({
           label: 'Demo Submission Email',
@@ -337,6 +320,10 @@ export default config({
         beatportAccolade: fields.text({
           label: 'Beatport Accolade',
           description: 'e.g. Hype Label of the Month, March 2025',
+        }),
+        heroLayloEmbedUrl: fields.url({
+          label: 'Hero Laylo Embed URL',
+          description: 'Laylo embed iframe URL shown in the hero (e.g. https://laylo.com/marginalialabel/embed)',
         }),
         showSpotifyPlaylist: fields.checkbox({
           label: 'Show Spotify Playlist',

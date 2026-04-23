@@ -3,9 +3,7 @@ import { notFound } from 'next/navigation';
 import Image from 'next/image';
 import { reader } from '@/lib/keystatic';
 import {
-  resolveArtistNames,
   plainTextFromDocument,
-  genreLabelFor,
   buildSoundCloudEmbedUrl,
 } from '@/lib/releases';
 import Container from '@/components/layout/Container';
@@ -13,7 +11,6 @@ import ReleaseMetaHeader from '@/components/releases/ReleaseMetaHeader';
 import LayloButton from '@/components/releases/LayloButton';
 import PlatformIconRow from '@/components/releases/PlatformIconRow';
 import SoundCloudEmbed from '@/components/releases/SoundCloudEmbed';
-import GenreChip from '@/components/releases/GenreChip';
 import MorePlatforms from '@/components/releases/MorePlatforms';
 import type { ReleasePlatform } from '@/components/releases/platform-icons';
 
@@ -29,8 +26,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const entry = await reader.collections.releases.read(slug);
   if (!entry) return {};
 
-  const artistNames = await resolveArtistNames(entry.artistSlugs);
-  const artistStr = artistNames.join(', ');
+  const plMeta = (entry.platformLinks ?? {}) as Record<string, string | undefined>;
+  const artistStr = plMeta.artistName ?? '';
   const title = `${entry.title} — ${artistStr} — Marginalia`;
   const descFromDoc = plainTextFromDocument(entry.description, 160);
   const description = descFromDoc
@@ -70,12 +67,11 @@ export default async function ReleaseDetailPage({ params }: Props) {
   const entry = await reader.collections.releases.read(slug);
   if (!entry) notFound();
 
-  const artistNames = await resolveArtistNames(entry.artistSlugs);
-  const artistStr = artistNames.join(', ');
-  const descPlain = plainTextFromDocument(entry.description, 500);
-
-  // platformLinks is the compound custom field (all URLs + UPC live there)
+  // platformLinks is the compound custom field (all URLs + UPC + artistName live there)
   const pl = (entry.platformLinks ?? {}) as Record<string, string | undefined>;
+
+  const artistStr = pl.artistName ?? '';
+  const descPlain = plainTextFromDocument(entry.description, 500);
 
   // Build the full platform URL map for PlatformIconRow and MorePlatforms
   const urls: Partial<Record<ReleasePlatform, string | null | undefined>> = {
@@ -100,25 +96,23 @@ export default async function ReleaseDetailPage({ params }: Props) {
   };
 
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://marginalialabel.com';
+  // Use uploaded file first, fall back to iTunes CDN URL stored in platformLinks
+  const coverSrc = entry.coverArt
+    ? `/images/releases/${entry.coverArt}`
+    : (pl.artworkUrl ? pl.artworkUrl.replace('3000x3000bb', '600x600bb') : null);
   const coverArtAbsolute = entry.coverArt
     ? `${siteUrl}/images/releases/${entry.coverArt}`
-    : null;
+    : (pl.artworkUrl ?? null);
 
   const jsonLd = {
     '@context': 'https://schema.org',
     '@type': 'MusicAlbum',
     name: entry.title,
-    byArtist: artistNames.map((name) => ({
-      '@type': 'MusicGroup',
-      name,
-    })),
+    ...(artistStr ? { byArtist: { '@type': 'MusicGroup', name: artistStr } } : {}),
     ...(entry.releaseDate ? { datePublished: entry.releaseDate } : {}),
     ...(coverArtAbsolute ? { image: coverArtAbsolute } : {}),
     ...(descPlain ? { description: descPlain } : {}),
     url: `${siteUrl}/releases/${slug}`,
-    ...(entry.genres.length > 0
-      ? { genre: entry.genres.map(genreLabelFor) }
-      : {}),
   };
 
   return (
@@ -133,10 +127,10 @@ export default async function ReleaseDetailPage({ params }: Props) {
 
           {/* Left column — cover art (sticky on desktop) */}
           <div className="w-full lg:w-[40%] lg:sticky lg:top-[calc(var(--nav-height-desktop,_72px)_+_32px)] shrink-0">
-            <div className="aspect-square w-full overflow-hidden bg-[--color-surface]">
-              {entry.coverArt ? (
+            <div className="aspect-square w-full overflow-hidden bg-(--color-surface)">
+              {coverSrc ? (
                 <Image
-                  src={`/images/releases/${entry.coverArt}`}
+                  src={coverSrc}
                   alt={`${entry.title} cover artwork`}
                   width={800}
                   height={800}
@@ -145,7 +139,7 @@ export default async function ReleaseDetailPage({ params }: Props) {
                   priority
                 />
               ) : (
-                <div className="flex h-full w-full items-center justify-center text-[--text-label] text-[--color-text-muted]">
+                <div className="flex h-full w-full items-center justify-center text-(--text-label) text-(--color-text-muted)">
                   No artwork
                 </div>
               )}
@@ -157,8 +151,7 @@ export default async function ReleaseDetailPage({ params }: Props) {
 
             <ReleaseMetaHeader
               title={entry.title}
-              artistSlugs={entry.artistSlugs}
-              artistNames={artistNames}
+              artistName={pl.artistName}
               releaseDate={entry.releaseDate}
             />
 
@@ -177,30 +170,23 @@ export default async function ReleaseDetailPage({ params }: Props) {
             )}
 
             {entry.description && Array.isArray(entry.description) && entry.description.length > 0 && (
-              <div className="prose prose-invert max-w-none text-[--text-body] text-[--color-text-primary] leading-relaxed">
+              <div className="prose prose-invert max-w-none text-(--text-body) text-(--color-text-primary) leading-relaxed">
                 {descPlain}
               </div>
             )}
 
             {/* Secondary metadata */}
-            {(entry.catalogNumber || entry.releaseType || entry.genres.length > 0) && (
-              <div className="flex flex-col gap-4 pt-8 border-t border-[--color-surface]">
+            {(entry.catalogNumber || entry.releaseType) && (
+              <div className="flex flex-col gap-4 pt-8 border-t border-(--color-surface)">
                 {entry.catalogNumber && (
-                  <p className="text-[--text-label] text-[--color-text-secondary]">
+                  <p className="text-(--text-label) text-(--color-text-secondary)">
                     {entry.catalogNumber}
                   </p>
                 )}
                 {entry.releaseType && (
-                  <p className="text-[--text-label] text-[--color-text-secondary] capitalize">
+                  <p className="text-(--text-label) text-(--color-text-secondary) capitalize">
                     {entry.releaseType}
                   </p>
-                )}
-                {entry.genres.length > 0 && (
-                  <div className="flex flex-wrap gap-2">
-                    {entry.genres.map((genre) => (
-                      <GenreChip key={genre} genre={genre} />
-                    ))}
-                  </div>
                 )}
               </div>
             )}

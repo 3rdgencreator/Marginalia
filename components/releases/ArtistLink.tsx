@@ -11,7 +11,7 @@ export default function ArtistLink({ slug, name }: ArtistLinkProps) {
     <Link
       href={`/artists/${slug}`}
       aria-label={`${name} on Marginalia`}
-      className="text-[--color-text-primary] no-underline hover:underline underline-offset-2 transition-all duration-150"
+      className="text-(--color-text-primary) no-underline hover:underline underline-offset-2 transition-all duration-150"
     >
       {name}
     </Link>

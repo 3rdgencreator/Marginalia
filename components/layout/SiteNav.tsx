@@ -1,10 +1,10 @@
-import Logo from '@/components/ui/Logo';
-import Container from './Container';
+import Image from 'next/image';
+import { reader } from '@/lib/keystatic';
 import NavLinks from './NavLinks';
 import MobileMenu from './MobileMenu';
+import SocialIcon, { type Platform } from '@/components/ui/SocialIcon';
 
 const PRIMARY_LINKS = [
-  { href: '/', label: 'Home' },
   { href: '/about', label: 'About' },
   { href: '/releases', label: 'Releases' },
   { href: '/free-downloads', label: 'Free Downloads' },
@@ -14,21 +14,64 @@ const PRIMARY_LINKS = [
   { href: '/demo', label: 'Demo Submission' },
   { href: '/subscribe', label: 'Subscribe' },
   { href: '/press', label: 'Press' },
+  { href: '/services', label: 'Services' },
 ] as const;
 
-export default function SiteNav() {
+const SOCIAL_PLATFORMS: Platform[] = [
+  'instagram',
+  'soundcloud',
+  'beatport',
+  'youtube',
+  'tiktok',
+  'facebook',
+];
+
+export default async function SiteNav() {
+  const config = await reader.singletons.siteConfig.read();
+
+  const socials: Array<{ platform: Platform; url: string | null | undefined }> =
+    SOCIAL_PLATFORMS.map((platform) => ({
+      platform,
+      url: config?.[`${platform}Url` as keyof typeof config] as string | null | undefined,
+    }));
+
   return (
     <header
-      className="sticky top-0 z-50 bg-[--color-surface] h-[var(--nav-height-mobile)] md:h-[var(--nav-height-desktop)]"
+      className="sticky top-0 z-50 bg-black/70 backdrop-blur-sm"
+      style={{ height: 'var(--nav-height-mobile)' }}
       aria-label="Main navigation"
     >
-      <Container className="flex h-full items-center justify-between">
-        <a href="/" aria-label="Marginalia — Home" className="inline-flex items-center">
-          <Logo className="h-8 w-auto text-[--color-text-primary]" />
-        </a>
-        <NavLinks links={PRIMARY_LINKS} className="hidden md:flex" />
-        <MobileMenu links={PRIMARY_LINKS} className="md:hidden" />
-      </Container>
+      <div
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          height: '100%',
+          padding: '0 20px 0 36px',
+        }}
+      >
+        {/* Left — logo + nav */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '64px', flexShrink: 0 }}>
+          <a href="/" aria-label="Marginalia — Home" style={{ display: 'inline-flex', alignItems: 'center', flexShrink: 0 }}>
+            <Image src="/hero-logo.webp" alt="Marginalia" width={120} height={120} style={{ height: '32px', width: 'auto' }} priority />
+          </a>
+          <div className="hidden md:flex">
+            <NavLinks links={PRIMARY_LINKS} />
+          </div>
+        </div>
+
+        {/* Right — social icons + mobile menu */}
+        <div style={{ display: 'flex', alignItems: 'center', flexShrink: 0 }}>
+          <ul className="hidden md:flex" style={{ alignItems: 'center', listStyle: 'none', margin: 0, padding: 0 }}>
+            {socials.map(({ platform, url }) => (
+              <li key={platform}>
+                <SocialIcon platform={platform} url={url} size={16} />
+              </li>
+            ))}
+          </ul>
+          <MobileMenu links={PRIMARY_LINKS} className="md:hidden" />
+        </div>
+      </div>
     </header>
   );
 }

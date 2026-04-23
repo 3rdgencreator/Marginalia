@@ -5,8 +5,9 @@ type GridProps = {
     slug: string;
     entry: {
       title: string;
-      artistSlugs: readonly string[];
+      artistName?: string;
       coverArt: string | null;
+      artworkUrl?: string | null;
     };
   }>;
 };

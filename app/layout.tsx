@@ -35,7 +35,7 @@ export default function RootLayout({
           crossOrigin="anonymous"
         />
       </head>
-      <body className="min-h-full flex flex-col font-sans text-[--color-text-primary]">
+      <body className="min-h-full flex flex-col font-sans text-(--color-text-primary)">
         <SiteNav />
         <main className="flex-1">{children}</main>
         <SiteFooter />
