@@ -28,7 +28,7 @@
 | 2. Design System & Layout Shell | 0/4 | Planned | - |
 | 3. Releases | 0/? | Not started | - |
 | 4. Artists | 0/? | Not started | - |
-| 5. Secondary Content Pages | 0/? | Not started | - |
+| 5. Secondary Content Pages | 0/5 | Planned | - |
 | 6. Forms & Email | 0/? | Not started | - |
 | 7. SEO & Polish | 0/? | Not started | - |
 
@@ -104,9 +104,9 @@ Plans:
 **Plans:** 3 plans
 
 Plans:
-- [x] 01-01-PLAN.md — Next.js 15 scaffold + Cloudflare Workers config + dependencies
-- [ ] 01-02-PLAN.md — Complete Keystatic CMS schema (all collections + singletons + admin routes)
-- [ ] 01-03-PLAN.md — OpenNext build verification + image path test + CMS workflow docs
+- [x] 03-01-PLAN.md — Releases catalog page + ReleaseCard + ReleaseGrid
+- [ ] 03-02-PLAN.md — Release detail page + SoundCloud embed + platform links
+- [ ] 03-03-PLAN.md — Release OG metadata + JSON-LD MusicAlbum structured data
 
 ---
 
@@ -127,9 +127,9 @@ Plans:
 **Plans:** 3 plans
 
 Plans:
-- [ ] 01-01-PLAN.md — Next.js 15 scaffold + Cloudflare Workers config + dependencies
-- [ ] 01-02-PLAN.md — Complete Keystatic CMS schema (all collections + singletons + admin routes)
-- [ ] 01-03-PLAN.md — OpenNext build verification + image path test + CMS workflow docs
+- [ ] 04-01-PLAN.md — Artists roster page + ArtistCard component
+- [ ] 04-02-PLAN.md — Artist detail page + bio + social links
+- [ ] 04-03-PLAN.md — Artist OG metadata
 
 ---
 
@@ -149,12 +149,14 @@ Plans:
 5. The `/about` page tells ELIF's story and the Marginalia philosophy in prose, as entered in Keystatic or as static copy
 6. The `/merch` page (or nav link) routes a visitor to the external merch store without loading a blank or broken page
 
-**Plans:** 3 plans
+**Plans:** 5 plans
 
 Plans:
-- [ ] 01-01-PLAN.md — Next.js 15 scaffold + Cloudflare Workers config + dependencies
-- [ ] 01-02-PLAN.md — Complete Keystatic CMS schema (all collections + singletons + admin routes)
-- [ ] 01-03-PLAN.md — OpenNext build verification + image path test + CMS workflow docs
+- [ ] 05-01-PLAN.md — Keystatic schema additions (heroVideoUrl, heroVideoMobileUrl, about singleton) + seed YAML files (Wave 1)
+- [ ] 05-02-PLAN.md — Press page + PressEntry component + Showcases page + ShowcaseCard component (Wave 2)
+- [ ] 05-03-PLAN.md — About page with DocumentRenderer + Merch iframe page (Wave 2)
+- [ ] 05-04-PLAN.md — Podcasts page + PodcastAccordion + PodcastRow client components (Wave 2)
+- [ ] 05-05-PLAN.md — Homepage: YouTube video hero + Beatport badge + featured releases + artist teaser (Wave 2)
 
 ---
 
@@ -176,9 +178,9 @@ Plans:
 **Plans:** 3 plans
 
 Plans:
-- [ ] 01-01-PLAN.md — Next.js 15 scaffold + Cloudflare Workers config + dependencies
-- [ ] 01-02-PLAN.md — Complete Keystatic CMS schema (all collections + singletons + admin routes)
-- [ ] 01-03-PLAN.md — OpenNext build verification + image path test + CMS workflow docs
+- [ ] 06-01-PLAN.md — Demo submission form + server action + honeypot
+- [ ] 06-02-PLAN.md — Newsletter subscribe form + Brevo integration
+- [ ] 06-03-PLAN.md — Management contact form + Resend email delivery
 
 ---
 
@@ -199,9 +201,9 @@ Plans:
 **Plans:** 3 plans
 
 Plans:
-- [ ] 01-01-PLAN.md — Next.js 15 scaffold + Cloudflare Workers config + dependencies
-- [ ] 01-02-PLAN.md — Complete Keystatic CMS schema (all collections + singletons + admin routes)
-- [ ] 01-03-PLAN.md — OpenNext build verification + image path test + CMS workflow docs
+- [ ] 07-01-PLAN.md — Metadata audit + title/description for all pages
+- [ ] 07-02-PLAN.md — sitemap.xml + robots.txt generation
+- [ ] 07-03-PLAN.md — Lighthouse performance pass + next/image sizes audit
 
 ---
 
@@ -259,12 +261,6 @@ All 48 v1 requirements are mapped to exactly one phase. No orphans.
 | SEO-02 | Phase 7 |
 | SEO-03 | Phase 7 |
 | SEO-04 | Phase 7 |
-| CMS-01 | Phase 1 |
-| CMS-02 | Phase 1 |
-| CMS-03 | Phase 1 |
-| CMS-04 | Phase 1 |
-| CMS-05 | Phase 1 |
-| CMS-06 | Phase 1 |
 
 ---
 
@@ -285,4 +281,5 @@ All 48 v1 requirements are mapped to exactly one phase. No orphans.
 
 *Roadmap created: 2026-04-04*
 *Phase 2 plans added: 2026-04-22*
-*Next: `/gsd-execute-phase 2`*
+*Phase 5 plans added: 2026-04-23*
+*Next: `/gsd-execute-phase 5`*
