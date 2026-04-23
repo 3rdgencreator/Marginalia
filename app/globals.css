@@ -107,8 +107,13 @@ body {
   outline-offset: 3px;
 }
 
-/* ─── Hero video fade-in ─────────────────────────────────────── */
-@keyframes heroVideoFadeIn {
-  from { opacity: 0; }
-  to   { opacity: 0.8; }
+/* ─── Hero logo glow fade out ────────────────────────────────── */
+@keyframes glowFadeOut {
+  0%   { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+/* ─── Hero video snap in at 3s ───────────────────────────────── */
+@keyframes videoSnapIn {
+  to { opacity: 0.8; }
 }
