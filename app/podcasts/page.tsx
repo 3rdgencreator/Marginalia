@@ -1,0 +1,47 @@
+import type { Metadata } from 'next';
+import { reader } from '@/lib/keystatic';
+import { buildSoundCloudEmbedUrl } from '@/lib/releases';
+import Container from '@/components/layout/Container';
+import PodcastAccordion from '@/components/podcasts/PodcastAccordion';
+
+export const metadata: Metadata = {
+  title: 'Podcasts & Mixes — Marginalia',
+  description: 'Exclusive mixes, DJ sets, and podcast episodes from Marginalia.',
+};
+
+export default async function PodcastsPage() {
+  const all = await reader.collections.podcasts.all();
+
+  // Sort date descending — newest episodes first (per D-13)
+  const sorted = [...all].sort((a, b) =>
+    (b.entry.date ?? '').localeCompare(a.entry.date ?? '')
+  );
+
+  // CRITICAL: Build embed URLs here in the server component.
+  // lib/releases.ts has `import 'server-only'` — calling buildSoundCloudEmbedUrl
+  // inside PodcastAccordion or PodcastRow would cause a build-time error.
+  const episodes = sorted.map(({ slug, entry }) => ({
+    slug,
+    title: entry.title,
+    artistSlug: entry.artistSlug ?? null,
+    date: entry.date ?? null,
+    description: entry.description ?? null,
+    coverImage: entry.coverImage ?? null,
+    embedUrl: entry.soundcloudUrl ? buildSoundCloudEmbedUrl(entry.soundcloudUrl) : null,
+  }));
+
+  return (
+    <Container className="py-(--space-3xl)">
+      <h1 className="mb-8 text-(--text-heading) md:text-[2rem] font-bold tracking-[-0.02em] text-(--color-text-primary) uppercase">
+        Podcasts & Mixes
+      </h1>
+      {episodes.length === 0 ? (
+        <p className="py-16 text-center text-(--text-body) text-(--color-text-muted)">
+          No episodes yet.
+        </p>
+      ) : (
+        <PodcastAccordion episodes={episodes} />
+      )}
+    </Container>
+  );
+}
