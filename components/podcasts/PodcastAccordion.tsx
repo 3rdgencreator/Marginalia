@@ -21,7 +21,7 @@ export default function PodcastAccordion({ episodes }: { episodes: Episode[] }) 
     setActiveSlug(prev => (prev === slug ? null : slug));
 
   return (
-    <div role="list" className="divide-y divide-(--color-surface)">
+    <div className="divide-y divide-(--color-surface)">
       {episodes.map(ep => (
         <PodcastRow
           key={ep.slug}
