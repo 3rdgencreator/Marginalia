@@ -25,6 +25,7 @@ export default async function MerchPage() {
             title="Marginalia Merch Store"
             className="w-full border-0 flex-1 min-h-[80vh]"
             loading="lazy"
+            sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-popups-to-escape-sandbox"
           />
           {/* Fallback "Visit Store" button — always shown alongside iframe */}
           {/* This handles Shopify X-Frame-Options: DENY blocking the iframe (D-26) */}
