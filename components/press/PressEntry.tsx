@@ -19,6 +19,10 @@ type PressEntryProps = {
 
 export default function PressEntry({ entry }: PressEntryProps) {
   const badgeClass = BADGE_CLASSES[entry.type] ?? BADGE_CLASSES.mention;
+  const safeUrl =
+    entry.url && (entry.url.startsWith('https://') || entry.url.startsWith('http://'))
+      ? entry.url
+      : null;
 
   return (
     <div className="flex flex-col sm:flex-row sm:items-start gap-(--space-sm) py-(--space-lg) px-(--space-md)">
@@ -32,9 +36,9 @@ export default function PressEntry({ entry }: PressEntryProps) {
         </span>
 
         {/* Headline link */}
-        {entry.url ? (
+        {safeUrl ? (
           <a
-            href={entry.url}
+            href={safeUrl}
             target="_blank"
             rel="noopener noreferrer"
             aria-label={`Read ${entry.headline} at ${entry.publication} (opens in new tab)`}
@@ -63,9 +67,9 @@ export default function PressEntry({ entry }: PressEntryProps) {
       </div>
 
       {/* Right area — Read article link */}
-      {entry.url && (
+      {safeUrl && (
         <a
-          href={entry.url}
+          href={safeUrl}
           target="_blank"
           rel="noopener noreferrer"
           className="shrink-0 text-(--text-label) text-(--color-text-muted) hover:text-(--color-text-primary) transition-colors duration-150"
