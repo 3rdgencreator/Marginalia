@@ -6,7 +6,7 @@ import PodcastRow from './PodcastRow';
 type Episode = {
   slug: string;
   title: string;
-  artistSlug: string | null;
+  artistName: string | null;
   date: string | null;
   description: string | null;
   coverImage: string | null;

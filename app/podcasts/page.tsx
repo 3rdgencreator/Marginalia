@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import { reader } from '@/lib/keystatic';
-import { buildSoundCloudEmbedUrl } from '@/lib/releases';
+import { buildSoundCloudEmbedUrl, resolveArtistNames } from '@/lib/releases';
 import Container from '@/components/layout/Container';
 import PodcastAccordion from '@/components/podcasts/PodcastAccordion';
 
@@ -20,15 +20,22 @@ export default async function PodcastsPage() {
   // CRITICAL: Build embed URLs here in the server component.
   // lib/releases.ts has `import 'server-only'` — calling buildSoundCloudEmbedUrl
   // inside PodcastAccordion or PodcastRow would cause a build-time error.
-  const episodes = sorted.map(({ slug, entry }) => ({
-    slug,
-    title: entry.title,
-    artistSlug: entry.artistSlug ?? null,
-    date: entry.date ?? null,
-    description: entry.description ?? null,
-    coverImage: entry.coverImage ?? null,
-    embedUrl: entry.soundcloudUrl ? buildSoundCloudEmbedUrl(entry.soundcloudUrl) : null,
-  }));
+  const episodes = await Promise.all(
+    sorted.map(async ({ slug, entry }) => {
+      const artistName = entry.artistSlug
+        ? (await resolveArtistNames([entry.artistSlug]))[0] ?? entry.artistSlug
+        : null;
+      return {
+        slug,
+        title: entry.title,
+        artistName,
+        date: entry.date ?? null,
+        description: entry.description ?? null,
+        coverImage: entry.coverImage ?? null,
+        embedUrl: entry.soundcloudUrl ? buildSoundCloudEmbedUrl(entry.soundcloudUrl) : null,
+      };
+    })
+  );
 
   return (
     <Container className="py-(--space-3xl)">

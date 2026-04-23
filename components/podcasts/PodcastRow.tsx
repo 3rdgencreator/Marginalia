@@ -6,7 +6,7 @@ import SoundCloudEmbed from '@/components/releases/SoundCloudEmbed';
 type Episode = {
   slug: string;
   title: string;
-  artistSlug: string | null;
+  artistName: string | null;
   date: string | null;
   description: string | null;
   coverImage: string | null;
@@ -40,9 +40,9 @@ export default function PodcastRow({
           <span className="text-(--text-body) font-bold text-(--color-text-primary) truncate">
             {episode.title}
           </span>
-          {episode.artistSlug && (
+          {episode.artistName && (
             <span className="text-(--text-label) text-(--color-text-muted)">
-              {episode.artistSlug}
+              {episode.artistName}
             </span>
           )}
         </div>
