@@ -77,19 +77,13 @@ export default async function HomePage() {
 
   return (
     <main>
-      <style>{`
-        @keyframes heroVideoFadeIn {
-          0%   { opacity: 0; }
-          62%  { opacity: 0.2; }
-          100% { opacity: 0.8; }
-        }
-      `}</style>
+
       {/* <SplashScreen /> */}
       {/* HERO — full viewport, YouTube video background, Logo centered */}
       <section className="relative h-[100dvh] overflow-hidden bg-(--color-bg)">
         {/* Desktop video — 300% wide trick clips YouTube title/logo at edges */}
         {desktopEmbedUrl && (
-          <div className="hidden md:block absolute inset-0 overflow-hidden" style={{ animation: 'heroVideoFadeIn 7s ease-out forwards' }}>
+          <div className="hidden md:block absolute inset-0 overflow-hidden" style={{ opacity: 0.8 }}>
             <div style={{
               position: 'absolute',
               top: '50%', left: '50%',
@@ -110,7 +104,7 @@ export default async function HomePage() {
         )}
         {/* Mobile video — same trick */}
         {mobileEmbedUrl && (
-          <div className="block md:hidden absolute inset-0 overflow-hidden" style={{ animation: 'heroVideoFadeIn 7s ease-out forwards' }}>
+          <div className="block md:hidden absolute inset-0 overflow-hidden" style={{ opacity: 0.8 }}>
             <div style={{
               position: 'absolute',
               top: '50%', left: '50%',
