@@ -125,10 +125,16 @@ export default async function HomePage() {
         )}
         {/* Dark overlay — ensures logo legibility over video */}
         <div className="absolute inset-0 bg-black/30" aria-hidden="true" />
-        {/* SVG filter defs — shared by logo and CTA button */}
-        <svg width="0" height="0" style={{ position: 'absolute' }}>
+        {/* SVG filter defs — shared by logo and CTA button.
+            NOTE: width/height must be > 0 for iOS Safari to render the defs. */}
+        <svg
+          width="1"
+          height="1"
+          aria-hidden="true"
+          style={{ position: 'absolute', width: 0, height: 0, overflow: 'hidden', pointerEvents: 'none' }}
+        >
           <defs>
-            <filter id="crystal-outline" x="-20%" y="-60%" width="140%" height="220%">
+            <filter id="crystal-outline" x="-50%" y="-150%" width="200%" height="400%">
               <feMorphology in="SourceAlpha" result="expanded" operator="dilate" radius="16" />
               <feGaussianBlur in="expanded" result="softEdge" stdDeviation="28" />
               <feFlood floodColor="rgba(202,201,249,0.45)" result="color" />
@@ -146,14 +152,14 @@ export default async function HomePage() {
         </svg>
         {/* Logo centered over video — SVG morphology organic glass shape */}
         <div className="absolute inset-0 flex items-center justify-center">
-          <div style={{ filter: 'url(#crystal-outline)' }}>
+          <div style={{ filter: 'url(#crystal-outline)', WebkitFilter: 'url(#crystal-outline)' }}>
             <Logo className="h-16 md:h-24 w-auto" />
           </div>
         </div>
         {/* Laylo CTA — bottom-center */}
         {heroLayloEmbedUrl && (
           <div style={{ position: 'absolute', bottom: '5rem', left: 0, right: 0, display: 'flex', justifyContent: 'center' }}>
-            <div style={{ filter: 'url(#crystal-outline-pill)', display: 'inline-block' }}>
+            <div style={{ filter: 'url(#crystal-outline-pill)', WebkitFilter: 'url(#crystal-outline-pill)', display: 'inline-block' }}>
               <a
                 href={heroLayloEmbedUrl}
                 target="_blank"

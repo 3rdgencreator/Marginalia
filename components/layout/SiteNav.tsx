@@ -37,7 +37,7 @@ export default async function SiteNav() {
 
   return (
     <header
-      className="sticky top-0 z-50 bg-black/70 backdrop-blur-sm"
+      className="sticky top-0 z-50 bg-black/70"
       style={{ height: 'var(--nav-height-mobile)' }}
       aria-label="Main navigation"
     >

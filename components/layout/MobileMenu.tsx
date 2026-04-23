@@ -16,12 +16,10 @@ export default function MobileMenu({
   const [open, setOpen] = useState(false);
   const pathname = usePathname();
 
-  // Auto-close when route changes (link navigation)
   useEffect(() => {
     setOpen(false);
   }, [pathname]);
 
-  // Lock body scroll while overlay is open
   useEffect(() => {
     document.body.style.overflow = open ? 'hidden' : '';
     return () => {
@@ -29,7 +27,6 @@ export default function MobileMenu({
     };
   }, [open]);
 
-  // Close on Escape key
   useEffect(() => {
     if (!open) return;
     const onKey = (e: KeyboardEvent) => {
