@@ -314,6 +314,14 @@ export default config({
       schema: {
         heroHeadline: fields.text({ label: 'Hero Headline' }),
         heroSubtext: fields.text({ label: 'Hero Subtext' }),
+        heroVideoUrl: fields.url({
+          label: 'Hero Video URL (desktop 16:9)',
+          description: 'Unlisted YouTube URL for desktop hero background',
+        }),
+        heroVideoMobileUrl: fields.url({
+          label: 'Hero Video URL (mobile 9:16)',
+          description: 'Unlisted YouTube URL for mobile portrait hero background',
+        }),
         featuredReleaseSlug: fields.text({
           label: 'Featured Release Slug',
           description: 'Manually curated featured release',
