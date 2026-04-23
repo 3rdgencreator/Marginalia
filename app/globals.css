@@ -106,3 +106,9 @@ body {
   outline: 2px solid var(--color-accent-lime);
   outline-offset: 3px;
 }
+
+/* ─── Hero video fade-in ─────────────────────────────────────── */
+@keyframes heroVideoFadeIn {
+  from { opacity: 0; }
+  to   { opacity: 0.8; }
+}

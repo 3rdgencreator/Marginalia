@@ -77,13 +77,26 @@ export default async function HomePage() {
 
   return (
     <main>
+      <style>{`
+        @keyframes heroVideoFadeIn {
+          0%   { opacity: 0; }
+          62%  { opacity: 0.2; }
+          100% { opacity: 0.8; }
+        }
+      `}</style>
       {/* <SplashScreen /> */}
       {/* HERO — full viewport, YouTube video background, Logo centered */}
       <section className="relative h-[100dvh] overflow-hidden bg-(--color-bg)">
         {/* Desktop video — 300% wide trick clips YouTube title/logo at edges */}
         {desktopEmbedUrl && (
-          <div className="hidden md:block absolute inset-0 overflow-hidden" style={{ opacity: 0.75 }}>
-            <div style={{ position: 'relative', width: '300%', left: '-100%', height: '100%' }}>
+          <div className="hidden md:block absolute inset-0 overflow-hidden" style={{ animation: 'heroVideoFadeIn 7s ease-out forwards' }}>
+            <div style={{
+              position: 'absolute',
+              top: '50%', left: '50%',
+              transform: 'translate(-50%, -50%)',
+              width: 'max(120vw, calc(120dvh * 16 / 9))',
+              height: 'max(120dvh, calc(120vw * 9 / 16))',
+            }}>
               <iframe
                 style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', pointerEvents: 'none' }}
                 src={desktopEmbedUrl}
@@ -97,8 +110,14 @@ export default async function HomePage() {
         )}
         {/* Mobile video — same trick */}
         {mobileEmbedUrl && (
-          <div className="block md:hidden absolute inset-0 overflow-hidden" style={{ opacity: 0.75 }}>
-            <div style={{ position: 'relative', width: '300%', left: '-100%', height: '100%' }}>
+          <div className="block md:hidden absolute inset-0 overflow-hidden" style={{ animation: 'heroVideoFadeIn 7s ease-out forwards' }}>
+            <div style={{
+              position: 'absolute',
+              top: '50%', left: '50%',
+              transform: 'translate(-50%, -50%)',
+              width: 'max(120vw, calc(120dvh * 16 / 9))',
+              height: 'max(120dvh, calc(120vw * 9 / 16))',
+            }}>
               <iframe
                 style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', pointerEvents: 'none' }}
                 src={mobileEmbedUrl}
