@@ -51,7 +51,6 @@ export default async function HomePage() {
       slug,
       entry: {
         title: entry.title,
-        artistSlugs: entry.artistSlugs,
         coverArt: entry.coverArt,
       },
     }));
