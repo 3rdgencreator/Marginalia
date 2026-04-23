@@ -1,5 +1,10 @@
 import Image from 'next/image';
 
+function safeHref(url: string | null | undefined): string | null {
+  if (!url) return null;
+  return url.startsWith('https://') || url.startsWith('http://') ? url : null;
+}
+
 type ShowcaseCardProps = {
   entry: {
     title: string;
@@ -57,9 +62,9 @@ export default function ShowcaseCard({ entry, variant }: ShowcaseCardProps) {
       </p>
 
       {/* Ticket button — upcoming only */}
-      {variant === 'upcoming' && entry.ticketUrl && (
+      {variant === 'upcoming' && safeHref(entry.ticketUrl) && (
         <a
-          href={entry.ticketUrl}
+          href={safeHref(entry.ticketUrl)!}
           target="_blank"
           rel="noopener noreferrer"
           aria-label={`Get tickets for ${entry.title}`}
@@ -70,9 +75,9 @@ export default function ShowcaseCard({ entry, variant }: ShowcaseCardProps) {
       )}
 
       {/* Aftermovie link — past only */}
-      {variant === 'past' && entry.aftermovieUrl && (
+      {variant === 'past' && safeHref(entry.aftermovieUrl) && (
         <a
-          href={entry.aftermovieUrl}
+          href={safeHref(entry.aftermovieUrl)!}
           target="_blank"
           rel="noopener noreferrer"
           className="inline-block mt-(--space-md) text-(--text-label) text-(--color-text-muted) hover:text-(--color-text-primary) transition-colors duration-150"
