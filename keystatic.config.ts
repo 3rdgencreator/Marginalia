@@ -349,5 +349,24 @@ export default config({
         }),
       },
     }),
+
+    about: singleton({
+      label: 'About',
+      path: 'content/about',
+      format: { data: 'yaml' },
+      schema: {
+        headline: fields.text({ label: 'Headline' }),
+        body: fields.document({
+          label: 'Body',
+          formatting: true,
+          links: true,
+        }),
+        photo: fields.image({
+          label: 'Photo',
+          directory: 'public/images/about',
+          publicPath: '/images/about/',
+        }),
+      },
+    }),
   },
 });
