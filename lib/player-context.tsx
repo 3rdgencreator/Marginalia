@@ -15,6 +15,7 @@ export type PlayerCtx = ReturnType<typeof playerStore.getState> & {
   minimize: () => void;
   expand: () => void;
   dismiss: () => void;
+  setVolume: (volume: number) => void;
 };
 
 // Stable bound methods — never recreated
@@ -28,6 +29,7 @@ const actions = {
   minimize:     playerStore.minimize.bind(playerStore),
   expand:       playerStore.expand.bind(playerStore),
   dismiss:      playerStore.dismiss.bind(playerStore),
+  setVolume:    playerStore.setVolume.bind(playerStore),
 };
 
 export function usePlayer(): PlayerCtx {

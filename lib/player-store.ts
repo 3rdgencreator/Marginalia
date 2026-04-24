@@ -26,6 +26,7 @@ interface SCWidget {
   pause(): void;
   skip(index: number): void;
   seekTo(ms: number): void;
+  setVolume(volume: number): void;
   isPaused(cb: (v: boolean) => void): void;
   getCurrentSoundIndex(cb: (index: number) => void): void;
   getDuration(cb: (v: number) => void): void;
@@ -44,6 +45,7 @@ export interface PlayerState {
   isLoaded: boolean;
   embedUrl: string;
   playlistUrl: string;
+  volume: number;
 }
 
 type Listener = () => void;
@@ -62,6 +64,7 @@ class PlayerStore {
     isLoaded: false,
     embedUrl: '',
     playlistUrl: '',
+    volume: 80,
   };
 
   private listeners = new Set<Listener>();
@@ -176,10 +179,11 @@ class PlayerStore {
 
   togglePlay() {
     if (!this.widget) return;
-    this.widget.isPaused((paused) => {
-      if (paused) this.widget!.play();
-      else this.widget!.pause();
-    });
+    if (this.state.isPlaying) {
+      this.widget.pause();
+    } else {
+      this.widget.play();
+    }
   }
 
   skipTo(index: number) {
@@ -195,6 +199,11 @@ class PlayerStore {
   minimize() { this.setState({ minimized: true }); }
   expand()   { this.setState({ minimized: false }); }
   dismiss()  { this.setState({ dismissed: true }); }
+
+  setVolume(volume: number) {
+    this.setState({ volume });
+    this.widget?.setVolume(volume);
+  }
 
   seekTo(ratio: number) {
     if (!this.widget || this.state.duration === 0) return;

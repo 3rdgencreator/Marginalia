@@ -232,15 +232,6 @@ export default config({
         venue: fields.text({ label: 'Venue' }),
         city: fields.text({ label: 'City' }),
         country: fields.text({ label: 'Country' }),
-        status: fields.select({
-          label: 'Status',
-          description: 'Auto-derive from date but allow manual override',
-          options: [
-            { label: 'Upcoming', value: 'upcoming' },
-            { label: 'Past', value: 'past' },
-          ],
-          defaultValue: 'upcoming',
-        }),
         artistSlugs: fields.array(
           fields.text({ label: 'Artist Slug' }),
           {
@@ -264,6 +255,10 @@ export default config({
         aftermovieUrl: fields.url({
           label: 'Aftermovie URL',
           description: 'YouTube URL for past events',
+        }),
+        soundcloudSetUrl: fields.url({
+          label: 'SoundCloud Set URL',
+          description: 'Recorded set from the event (shown as Listen link)',
         }),
         recapPhotos: fields.array(
           fields.object({
@@ -395,6 +390,28 @@ export default config({
           label: 'Photo',
           directory: 'public/images/about',
           publicPath: '/images/about/',
+        }),
+      },
+    }),
+
+    demoPage: singleton({
+      label: 'Demo Submission Page',
+      path: 'content/demo-page',
+      format: { data: 'yaml' },
+      schema: {
+        acceptingDemos: fields.checkbox({
+          label: 'Accepting Demos',
+          description: 'Uncheck to show a notice above the form that demos are not being reviewed for 2026 (form stays open for 2027 submissions)',
+          defaultValue: true,
+        }),
+        heading: fields.text({
+          label: 'Heading',
+          defaultValue: 'Submit a Demo',
+        }),
+        intro: fields.document({
+          label: 'Intro Text',
+          formatting: true,
+          links: true,
         }),
       },
     }),

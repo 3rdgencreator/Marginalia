@@ -12,54 +12,31 @@ export const metadata: Metadata = {
 export default async function ShowcasesPage() {
   const all = await reader.collections.showcases.all();
 
-  const sorted = [...all].sort((a, b) =>
-    (b.entry.date ?? '').localeCompare(a.entry.date ?? '')
-  );
+  const today = new Date().toISOString().slice(0, 10);
 
-  // status field is manually set in Keystatic — Elif must update status to 'past' after an event passes
-  const upcoming = sorted.filter(s => s.entry.status === 'upcoming');
-  const past = sorted.filter(s => s.entry.status === 'past');
+  const upcoming = [...all]
+    .filter(s => (s.entry.date ?? '') >= today)
+    .sort((a, b) => (a.entry.date ?? '').localeCompare(b.entry.date ?? ''));
+
+  const past = [...all]
+    .filter(s => (s.entry.date ?? '') < today)
+    .sort((a, b) => (b.entry.date ?? '').localeCompare(a.entry.date ?? ''));
 
   return (
     <RandomBackground>
       <Container className="py-(--space-3xl)">
-      {/* UPCOMING section — omit entirely if no upcoming events (D-18, per UI-SPEC) */}
-      {upcoming.length > 0 && (
-        <section aria-labelledby="upcoming-heading" className="mb-(--space-3xl)">
-          <h2
-            id="upcoming-heading"
-            className="mb-(--space-xl) text-(--text-heading) font-bold uppercase text-(--color-accent-lime)"
-          >
-            UPCOMING
-          </h2>
-          <ul className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-(--space-lg)">
-            {upcoming.map(({ slug, entry }) => (
-              <li key={slug}>
-                <ShowcaseCard entry={entry} variant="upcoming" />
-              </li>
-            ))}
-          </ul>
-        </section>
-      )}
-
-      {/* PAST section */}
-      {past.length > 0 && (
-        <section aria-labelledby="past-heading">
-          <h2
-            id="past-heading"
-            className="mb-(--space-xl) text-(--text-heading) font-bold uppercase text-(--color-text-secondary)"
-          >
-            PAST
-          </h2>
-          <ul className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-(--space-lg)">
-            {past.map(({ slug, entry }) => (
-              <li key={slug}>
-                <ShowcaseCard entry={entry} variant="past" />
-              </li>
-            ))}
-          </ul>
-        </section>
-      )}
+      <ul className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-(--space-lg)">
+        {upcoming.map(({ slug, entry }) => (
+          <li key={slug}>
+            <ShowcaseCard entry={entry} variant="upcoming" />
+          </li>
+        ))}
+        {past.map(({ slug, entry }) => (
+          <li key={slug}>
+            <ShowcaseCard entry={entry} variant="past" />
+          </li>
+        ))}
+      </ul>
 
       {/* Both arrays empty — no events at all */}
       {upcoming.length === 0 && past.length === 0 && (

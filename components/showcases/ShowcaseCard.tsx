@@ -12,19 +12,26 @@ type ShowcaseCardProps = {
     venue: string | null;
     city: string | null;
     country: string | null;
-    status: 'upcoming' | 'past';
     ticketUrl: string | null | undefined;
     aftermovieUrl: string | null | undefined;
+    soundcloudSetUrl: string | null | undefined;
     flyer: string | null;
   };
   variant: 'upcoming' | 'past';
 };
 
+const glowUpcoming = '0 0 24px 8px rgba(158,255,10,0.1), 0 0 6px 2px rgba(158,255,10,0.18)';
+
 export default function ShowcaseCard({ entry, variant }: ShowcaseCardProps) {
+  const isUpcoming = variant === 'upcoming';
   return (
     <article
-      className={`bg-(--color-surface) p-(--space-lg) ${variant === 'past' ? 'opacity-60' : ''}`}
-      style={variant === 'past' ? { filter: 'grayscale(0.4)' } : undefined}
+      className="rounded-xl overflow-hidden bg-(--color-surface) border p-(--space-lg) transition-all duration-300"
+      style={
+        isUpcoming
+          ? { borderColor: 'rgba(158,255,10,0.3)', boxShadow: glowUpcoming }
+          : { borderColor: 'rgba(255,255,255,0.06)', opacity: 0.45, filter: 'grayscale(0.5)' }
+      }
     >
       {/* Flyer image */}
       {entry.flyer && (
@@ -73,6 +80,18 @@ export default function ShowcaseCard({ entry, variant }: ShowcaseCardProps) {
           className="inline-block mt-(--space-md) px-(--space-lg) py-(--space-sm) bg-(--color-accent-violet) text-white text-(--text-label) font-bold uppercase hover:bg-(--color-accent-lime) hover:text-black transition-colors duration-150"
         >
           GET TICKETS
+        </a>
+      )}
+
+      {/* Listen link — past only */}
+      {variant === 'past' && safeHref(entry.soundcloudSetUrl) && (
+        <a
+          href={safeHref(entry.soundcloudSetUrl)!}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-block mt-(--space-md) text-(--text-label) text-(--color-text-muted) hover:text-(--color-text-primary) transition-colors duration-150"
+        >
+          LISTEN ↗
         </a>
       )}
 
