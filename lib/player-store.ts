@@ -72,6 +72,7 @@ class PlayerStore {
   private widget: SCWidget | null = null;
   private currentIndexRef = 0;
   private initInterval: ReturnType<typeof setInterval> | null = null;
+  private pendingPlay = false;
 
   constructor() {}
 
@@ -137,6 +138,11 @@ class PlayerStore {
     });
     widget.bind(E.PAUSE, () => this.setState({ isPlaying: false }));
     widget.bind(E.FINISH, () => this.setState({ isPlaying: false, progress: 1 }));
+
+    if (this.pendingPlay) {
+      this.pendingPlay = false;
+      setTimeout(() => widget.play(), 300);
+    }
     widget.bind(E.PLAY_PROGRESS, (e: unknown) => {
       const ev = e as { relativePosition: number; currentPosition: number };
       this.setState({ progress: ev.relativePosition, currentMs: ev.currentPosition });
@@ -199,6 +205,7 @@ class PlayerStore {
   minimize() { this.setState({ minimized: true }); }
   expand()   { this.setState({ minimized: false }); }
   dismiss()  { this.setState({ dismissed: true }); }
+  playOnReady() { this.pendingPlay = true; }
 
   setVolume(volume: number) {
     this.setState({ volume });

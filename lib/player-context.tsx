@@ -16,6 +16,7 @@ export type PlayerCtx = ReturnType<typeof playerStore.getState> & {
   expand: () => void;
   dismiss: () => void;
   setVolume: (volume: number) => void;
+  playOnReady: () => void;
 };
 
 // Stable bound methods — never recreated
@@ -30,6 +31,7 @@ const actions = {
   expand:       playerStore.expand.bind(playerStore),
   dismiss:      playerStore.dismiss.bind(playerStore),
   setVolume:    playerStore.setVolume.bind(playerStore),
+  playOnReady:  playerStore.playOnReady.bind(playerStore),
 };
 
 export function usePlayer(): PlayerCtx {
