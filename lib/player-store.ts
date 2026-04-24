@@ -73,6 +73,7 @@ class PlayerStore {
   private currentIndexRef = 0;
   private initInterval: ReturnType<typeof setInterval> | null = null;
   private pendingPlay = false;
+  private autoPlayRetries = 0;
 
   constructor() {}
 
@@ -141,20 +142,7 @@ class PlayerStore {
 
     if (this.pendingPlay) {
       this.pendingPlay = false;
-      let played = false;
-      const tryPlay = () => {
-        if (played || this.state.isPlaying) return;
-        widget.getCurrentSoundIndex(() => {
-          if (!played && !this.state.isPlaying) {
-            played = true;
-            widget.play();
-          }
-        });
-      };
-      // Retry at increasing intervals until the iframe responds
-      setTimeout(tryPlay, 600);
-      setTimeout(tryPlay, 1500);
-      setTimeout(tryPlay, 3000);
+      setTimeout(() => widget.play(), 800);
     }
     widget.bind(E.PLAY_PROGRESS, (e: unknown) => {
       const ev = e as { relativePosition: number; currentPosition: number };
@@ -197,6 +185,7 @@ class PlayerStore {
   }
 
   togglePlay() {
+    this.autoPlayRetries = 0;
     if (!this.widget) return;
     if (this.state.isPlaying) {
       this.widget.pause();
@@ -220,7 +209,8 @@ class PlayerStore {
   dismiss()  { this.setState({ dismissed: true }); }
   playOnReady() {
     if (this.widget) {
-      setTimeout(() => this.widget?.play(), 300);
+      this.autoPlayRetries = 5;
+      setTimeout(() => { if (!this.state.isPlaying) this.widget?.play(); }, 300);
     } else {
       this.pendingPlay = true;
     }

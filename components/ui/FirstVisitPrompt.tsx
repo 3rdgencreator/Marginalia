@@ -15,7 +15,7 @@ export default function FirstVisitPrompt({
   trackTitle: string;
 }) {
   const [visible, setVisible] = useState(false);
-  const { loadPlaylist, playOnReady } = usePlayer();
+  const { loadPlaylist } = usePlayer();
 
   useEffect(() => {
     if (sessionStorage.getItem(SESSION_KEY)) return;
@@ -29,8 +29,10 @@ export default function FirstVisitPrompt({
   }
 
   function play() {
-    loadPlaylist(embedUrl, scUrl);
-    playOnReady();
+    // Replace auto_play=false with auto_play=true so SC starts playing
+    // as soon as the iframe is created — no widget.play() race needed.
+    const autoplayUrl = embedUrl.replace('auto_play=false', 'auto_play=true');
+    loadPlaylist(autoplayUrl, scUrl);
     dismiss();
   }
 
