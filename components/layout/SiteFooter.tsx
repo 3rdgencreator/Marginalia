@@ -49,12 +49,9 @@ export default async function SiteFooter() {
           {/* Column 1 — Brand + Newsletter */}
           <div>
             <Logo className="h-10 w-auto text-(--color-text-primary)" />
-            <p className="mt-4 mb-5 text-(--text-label) text-(--color-text-secondary)">
-              {tagline}
-            </p>
             <div
               id="newsletter"
-              className="rounded-xl border border-white/70 bg-white/10 backdrop-blur-sm px-4 py-3 max-w-xs"
+              className="mt-6 rounded-xl border border-white/70 bg-white/10 backdrop-blur-sm px-4 py-3 max-w-xs"
               style={{ boxShadow: '0 0 20px 6px rgba(202,201,249,0.25), 0 0 6px 2px rgba(202,201,249,0.35)' }}
             >
               <p className="text-[10px] font-bold uppercase tracking-widest text-(--color-text-primary) mb-1">
