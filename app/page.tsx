@@ -159,19 +159,18 @@ export default async function HomePage() {
         {/* Laylo CTA — bottom-center */}
         {heroLayloEmbedUrl && (
           <div style={{ position: 'absolute', bottom: '5rem', left: 0, right: 0, display: 'flex', justifyContent: 'center' }}>
-            <div style={{ filter: 'url(#crystal-outline-pill)', WebkitFilter: 'url(#crystal-outline-pill)', display: 'inline-block' }}>
-              <a
-                href={heroLayloEmbedUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="group flex items-center gap-3 rounded-full px-5 py-3 bg-gradient-to-r from-[#580AFF] to-[#9B30FF] text-white hover:from-[#4A08D6] hover:to-[#8B25EE] transition-all duration-150"
-              >
+            <a
+              href={heroLayloEmbedUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="group flex items-center gap-3 rounded-full px-5 py-3 bg-white/10 backdrop-blur-sm border-2 border-white/70 text-white hover:bg-white/20 transition-all duration-150"
+              style={{ boxShadow: '0 0 20px 6px rgba(202,201,249,0.25), 0 0 6px 2px rgba(202,201,249,0.35)' }}
+            >
                 <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="currentColor" className="shrink-0">
                   <path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-6V11c0-3.07-1.63-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.64 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z" />
                 </svg>
                 <span className="text-sm font-semibold tracking-tight">Stay in the loop</span>
-              </a>
-            </div>
+            </a>
           </div>
         )}
       </section>
