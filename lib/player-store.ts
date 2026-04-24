@@ -141,7 +141,20 @@ class PlayerStore {
 
     if (this.pendingPlay) {
       this.pendingPlay = false;
-      setTimeout(() => widget.play(), 1200);
+      let played = false;
+      const tryPlay = () => {
+        if (played || this.state.isPlaying) return;
+        widget.getCurrentSoundIndex(() => {
+          if (!played && !this.state.isPlaying) {
+            played = true;
+            widget.play();
+          }
+        });
+      };
+      // Retry at increasing intervals until the iframe responds
+      setTimeout(tryPlay, 600);
+      setTimeout(tryPlay, 1500);
+      setTimeout(tryPlay, 3000);
     }
     widget.bind(E.PLAY_PROGRESS, (e: unknown) => {
       const ev = e as { relativePosition: number; currentPosition: number };
