@@ -9,7 +9,7 @@ export default function ServicesContent() {
   const [service, setService] = useState<ServiceId | null>(null);
 
   return (
-    <div className="max-w-2xl mx-auto flex flex-col gap-8">
+    <div className="max-w-4xl mx-auto flex flex-col gap-8">
 
       {/* Service selector — 4 full-width rows */}
       <div className="flex flex-col gap-3">
