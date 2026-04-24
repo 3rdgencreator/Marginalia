@@ -322,6 +322,10 @@ export default config({
           label: 'Laylo Community URL',
           description: 'Main Laylo page (shown on Free Downloads gate)',
         }),
+        soundcloudPlaylistUrl: fields.url({
+          label: 'SoundCloud Podcast Playlist URL',
+          description: 'Paste the SoundCloud playlist/set URL — shown as a full embed on the Podcasts page',
+        }),
       },
     }),
 

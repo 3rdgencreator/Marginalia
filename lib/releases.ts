@@ -16,6 +16,22 @@ export function buildSoundCloudEmbedUrl(premiereUrl: string): string {
   return `https://w.soundcloud.com/player/?${params.toString()}`;
 }
 
+export function buildSoundCloudPlaylistEmbedUrl(playlistUrl: string): string {
+  const params = new URLSearchParams({
+    url: playlistUrl,
+    color: '#9EFF0A',
+    auto_play: 'false',
+    hide_related: 'true',
+    show_comments: 'false',
+    show_user: 'true',
+    show_reposts: 'false',
+    show_teaser: 'false',
+    visual: 'false',
+    show_artwork: 'true',
+  });
+  return `https://w.soundcloud.com/player/?${params.toString()}`;
+}
+
 export function plainTextFromDocument(
   document: unknown,
   maxChars: number

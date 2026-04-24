@@ -15,11 +15,15 @@ function extractText(nodes: Node[]): string {
   return nodes.map(getText).join(' ');
 }
 
-function getPreviewText(text: string, limit = 800): string {
+function getPreviewText(text: string, limit = 1100): string {
   if (text.length <= limit) return text;
+  // Find the first sentence end at or after limit
+  const sentenceEnd = text.slice(limit).search(/[.!?]["\s]/);
+  if (sentenceEnd !== -1) return text.slice(0, limit + sentenceEnd + 1);
+  // Fallback: last sentence end before limit
   const slice = text.slice(0, limit);
   const lastDot = Math.max(slice.lastIndexOf('. '), slice.lastIndexOf('." '));
-  return lastDot > 400 ? text.slice(0, lastDot + 1) : slice.trimEnd() + '…';
+  return lastDot > 700 ? text.slice(0, lastDot + 1) : slice.trimEnd() + '…';
 }
 
 export default function AboutBody({ nodes }: { nodes: Node[] }) {

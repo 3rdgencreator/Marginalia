@@ -18,6 +18,7 @@ const PRIMARY_LINKS = [
 ] as const;
 
 const SOCIAL_PLATFORMS: Platform[] = [
+  'newsletter',
   'instagram',
   'soundcloud',
   'beatport',
@@ -32,7 +33,9 @@ export default async function SiteNav() {
   const socials: Array<{ platform: Platform; url: string | null | undefined }> =
     SOCIAL_PLATFORMS.map((platform) => ({
       platform,
-      url: config?.[`${platform}Url` as keyof typeof config] as string | null | undefined,
+      url: platform === 'newsletter'
+        ? '#newsletter'
+        : config?.[`${platform}Url` as keyof typeof config] as string | null | undefined,
     }));
 
   return (

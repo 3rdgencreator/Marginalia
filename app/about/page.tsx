@@ -21,6 +21,8 @@ export default async function AboutPage() {
   const about = await reader.singletons.about.read();
   // body is stored as a separate .mdoc file — must call as function to get nodes
   const body = about?.body ? await about.body() : null;
+  const siteConfig = await reader.singletons.siteConfig.read();
+  const layloUrl = siteConfig?.layloUrl ?? null;
 
   return (
     <RandomBackground>
@@ -79,6 +81,24 @@ export default async function AboutPage() {
             Read the feature →
           </a>
         </div>
+
+        {/* Stay in the loop — Laylo CTA */}
+        {layloUrl && (
+          <div className="mt-(--space-xl) flex justify-center">
+            <a
+              href={layloUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-3 rounded-full px-5 py-3 bg-white/10 backdrop-blur-sm border-2 border-white/70 text-(--color-text-primary) hover:bg-white/20 transition-all duration-150"
+              style={{ boxShadow: '0 0 20px 6px rgba(202,201,249,0.25), 0 0 6px 2px rgba(202,201,249,0.35)' }}
+            >
+              <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="currentColor" className="shrink-0">
+                <path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-6V11c0-3.07-1.63-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.64 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z" />
+              </svg>
+              <span className="text-sm font-semibold tracking-tight">Stay in the loop</span>
+            </a>
+          </div>
+        )}
 
       </div>
       </Container>

@@ -3,6 +3,7 @@ import { reader } from '@/lib/keystatic';
 import Container from './Container';
 import Logo from '@/components/ui/Logo';
 import SocialIcon, { type Platform } from '@/components/ui/SocialIcon';
+import NewsletterForm from './NewsletterForm';
 
 const FALLBACK_TAGLINE = 'Barcelona · Melodic House & Techno';
 
@@ -35,6 +36,7 @@ export default async function SiteFooter() {
     { platform: 'tiktok', url: config?.tiktokUrl },
     { platform: 'facebook', url: config?.facebookUrl },
   ];
+  const newsletterListId = config?.newsletterProvider ?? null;
   const year = new Date().getFullYear();
 
   return (
@@ -44,12 +46,25 @@ export default async function SiteFooter() {
     >
       <Container>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          {/* Column 1 — Brand */}
+          {/* Column 1 — Brand + Newsletter */}
           <div>
             <Logo className="h-10 w-auto text-(--color-text-primary)" />
-            <p className="mt-4 text-(--text-label) text-(--color-text-secondary)">
+            <p className="mt-4 mb-5 text-(--text-label) text-(--color-text-secondary)">
               {tagline}
             </p>
+            <div
+              id="newsletter"
+              className="rounded-xl border border-white/70 bg-white/10 backdrop-blur-sm px-4 py-3 max-w-xs"
+              style={{ boxShadow: '0 0 20px 6px rgba(202,201,249,0.25), 0 0 6px 2px rgba(202,201,249,0.35)' }}
+            >
+              <p className="text-[10px] font-bold uppercase tracking-widest text-(--color-text-primary) mb-1">
+                Newsletter
+              </p>
+              <p className="text-[11px] text-(--color-text-secondary) leading-relaxed mb-0">
+                New releases, free downloads &amp; events — straight to your inbox.
+              </p>
+              <NewsletterForm listId={newsletterListId} />
+            </div>
           </div>
 
           {/* Column 2 — Quick Links */}

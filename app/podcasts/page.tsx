@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import { reader } from '@/lib/keystatic';
-import { buildSoundCloudEmbedUrl, resolveArtistNames } from '@/lib/releases';
+import { buildSoundCloudEmbedUrl, buildSoundCloudPlaylistEmbedUrl, resolveArtistNames } from '@/lib/releases';
 import Container from '@/components/layout/Container';
 import PodcastAccordion from '@/components/podcasts/PodcastAccordion';
 import RandomBackground from '@/components/ui/RandomBackground';
@@ -11,7 +11,14 @@ export const metadata: Metadata = {
 };
 
 export default async function PodcastsPage() {
-  const all = await reader.collections.podcasts.all();
+  const [all, siteConfig] = await Promise.all([
+    reader.collections.podcasts.all(),
+    reader.singletons.siteConfig.read(),
+  ]);
+
+  const playlistEmbedUrl = siteConfig?.soundcloudPlaylistUrl
+    ? buildSoundCloudPlaylistEmbedUrl(siteConfig.soundcloudPlaylistUrl)
+    : null;
 
   // Sort date descending — newest episodes first (per D-13)
   const sorted = [...all].sort((a, b) =>
@@ -40,13 +47,17 @@ export default async function PodcastsPage() {
 
   return (
     <RandomBackground>
-      <Container className="py-(--space-3xl)">
-        {episodes.length === 0 ? (
-          <p className="py-16 text-center text-(--text-body) text-(--color-text-muted)">
+      <Container className="min-h-screen flex flex-col justify-center py-20">
+        {episodes.length === 0 && !playlistEmbedUrl ? (
+          <p className="py-16 text-(--text-body) text-(--color-text-muted)">
             No episodes yet.
           </p>
         ) : (
-          <PodcastAccordion episodes={episodes} />
+          <PodcastAccordion
+            episodes={episodes}
+            playlistEmbedUrl={playlistEmbedUrl}
+            playlistUrl={siteConfig?.soundcloudPlaylistUrl ?? null}
+          />
         )}
       </Container>
     </RandomBackground>

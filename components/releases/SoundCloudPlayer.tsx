@@ -1,14 +1,14 @@
 // Receives a pre-constructed embed URL from SoundCloudEmbed (server builds it
 // via buildSoundCloudEmbedUrl so this module stays free of server-only imports).
-type SoundCloudPlayerProps = { embedUrl: string };
+type SoundCloudPlayerProps = { embedUrl: string; height?: number };
 
-export default function SoundCloudPlayer({ embedUrl }: SoundCloudPlayerProps) {
+export default function SoundCloudPlayer({ embedUrl, height = 166 }: SoundCloudPlayerProps) {
   return (
     <iframe
       title="SoundCloud player"
       src={embedUrl}
       width="100%"
-      height={166}
+      height={height}
       scrolling="no"
       frameBorder={0}
       allow="autoplay"
