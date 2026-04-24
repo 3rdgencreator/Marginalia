@@ -141,7 +141,7 @@ class PlayerStore {
 
     if (this.pendingPlay) {
       this.pendingPlay = false;
-      setTimeout(() => widget.play(), 300);
+      setTimeout(() => widget.play(), 1200);
     }
     widget.bind(E.PLAY_PROGRESS, (e: unknown) => {
       const ev = e as { relativePosition: number; currentPosition: number };
@@ -205,7 +205,13 @@ class PlayerStore {
   minimize() { this.setState({ minimized: true }); }
   expand()   { this.setState({ minimized: false }); }
   dismiss()  { this.setState({ dismissed: true }); }
-  playOnReady() { this.pendingPlay = true; }
+  playOnReady() {
+    if (this.widget) {
+      setTimeout(() => this.widget?.play(), 300);
+    } else {
+      this.pendingPlay = true;
+    }
+  }
 
   setVolume(volume: number) {
     this.setState({ volume });
