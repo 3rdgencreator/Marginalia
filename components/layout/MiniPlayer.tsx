@@ -27,8 +27,11 @@ export default function MiniPlayer() {
   const pathname = usePathname();
   const {
     isPlaying, hasPlayed, dismissed, volume,
-    progress, togglePlay, skipPrev, skipNext, seekTo, dismiss, setVolume,
+    progress, tracks, currentIndex,
+    togglePlay, skipPrev, skipNext, seekTo, dismiss, setVolume,
   } = usePlayer();
+  const currentTitle = tracks[currentIndex]?.title ?? '';
+  const currentArtwork = tracks[currentIndex]?.artwork_url ?? null;
   const [mounted, setMounted] = useState(false);
   useEffect(() => setMounted(true), []);
 
@@ -43,10 +46,24 @@ export default function MiniPlayer() {
   };
 
   return createPortal(
+    <>
+      {/* Artwork — floats above mini player, bottom-left */}
+      {currentArtwork && (
+        // eslint-disable-next-line @next/next/no-img-element
+        <img
+          src={currentArtwork}
+          alt={currentTitle}
+          style={{
+            position: 'fixed', bottom: 48, left: 20, zIndex: 9998,
+            width: 60, height: 60, borderRadius: 6, objectFit: 'cover',
+            boxShadow: '0 0 20px 6px rgba(158,255,10,0.18), 0 0 6px 2px rgba(158,255,10,0.3)',
+          }}
+        />
+      )}
     <div style={{
       position: 'fixed', bottom: 0, left: 0, right: 0, zIndex: 9999,
       transform: 'translateZ(0)',
-      background: 'rgba(10,10,12,0.94)',
+      background: 'rgba(10,10,12,0.10)',
       backdropFilter: 'blur(16px)', WebkitBackdropFilter: 'blur(16px)',
       borderTop: '1px solid rgba(255,255,255,0.08)',
       fontFamily: 'inherit', color: 'inherit',
@@ -120,8 +137,23 @@ export default function MiniPlayer() {
 
       <div style={{ display: 'flex', alignItems: 'center', padding: '4px 20px', maxWidth: 1280, margin: '0 auto' }}>
 
-        {/* Left spacer — mirrors right side for centering */}
-        <div style={{ flex: 1 }} />
+        {/* Left — now playing + track title */}
+        <div style={{ flex: 1, overflow: 'hidden', display: 'flex', alignItems: 'center', gap: 8 }}>
+          {isPlaying && (
+            <span style={{ fontSize: 8, fontWeight: 300, color: 'rgba(220,50,50,0.85)', letterSpacing: '0.08em', textTransform: 'uppercase', flexShrink: 0 }}>
+              Now Playing
+            </span>
+          )}
+          {currentTitle && (
+            <span style={{
+              fontSize: 12, fontWeight: 300, color: 'rgba(255,255,255,0.55)',
+              whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis',
+              letterSpacing: '0.01em',
+            }}>
+              {currentTitle}
+            </span>
+          )}
+        </div>
 
         {/* Center — playback controls */}
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 16 }}>
@@ -164,7 +196,8 @@ export default function MiniPlayer() {
         </div>
 
       </div>
-    </div>,
+    </div>
+    </>,
     document.body
   );
 }
