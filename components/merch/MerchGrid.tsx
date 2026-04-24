@@ -33,7 +33,7 @@ export default function MerchGrid({ products, storeDomain }: Props) {
             rel="noopener noreferrer"
             className="block group"
           >
-            <div className="aspect-square bg-(--color-surface) overflow-hidden relative mb-3 rounded-2xl">
+            <div className="aspect-square overflow-hidden relative mb-3 rounded-2xl border-2 border-white/70 bg-white/10 backdrop-blur-sm" style={{ boxShadow: '0 0 20px 6px rgba(202,201,249,0.25), 0 0 6px 2px rgba(202,201,249,0.35)' }}>
               {image ? (
                 <Image
                   src={image.url}
