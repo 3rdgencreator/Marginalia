@@ -1,34 +1,16 @@
 'use client';
 
-import { useEffect, useRef, useState, useCallback } from 'react';
+import { useEffect } from 'react';
 import Image from 'next/image';
+import { usePlayer } from '@/lib/player-context';
 
-interface SCTrack {
-  title: string;
-  artwork_url: string | null;
-  duration: number;
-  username?: string;
-}
-
-interface SCWidget {
-  bind(event: string, cb: (...args: unknown[]) => void): void;
-  play(): void;
-  pause(): void;
-  skip(index: number): void;
-  isPaused(cb: (v: boolean) => void): void;
-  getSounds(cb: (sounds: SCTrack[]) => void): void;
-  getCurrentSoundIndex(cb: (index: number) => void): void;
-  getDuration(cb: (v: number) => void): void;
-}
-
-declare global {
-  interface Window {
-    SC: {
-      Widget: ((iframe: HTMLIFrameElement) => SCWidget) & {
-        Events: Record<string, string>;
-      };
-    };
-  }
+function formatTime(ms: number) {
+  const totalSec = Math.floor(ms / 1000);
+  const h = Math.floor(totalSec / 3600);
+  const m = Math.floor((totalSec % 3600) / 60);
+  const s = totalSec % 60;
+  if (h > 0) return `${h}:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+  return `${m}:${String(s).padStart(2, '0')}`;
 }
 
 function formatDuration(ms: number) {
@@ -45,91 +27,19 @@ export default function PodcastPlayer({
   playlistEmbedUrl: string;
   playlistUrl: string;
 }) {
-  const iframeRef = useRef<HTMLIFrameElement>(null);
-  const widgetRef = useRef<SCWidget | null>(null);
-  const initializedRef = useRef(false);
-  const [tracks, setTracks] = useState<SCTrack[]>([]);
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const [isPlaying, setIsPlaying] = useState(false);
-  const [progress, setProgress] = useState(0);
-  const [duration, setDuration] = useState(0);
-  const [loaded, setLoaded] = useState(false);
+  const {
+    tracks, currentIndex, isPlaying, progress, currentMs, duration, isLoaded,
+    loadPlaylist, togglePlay, skipTo, skipPrev, skipNext, seekTo,
+  } = usePlayer();
+
+  useEffect(() => {
+    loadPlaylist(playlistEmbedUrl, playlistUrl);
+  }, [playlistEmbedUrl, playlistUrl, loadPlaylist]);
 
   const currentTrack = tracks[currentIndex] ?? null;
   const artworkUrl = currentTrack?.artwork_url
     ? currentTrack.artwork_url.replace(/-large(?=\.|$)|-t\d+x\d+(?=\.|$)/, '-t500x500')
     : null;
-
-  // Fetch full track list from our server-side API (bypasses Widget API 5-track limit)
-  useEffect(() => {
-    fetch(`/api/soundcloud-playlist?url=${encodeURIComponent(playlistUrl)}`, { cache: 'no-store' })
-      .then(r => r.json())
-      .then((data: SCTrack[]) => {
-        if (Array.isArray(data)) { setTracks(data); setLoaded(true); }
-      })
-      .catch(() => setLoaded(true));
-  }, [playlistUrl]);
-
-  const setupWidget = useCallback(() => {
-    if (initializedRef.current) return;
-    if (!iframeRef.current || !window.SC?.Widget) return;
-    initializedRef.current = true;
-
-    const widget = window.SC.Widget(iframeRef.current);
-    widgetRef.current = widget;
-    const E = window.SC.Widget.Events;
-
-    widget.bind(E.PLAY, () => {
-      setIsPlaying(true);
-      widget.getCurrentSoundIndex((idx) => setCurrentIndex(idx));
-      widget.getDuration((d) => setDuration(d));
-    });
-    widget.bind(E.PAUSE, () => setIsPlaying(false));
-    widget.bind(E.FINISH, () => { setIsPlaying(false); setProgress(1); });
-    widget.bind(E.PLAY_PROGRESS, (e: unknown) => {
-      const ev = e as { relativePosition: number };
-      setProgress(ev.relativePosition);
-    });
-  }, []);
-
-  useEffect(() => {
-    // Inject SC Widget API script
-    if (!document.querySelector('script[src*="soundcloud.com/player/api"]')) {
-      const s = document.createElement('script');
-      s.src = 'https://w.soundcloud.com/player/api.js';
-      s.async = true;
-      document.head.appendChild(s);
-    }
-
-    // Poll until SC + iframe ready, then init widget for playback control
-    let attempts = 0;
-    const interval = setInterval(() => {
-      attempts++;
-      if (window.SC?.Widget?.Events && iframeRef.current) {
-        clearInterval(interval);
-        setupWidget();
-      }
-      if (attempts >= 20) clearInterval(interval);
-    }, 500);
-
-    return () => clearInterval(interval);
-  }, [setupWidget]);
-
-  function handleSelect(index: number) {
-    if (!widgetRef.current) return;
-    widgetRef.current.skip(index);
-    setCurrentIndex(index);
-    setProgress(0);
-    setTimeout(() => widgetRef.current?.play(), 300);
-  }
-
-  function togglePlay() {
-    if (!widgetRef.current) return;
-    widgetRef.current.isPaused((paused) => {
-      if (paused) widgetRef.current!.play();
-      else widgetRef.current!.pause();
-    });
-  }
 
   return (
     <div className="max-w-5xl mx-auto w-full flex flex-col lg:flex-row items-start">
@@ -140,6 +50,7 @@ export default function PodcastPlayer({
         style={{ maxWidth: 380 }}
       >
         <div className="rounded-2xl border border-white/20 overflow-hidden bg-white/5 backdrop-blur-sm">
+          {/* Artwork */}
           <div className="relative bg-white/10" style={{ aspectRatio: '1 / 1' }}>
             {artworkUrl ? (
               <Image src={artworkUrl} alt={currentTrack?.title ?? ''} fill className="object-cover" unoptimized />
@@ -165,28 +76,60 @@ export default function PodcastPlayer({
               </div>
             </button>
           </div>
+
+          {/* Info + controls */}
           <div className="px-4 pt-3 pb-4">
             <p className="text-sm font-semibold text-(--color-text-primary) truncate">
-              {currentTrack?.title ?? (loaded ? '—' : 'Loading…')}
+              {currentTrack?.title ?? (isLoaded ? '—' : 'Loading…')}
             </p>
             <p className="text-xs text-(--color-text-muted) mt-0.5 truncate">
               {currentTrack?.username ?? ''}
             </p>
-            <div className="mt-3 h-1 w-full rounded-full bg-white/20 overflow-hidden">
+
+            {/* Seekable progress bar */}
+            <div
+              className="mt-3 h-1.5 w-full rounded-full bg-white/20 overflow-hidden cursor-pointer"
+              onClick={(e) => {
+                const rect = e.currentTarget.getBoundingClientRect();
+                seekTo((e.clientX - rect.left) / rect.width);
+              }}
+            >
               <div
                 className="h-full rounded-full transition-all duration-300"
                 style={{ width: `${progress * 100}%`, backgroundColor: 'var(--color-accent-lime)' }}
               />
             </div>
-            {duration > 0 && (
-              <p className="text-[10px] text-(--color-text-muted) mt-1.5 text-right tabular-nums">
-                {formatDuration(Math.round(progress * duration))} / {formatDuration(duration)}
+
+            {/* Time + skip controls */}
+            <div className="mt-2 flex items-center justify-between">
+              <p className="text-[10px] text-(--color-text-muted) tabular-nums">
+                {formatTime(currentMs)} / {formatTime(duration)}
               </p>
-            )}
+              <div className="flex items-center gap-4">
+                <button
+                  onClick={skipPrev}
+                  aria-label="Previous"
+                  className="text-(--color-text-muted) hover:text-(--color-text-primary) transition-colors"
+                >
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M6 6h2v12H6zm3.5 6 8.5 6V6z"/>
+                  </svg>
+                </button>
+                <button
+                  onClick={skipNext}
+                  aria-label="Next"
+                  className="text-(--color-text-muted) hover:text-(--color-text-primary) transition-colors"
+                >
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M6 18l8.5-6L6 6v12zm8.5-6v6h2V6h-2z"/>
+                  </svg>
+                </button>
+              </div>
+            </div>
           </div>
         </div>
 
-        {/* View all — glowing pill button below player card */}
+        {/* View all on SoundCloud */}
         <a
           href={playlistUrl}
           target="_blank"
@@ -206,14 +149,14 @@ export default function PodcastPlayer({
 
       {/* Right — track list */}
       <div className="flex-1 min-w-0 w-full mt-8 lg:mt-0">
-        {!loaded && (
+        {!isLoaded && (
           <p className="text-xs text-(--color-text-muted) py-8">Loading tracks…</p>
         )}
         {tracks.map((track, i) => (
           <button
             key={i}
             type="button"
-            onClick={() => handleSelect(i)}
+            onClick={() => skipTo(i)}
             className="w-full flex items-center gap-5 py-5 text-left border-b border-white/10 first:border-t first:border-white/10 hover:bg-white/5 cursor-pointer transition-colors duration-150"
           >
             <span className={`text-xs w-6 shrink-0 text-right tabular-nums ${
@@ -251,23 +194,6 @@ export default function PodcastPlayer({
           </button>
         ))}
       </div>
-
-      {/* SoundCloud iframe — off-screen, full size for Widget API */}
-      <iframe
-        ref={iframeRef}
-        src={playlistEmbedUrl}
-        title="SoundCloud playlist"
-        allow="autoplay"
-        style={{
-          position: 'fixed',
-          left: '-9999px',
-          top: 0,
-          width: 300,
-          height: 300,
-          border: 0,
-          pointerEvents: 'none',
-        }}
-      />
     </div>
   );
 }

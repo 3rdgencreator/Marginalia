@@ -160,7 +160,7 @@ export default async function HomePage() {
         </div>
         {/* Laylo CTA — bottom-center */}
         {heroLayloEmbedUrl && (
-          <div style={{ position: 'absolute', bottom: '5rem', left: 0, right: 0, display: 'flex', justifyContent: 'center' }}>
+          <div style={{ position: 'absolute', bottom: '7rem', left: 0, right: 0, display: 'flex', justifyContent: 'center' }}>
             <a
               href={heroLayloEmbedUrl}
               target="_blank"

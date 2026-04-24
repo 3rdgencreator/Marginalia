@@ -2,6 +2,8 @@ import type { Metadata } from 'next';
 import './globals.css';
 import SiteNav from '@/components/layout/SiteNav';
 import SiteFooter from '@/components/layout/SiteFooter';
+import MiniPlayer from '@/components/layout/MiniPlayer';
+import { PlayerProvider } from '@/lib/player-context';
 
 export const metadata: Metadata = {
   metadataBase: new URL(
@@ -36,9 +38,12 @@ export default function RootLayout({
         />
       </head>
       <body className="min-h-full flex flex-col font-sans text-(--color-text-primary)">
-        <SiteNav />
-        <main className="flex-1">{children}</main>
-        <SiteFooter />
+        <PlayerProvider>
+          <SiteNav />
+          <main className="flex-1">{children}</main>
+          <SiteFooter />
+          <MiniPlayer />
+        </PlayerProvider>
       </body>
     </html>
   );

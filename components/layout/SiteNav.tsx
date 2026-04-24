@@ -1,4 +1,5 @@
 import Image from 'next/image';
+import Link from 'next/link';
 import { reader } from '@/lib/keystatic';
 import NavLinks from './NavLinks';
 import MobileMenu from './MobileMenu';
@@ -55,9 +56,9 @@ export default async function SiteNav() {
       >
         {/* Left — logo + nav */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '64px', flexShrink: 0 }}>
-          <a href="/" aria-label="Marginalia — Home" style={{ display: 'inline-flex', alignItems: 'center', flexShrink: 0 }}>
+          <Link href="/" aria-label="Marginalia — Home" style={{ display: 'inline-flex', alignItems: 'center', flexShrink: 0 }}>
             <Image src="/hero-logo.webp" alt="Marginalia" width={120} height={120} style={{ height: '32px', width: 'auto' }} priority />
-          </a>
+          </Link>
           <div className="hidden md:flex">
             <NavLinks links={PRIMARY_LINKS} />
           </div>
