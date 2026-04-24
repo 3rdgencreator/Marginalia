@@ -301,6 +301,10 @@ export default config({
           label: 'Hero Video URL (desktop 16:9)',
           description: 'Unlisted YouTube URL for desktop hero background',
         }),
+        heroVideoStartSecond: fields.integer({
+          label: 'Hero Video Start (seconds)',
+          description: 'Videoyu kaçıncı saniyeden başlat (boş = baştan)',
+        }),
         heroVideoMobileUrl: fields.url({
           label: 'Hero Video URL (mobile 9:16)',
           description: 'Unlisted YouTube URL for mobile portrait hero background',

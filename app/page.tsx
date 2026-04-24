@@ -8,7 +8,7 @@ import ArtistCard from '@/components/artists/ArtistCard';
 // Extract YouTube video ID via regex and build a safe embed URL.
 // The raw CMS URL is NEVER used directly as an iframe src — only the
 // constructed youtube.com/embed/{ID}?{params} URL reaches the DOM.
-function buildYouTubeEmbedUrl(url: string | null | undefined): string | null {
+function buildYouTubeEmbedUrl(url: string | null | undefined, startSecond?: number | null): string | null {
   if (!url) return null;
   const match = url.match(/(?:v=|youtu\.be\/|embed\/)([a-zA-Z0-9_-]{11})/);
   if (!match) return null;
@@ -24,6 +24,7 @@ function buildYouTubeEmbedUrl(url: string | null | undefined): string | null {
     iv_load_policy: '3',
     modestbranding: '1',
   });
+  if (startSecond) params.set('start', String(startSecond));
   return `https://www.youtube.com/embed/${match[1]}?${params.toString()}`;
 }
 
@@ -39,13 +40,14 @@ export default async function HomePage() {
 
   const heroVideoUrl = homeData?.heroVideoUrl ?? null;
   const heroVideoMobileUrl = homeData?.heroVideoMobileUrl ?? null;
+  const heroVideoStartSecond = homeData?.heroVideoStartSecond ?? null;
   const beatportAccolade = homeData?.beatportAccolade ?? null;
   const featuredArtistSlugs = homeData?.featuredArtistSlugs ?? [];
   const heroLayloEmbedUrl = homeData?.heroLayloEmbedUrl ?? null;
 
   // Build YouTube embed URLs server-side — extract video ID via regex, never pass raw URL as src.
-  const desktopEmbedUrl = buildYouTubeEmbedUrl(heroVideoUrl);
-  const mobileEmbedUrl = buildYouTubeEmbedUrl(heroVideoMobileUrl);
+  const desktopEmbedUrl = buildYouTubeEmbedUrl(heroVideoUrl, heroVideoStartSecond);
+  const mobileEmbedUrl = buildYouTubeEmbedUrl(heroVideoMobileUrl, heroVideoStartSecond);
 
   // Featured releases — filter by featured=true flag (per D-07, NOT featuredReleaseSlug).
   const allReleases = await reader.collections.releases.all();
