@@ -15,13 +15,17 @@ export default function FirstVisitPrompt({
   trackTitle: string;
 }) {
   const [visible, setVisible] = useState(false);
-  const { loadPlaylist } = usePlayer();
+  const { loadPlaylist, togglePlay, playOnReady } = usePlayer();
 
   useEffect(() => {
     if (sessionStorage.getItem(SESSION_KEY)) return;
-    const t = setTimeout(() => setVisible(true), 1500);
+    const t = setTimeout(() => {
+      setVisible(true);
+      // Preload the widget in the background so it's ready when user clicks
+      loadPlaylist(embedUrl, scUrl);
+    }, 1500);
     return () => clearTimeout(t);
-  }, []);
+  }, [loadPlaylist, embedUrl, scUrl]);
 
   function dismiss() {
     sessionStorage.setItem(SESSION_KEY, '1');
@@ -29,10 +33,11 @@ export default function FirstVisitPrompt({
   }
 
   function play() {
-    // Replace auto_play=false with auto_play=true so SC starts playing
-    // as soon as the iframe is created — no widget.play() race needed.
-    const autoplayUrl = embedUrl.replace('auto_play=false', 'auto_play=true');
-    loadPlaylist(autoplayUrl, scUrl);
+    // Call togglePlay synchronously within the user gesture — the only
+    // approach that works in Safari for cross-origin iframes.
+    // playOnReady is the fallback if the widget isn't initialized yet.
+    togglePlay();
+    playOnReady();
     dismiss();
   }
 

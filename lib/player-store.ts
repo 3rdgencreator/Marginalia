@@ -73,7 +73,6 @@ class PlayerStore {
   private currentIndexRef = 0;
   private initInterval: ReturnType<typeof setInterval> | null = null;
   private pendingPlay = false;
-  private autoPlayRetries = 0;
 
   constructor() {}
 
@@ -185,7 +184,6 @@ class PlayerStore {
   }
 
   togglePlay() {
-    this.autoPlayRetries = 0;
     if (!this.widget) return;
     if (this.state.isPlaying) {
       this.widget.pause();
@@ -209,8 +207,7 @@ class PlayerStore {
   dismiss()  { this.setState({ dismissed: true }); }
   playOnReady() {
     if (this.widget) {
-      this.autoPlayRetries = 5;
-      setTimeout(() => { if (!this.state.isPlaying) this.widget?.play(); }, 300);
+      setTimeout(() => { if (!this.state.isPlaying) this.widget?.play(); }, 500);
     } else {
       this.pendingPlay = true;
     }
