@@ -3,12 +3,13 @@ import Image from 'next/image';
 import { reader } from '@/lib/keystatic';
 import { plainTextFromDocument } from '@/lib/releases';
 import Container from '@/components/layout/Container';
-import { DocumentRenderer } from '@keystatic/core/renderer';
 import RandomBackground from '@/components/ui/RandomBackground';
+import AboutBody from '@/components/about/AboutBody';
 
 export async function generateMetadata(): Promise<Metadata> {
   const about = await reader.singletons.about.read();
-  const description = plainTextFromDocument(about?.body, 160) || 'About Marginalia.';
+  const body = about?.body ? await about.body() : null;
+  const description = plainTextFromDocument(body, 160) || 'About Marginalia.';
   return {
     title: 'About — Marginalia',
     description,
@@ -18,6 +19,8 @@ export async function generateMetadata(): Promise<Metadata> {
 export default async function AboutPage() {
   // CRITICAL: Use .read() NOT .readOrThrow() — about.yaml may not be populated
   const about = await reader.singletons.about.read();
+  // body is stored as a separate .mdoc file — must call as function to get nodes
+  const body = about?.body ? await about.body() : null;
 
   return (
     <RandomBackground>
@@ -39,15 +42,43 @@ export default async function AboutPage() {
           </div>
         )}
 
-        {/* Rich text body via DocumentRenderer — FIRST USE in project */}
-        {/* Guard: Array.isArray check prevents Pitfall 8 (DocumentRenderer receiving non-array) */}
-        {about?.body && Array.isArray(about.body) && about.body.length > 0 ? (
-          <div className="prose prose-invert max-w-none text-(--text-body) text-(--color-text-primary) leading-relaxed">
-            <DocumentRenderer document={about.body} />
-          </div>
+        {Array.isArray(body) && body.length > 0 ? (
+          <AboutBody nodes={body} />
         ) : null}
 
         {/* When body is empty, page renders headline + photo only — no filler text (per D-24) */}
+
+        {/* Press card — Mixmag feature */}
+        <div
+          className="not-prose mt-(--space-xl) rounded-xl border border-white/70 px-4 py-4"
+          style={{ backgroundColor: 'rgba(255,255,255,0.08)', boxShadow: '0 0 20px 6px rgba(202,201,249,0.25), 0 0 6px 2px rgba(202,201,249,0.35)' }}
+        >
+          <p className="text-xs font-bold uppercase tracking-widest mb-1" style={{ color: '#E3000B' }}>
+            Featured in Mixmag
+          </p>
+          <p className="text-sm text-(--color-text-secondary) mb-3">
+            &ldquo;ELIF is on a meteoric rise and you can&apos;t lose sight of her&rdquo;
+          </p>
+          <a
+            href="https://mixmag.com.br/feature/turkish-artist-elif-is-on-a-meteoric-rise-and-you-cant-lose-sight-of-her"
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{
+              display: 'inline-block',
+              backgroundColor: '#E3000B',
+              borderRadius: '9999px',
+              padding: '6px 18px',
+              color: 'white',
+              textDecoration: 'none',
+              fontSize: '11px',
+              fontWeight: 700,
+              textTransform: 'uppercase',
+              letterSpacing: '0.06em',
+            }}
+          >
+            Read the feature →
+          </a>
+        </div>
 
       </div>
       </Container>

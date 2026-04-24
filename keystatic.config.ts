@@ -189,6 +189,37 @@ export default config({
       },
     }),
 
+    freeDownloads: collection({
+      label: 'Free Downloads',
+      slugField: 'title',
+      path: 'content/free-downloads/*',
+      format: { data: 'yaml' },
+      entryLayout: 'form',
+      schema: {
+        title: fields.slug({ name: { label: 'Title' } }),
+        artistName: fields.text({ label: 'Artist Name' }),
+        description: fields.text({
+          label: 'Description',
+          multiline: true,
+        }),
+        coverImage: fields.image({
+          label: 'Cover Image',
+          directory: 'public/images/downloads',
+          publicPath: '/images/downloads/',
+        }),
+        downloadUrl: fields.url({
+          label: 'Private Download / Listen URL',
+          description: 'Private SoundCloud share link — only revealed after the email gate',
+        }),
+        releaseDate: fields.date({ label: 'Release Date' }),
+        active: fields.checkbox({
+          label: 'Active',
+          description: 'Show on Free Downloads page',
+          defaultValue: true,
+        }),
+      },
+    }),
+
     showcases: collection({
       label: 'Showcases',
       slugField: 'title',
@@ -286,6 +317,10 @@ export default config({
         newsletterProvider: fields.text({
           label: 'Newsletter Provider ID',
           description: 'Brevo list ID',
+        }),
+        layloUrl: fields.url({
+          label: 'Laylo Community URL',
+          description: 'Main Laylo page (shown on Free Downloads gate)',
         }),
       },
     }),
