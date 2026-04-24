@@ -98,18 +98,20 @@ export default async function SiteFooter() {
               </ul>
             </div>
             <div>
-              <h2 className="text-(--text-label) text-(--color-text-primary) font-bold mb-3">
-                Incubation
+              <h2 className="text-(--text-label) font-bold mb-3">
+                <Link href="/services" className="text-(--color-text-primary) hover:text-(--color-accent-lime) transition-colors duration-150">
+                  Incubation
+                </Link>
               </h2>
               <ul className="flex flex-col gap-2">
                 {INCUBATION_LABELS.map((label) => (
                   <li key={label}>
-                    <span
-                      aria-disabled="true"
-                      className="text-(--text-label) text-(--color-text-muted) opacity-40 cursor-not-allowed"
+                    <Link
+                      href="/services"
+                      className="text-(--text-label) text-(--color-text-muted) hover:text-(--color-text-primary) transition-colors duration-150"
                     >
                       {label}
-                    </span>
+                    </Link>
                   </li>
                 ))}
               </ul>
