@@ -1,5 +1,6 @@
 import { config, collection, singleton, fields } from '@keystatic/core';
 import { platformLinksField } from '@/lib/platform-links-field';
+import { soundcloudDownloadField } from '@/lib/soundcloud-download-field';
 
 export default config({
   storage: { kind: 'local' },
@@ -196,6 +197,8 @@ export default config({
       format: { data: 'yaml' },
       entryLayout: 'form',
       schema: {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        soundcloudDownload: soundcloudDownloadField() as any,
         title: fields.slug({ name: { label: 'Title' } }),
         artistName: fields.text({ label: 'Artist Name' }),
         description: fields.text({
@@ -203,13 +206,10 @@ export default config({
           multiline: true,
         }),
         coverImage: fields.image({
-          label: 'Cover Image',
+          label: 'Cover Image (optional override)',
+          description: 'Leave empty — artwork is pulled from SoundCloud automatically',
           directory: 'public/images/downloads',
           publicPath: '/images/downloads/',
-        }),
-        downloadUrl: fields.url({
-          label: 'Private Download / Listen URL',
-          description: 'Private SoundCloud share link — only revealed after the email gate',
         }),
         releaseDate: fields.date({ label: 'Release Date' }),
         active: fields.checkbox({

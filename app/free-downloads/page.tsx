@@ -3,6 +3,7 @@ import { reader } from '@/lib/keystatic';
 import Container from '@/components/layout/Container';
 import RandomBackground from '@/components/ui/RandomBackground';
 import DownloadGate, { type DownloadItem } from '@/components/downloads/DownloadGate';
+import type { SoundcloudDownloadValue } from '@/lib/soundcloud-download-field';
 
 export const metadata: Metadata = {
   title: 'Free Downloads — Marginalia',
@@ -24,15 +25,21 @@ export default async function FreeDownloadsPage() {
       if (!b.entry.releaseDate) return -1;
       return b.entry.releaseDate.localeCompare(a.entry.releaseDate);
     })
-    .map(({ slug, entry }) => ({
+    .map(({ slug, entry }) => {
+      const sc = entry.soundcloudDownload as SoundcloudDownloadValue;
+      return {
       slug,
       title: entry.title,
       artistName: entry.artistName ?? '',
       description: entry.description ?? '',
-      coverImage: entry.coverImage ? `/images/downloads/${entry.coverImage}` : null,
-      downloadUrl: entry.downloadUrl ?? null,
+      // Manual upload takes precedence; SoundCloud artwork is fallback
+      coverImage: entry.coverImage
+        ? `/images/downloads/${entry.coverImage}`
+        : (sc?.artworkUrl ?? null),
+      downloadUrl: sc?.url ?? null,
       releaseDate: entry.releaseDate ?? null,
-    }));
+      };
+    });
 
   const layloUrl = siteConfig?.layloUrl ?? homeData?.heroLayloEmbedUrl ?? null;
 

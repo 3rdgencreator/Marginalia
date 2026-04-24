@@ -62,22 +62,6 @@ function DownloadCard({ item }: { item: DownloadItem }) {
   );
 }
 
-function LockedCard() {
-  return (
-    <div
-      className="rounded-2xl border-2 border-white/20 bg-white/5 overflow-hidden"
-      style={{ filter: 'blur(2px)', pointerEvents: 'none', userSelect: 'none' }}
-    >
-      <div className="aspect-square bg-white/5" />
-      <div className="p-4 space-y-2">
-        <div className="h-3 w-3/4 rounded bg-white/10" />
-        <div className="h-2 w-1/2 rounded bg-white/10" />
-        <div className="h-2 w-full rounded bg-white/5 mt-4" />
-        <div className="h-2 w-5/6 rounded bg-white/5" />
-      </div>
-    </div>
-  );
-}
 
 export default function DownloadGate({
   items,
@@ -150,24 +134,7 @@ export default function DownloadGate({
   }
 
   return (
-    <div>
-      {/* Teaser grid — locked/blurred */}
-      <div className="relative mb-(--space-xl)">
-        <ul className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-(--space-sm)" aria-hidden="true">
-          {items.slice(0, 4).map((item) => (
-            <li key={item.slug}>
-              <LockedCard />
-            </li>
-          ))}
-        </ul>
-        {/* Gradient fade over the grid */}
-        <div
-          className="absolute inset-0 pointer-events-none"
-          style={{ background: 'linear-gradient(to bottom, transparent 0%, var(--color-bg, #1F1F21) 85%)' }}
-          aria-hidden="true"
-        />
-      </div>
-
+    <div className="flex justify-center">
       {/* Gate panel */}
       <div
         className="rounded-2xl border-2 border-white/70 bg-white/10 backdrop-blur-sm p-6 sm:p-8 mx-auto max-w-lg text-center"
