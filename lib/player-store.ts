@@ -207,7 +207,9 @@ class PlayerStore {
   dismiss()  { this.setState({ dismissed: true }); }
   playOnReady() {
     if (this.widget) {
-      setTimeout(() => { if (!this.state.isPlaying) this.widget?.play(); }, 500);
+      [300, 800, 1800].forEach(delay => {
+        setTimeout(() => { if (!this.state.isPlaying) this.widget?.play(); }, delay);
+      });
     } else {
       this.pendingPlay = true;
     }

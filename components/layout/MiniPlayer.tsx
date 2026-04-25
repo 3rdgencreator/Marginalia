@@ -73,58 +73,13 @@ function VUMeter({ isPlaying, volume }: { isPlaying: boolean; volume: number }) 
   );
 }
 
-// Pioneer-style gain knob — drag up to increase, drag down to decrease
-function GainKnob({ volume, setVolume }: { volume: number; setVolume: (v: number) => void }) {
-  const startY = useRef<number | null>(null);
-  const startVol = useRef(0);
-
-  function onPointerDown(e: React.PointerEvent) {
-    e.currentTarget.setPointerCapture(e.pointerId);
-    startY.current = e.clientY;
-    startVol.current = volume;
-  }
-  function onPointerMove(e: React.PointerEvent) {
-    if (startY.current === null) return;
-    const delta = (startY.current - e.clientY) * 0.9;
-    setVolume(Math.round(Math.max(0, Math.min(100, startVol.current + delta))));
-  }
-  function onPointerUp() { startY.current = null; }
-
-  // Map volume 0-100 → angle -135° to +135° (270° sweep)
-  const angle = -135 + (volume / 100) * 270;
-  const rad = (angle - 90) * (Math.PI / 180);
-  const r = 7; // indicator dot radius from center
-  const cx = 11; const cy = 11; // center of 22×22 knob
-  const dx = cx + r * Math.cos(rad);
-  const dy = cy + r * Math.sin(rad);
-
-  return (
-    <div
-      onPointerDown={onPointerDown}
-      onPointerMove={onPointerMove}
-      onPointerUp={onPointerUp}
-      title={`Gain: ${volume}%`}
-      style={{
-        width: 22, height: 22, borderRadius: '50%', flexShrink: 0,
-        background: 'radial-gradient(circle at 42% 36%, #555 0%, #333 38%, #1e1e1e 68%, #141414 100%)',
-        border: '1px solid rgba(255,255,255,0.18)',
-        boxShadow: 'inset 0 0 5px rgba(0,0,0,0.8), 0 1px 3px rgba(0,0,0,0.5)',
-        cursor: 'grab', userSelect: 'none', position: 'relative', touchAction: 'none',
-      }}
-    >
-      <svg width="22" height="22" viewBox="0 0 22 22" style={{ position: 'absolute', top: 0, left: 0 }}>
-        <circle cx={dx} cy={dy} r={1.5} fill="rgba(255,255,255,0.85)" />
-      </svg>
-    </div>
-  );
-}
 
 export default function MiniPlayer() {
   const pathname = usePathname();
   const {
     isPlaying, hasPlayed, dismissed, volume,
     progress, tracks, currentIndex,
-    togglePlay, skipNext, seekTo, setVolume, dismiss,
+    togglePlay, skipNext, seekTo, dismiss,
   } = usePlayer();
   const currentTitle = tracks[currentIndex]?.title ?? '';
   const currentArtwork = tracks[currentIndex]?.artwork_url ?? null;
@@ -136,7 +91,7 @@ export default function MiniPlayer() {
 
 
   return createPortal(
-    <>
+    <div className="hidden md:block">
       {/* Artwork — floats above mini player, bottom-left */}
       {/* Stereo VU meter — floats above the player bar, right side */}
       <div style={{
@@ -146,25 +101,23 @@ export default function MiniPlayer() {
         <VUMeter isPlaying={isPlaying} volume={volume} />
       </div>
 
-      {/* Gain knob + minimize — vertically centered in bar, below VU meter */}
+      {/* Minimize — sits where gain knob was, below VU meter */}
       <div style={{
         position: 'fixed', bottom: 0, right: 52, zIndex: 10000,
-        height: 32, display: 'flex', alignItems: 'flex-end', paddingBottom: 1, gap: 6,
+        height: 32, display: 'flex', alignItems: 'center',
       }}>
         <button
           onClick={dismiss}
           aria-label="Hide player"
           style={{
             background: 'none', border: 'none', padding: 0, cursor: 'pointer',
-            fontSize: 13, lineHeight: 1, color: 'rgba(255,255,255,0.35)',
-            display: 'flex', alignItems: 'center',
+            color: 'rgba(255,255,255,0.35)', display: 'flex', alignItems: 'center',
           }}
         >
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
             <polyline points="6 9 12 15 18 9" />
           </svg>
         </button>
-        <GainKnob volume={volume} setVolume={setVolume} />
       </div>
 
 
@@ -273,7 +226,7 @@ export default function MiniPlayer() {
 
         </div>
       </div>
-    </>,
+    </div>,
     document.body
   );
 }
