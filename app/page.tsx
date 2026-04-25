@@ -11,7 +11,7 @@ import AnnouncementBar from '@/components/layout/AnnouncementBar';
 // constructed youtube.com/embed/{ID}?{params} URL reaches the DOM.
 function buildYouTubeEmbedUrl(url: string | null | undefined, startSecond?: number | null): string | null {
   if (!url) return null;
-  const match = url.match(/(?:v=|youtu\.be\/|embed\/)([a-zA-Z0-9_-]{11})/);
+  const match = url.match(/(?:v=|youtu\.be\/|embed\/|shorts\/)([a-zA-Z0-9_-]{11})/);
   if (!match) return null;
   const params = new URLSearchParams({
     autoplay: '1',
