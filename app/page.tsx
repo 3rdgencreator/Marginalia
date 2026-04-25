@@ -4,6 +4,7 @@ import Container from '@/components/layout/Container';
 import Logo from '@/components/ui/Logo';
 import ReleaseCard from '@/components/releases/ReleaseCard';
 import ArtistCard from '@/components/artists/ArtistCard';
+import AnnouncementBar from '@/components/layout/AnnouncementBar';
 
 // Extract YouTube video ID via regex and build a safe embed URL.
 // The raw CMS URL is NEVER used directly as an iframe src — only the
@@ -36,7 +37,10 @@ export const metadata: Metadata = {
 export default async function HomePage() {
   // Singleton read — .read() returns null if content/home.yaml is missing or empty.
   // NEVER use .readOrThrow() — home.yaml may be seeded but not filled.
-  const homeData = await reader.singletons.homePage.read();
+  const [homeData, siteConfig] = await Promise.all([
+    reader.singletons.homePage.read(),
+    reader.singletons.siteConfig.read(),
+  ]);
 
   const heroVideoUrl = homeData?.heroVideoUrl ?? null;
   const heroVideoMobileUrl = homeData?.heroVideoMobileUrl ?? null;
@@ -79,6 +83,12 @@ export default async function HomePage() {
 
   return (
     <main>
+      {siteConfig?.announcementActive && siteConfig.announcementText && (
+        <AnnouncementBar
+          text={siteConfig.announcementText}
+          url={siteConfig.announcementUrl ?? null}
+        />
+      )}
 
       {/* <SplashScreen /> */}
       {/* HERO — full viewport, YouTube video background, Logo centered */}
@@ -152,10 +162,23 @@ export default async function HomePage() {
             </filter>
           </defs>
         </svg>
-        {/* Logo centered over video — SVG morphology organic glass shape */}
+        {/* Logo centered over video — SVG morphology organic glass shape.
+            Two-layer approach: glow via filter (may silently fail in Safari) +
+            real logo always rendered on top so it never disappears. */}
         <div className="absolute inset-0 flex items-center justify-center">
-          <div style={{ filter: 'url(#crystal-outline)', WebkitFilter: 'url(#crystal-outline)' }}>
-            <Logo className="h-16 md:h-24 w-auto" />
+          <div className="relative inline-block">
+            {/* Glow layer — filter only, aria-hidden so screen readers skip duplicate */}
+            <div
+              aria-hidden="true"
+              className="absolute top-0 left-0 pointer-events-none"
+              style={{ filter: 'url(#crystal-outline)', WebkitFilter: 'url(#crystal-outline)' }}
+            >
+              <Logo className="h-16 md:h-24 w-auto" />
+            </div>
+            {/* Real logo — no filter, always visible */}
+            <span className="relative z-[1] inline-block">
+              <Logo className="h-16 md:h-24 w-auto" />
+            </span>
           </div>
         </div>
         {/* Laylo CTA — bottom-center */}

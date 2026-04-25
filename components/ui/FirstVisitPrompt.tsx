@@ -3,8 +3,6 @@
 import { useEffect, useState } from 'react';
 import { usePlayer } from '@/lib/player-context';
 
-const SESSION_KEY = 'mrgnl_prompted';
-
 export default function FirstVisitPrompt({
   embedUrl,
   scUrl,
@@ -15,89 +13,81 @@ export default function FirstVisitPrompt({
   trackTitle: string;
 }) {
   const [visible, setVisible] = useState(false);
-  const { loadPlaylist, togglePlay, playOnReady } = usePlayer();
+  const { loadPlaylist, togglePlay, playOnReady, isPlaying, dismissed, hasPlayed } = usePlayer();
 
   useEffect(() => {
-    if (sessionStorage.getItem(SESSION_KEY)) return;
     const t = setTimeout(() => {
       setVisible(true);
-      // Preload the widget in the background so it's ready when user clicks
       loadPlaylist(embedUrl, scUrl);
     }, 1500);
     return () => clearTimeout(t);
   }, [loadPlaylist, embedUrl, scUrl]);
 
-  function dismiss() {
-    sessionStorage.setItem(SESSION_KEY, '1');
-    setVisible(false);
+  function handleClick() {
+    if (isPlaying) {
+      togglePlay();
+    } else {
+      togglePlay();
+      playOnReady();
+    }
   }
 
-  function play() {
-    // Call togglePlay synchronously within the user gesture — the only
-    // approach that works in Safari for cross-origin iframes.
-    // playOnReady is the fallback if the widget isn't initialized yet.
-    togglePlay();
-    playOnReady();
-    dismiss();
-  }
-
-  if (!visible) return null;
+  // Hide when MiniPlayer is open (hasPlayed && !dismissed); show only before first play or after dismiss
+  if (!visible || (hasPlayed && !dismissed)) return null;
 
   return (
-    <div style={{
-      position: 'fixed',
-      top: 64,
-      left: 20,
-      zIndex: 10000,
-      width: 'max-content',
-      opacity: 0.8,
-      maxWidth: 'calc(100vw - 32px)',
-    }}>
-      <div style={{
-        background: 'rgba(20,20,24,0.82)',
-        backdropFilter: 'blur(12px)',
-        WebkitBackdropFilter: 'blur(12px)',
-        border: '1px solid rgba(255,255,255,0.15)',
-        borderRadius: 0,
-        padding: '10px 20px',
-        boxShadow: '0 2px 12px rgba(0,0,0,0.4)',
-        display: 'flex',
-        alignItems: 'center',
-        gap: 14,
-        fontFamily: 'inherit',
-      }}>
-        <div style={{ minWidth: 0 }}>
-          <p style={{ fontSize: 13, fontWeight: 300, color: 'rgba(255,255,255,0.9)', whiteSpace: 'nowrap' }}>
-            Want to listen our latest podcast while you browse?
-          </p>
-        </div>
-
-        <button
-          onClick={play}
-          style={{
-            background: 'none',
-            border: 'none',
-            borderRadius: 0,
-            padding: '5px 14px',
-            fontSize: 11, fontWeight: 700,
-            color: '#fff', cursor: 'pointer', whiteSpace: 'nowrap',
-            letterSpacing: '0.06em', textTransform: 'uppercase', flexShrink: 0,
-          }}
-        >
-          ▶ Play
-        </button>
-
-        <button
-          onClick={dismiss}
-          style={{
-            background: 'none', border: 'none', cursor: 'pointer',
-            color: 'rgba(255,255,255,0.35)', fontSize: 11, padding: 0,
-            flexShrink: 0, whiteSpace: 'nowrap',
-          }}
-        >
-          Not now
-        </button>
-      </div>
-    </div>
+    <>
+      <svg
+        width="0"
+        height="0"
+        aria-hidden="true"
+        style={{ position: 'absolute', overflow: 'hidden' }}
+      >
+        <defs>
+          <filter id="fvp-glow" x="-50%" y="-200%" width="200%" height="500%">
+            <feMorphology in="SourceAlpha" result="expanded" operator="dilate" radius="5" />
+            <feGaussianBlur in="expanded" result="softEdge" stdDeviation="10" />
+            <feFlood floodColor="rgba(202,201,249,0.5)" result="color" />
+            <feComposite in="color" in2="softEdge" operator="in" result="glow" />
+            <feComposite in="SourceGraphic" in2="glow" operator="over" />
+          </filter>
+        </defs>
+      </svg>
+      <button
+        onClick={handleClick}
+        aria-label={isPlaying ? 'Pause podcast' : 'Play podcast'}
+        style={{
+          position: 'fixed',
+          top: 'calc(var(--nav-height-mobile) + 6px + 20px + 8px)',
+          left: '2rem',
+          zIndex: 10000,
+          background: 'none',
+          border: 'none',
+          cursor: 'pointer',
+          padding: '6px',
+          color: 'rgba(255,255,255,0.7)',
+          lineHeight: 1,
+          opacity: 0.7,
+          filter: 'url(#fvp-glow)',
+          WebkitFilter: 'url(#fvp-glow)',
+        }}
+      >
+        {isPlaying ? (
+          /* Playing — speaker with waves */
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+            <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" />
+            <path d="M15.54 8.46a5 5 0 0 1 0 7.07" />
+            <path d="M19.07 4.93a10 10 0 0 1 0 14.14" />
+          </svg>
+        ) : (
+          /* Muted — speaker with X */
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+            <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" />
+            <line x1="23" y1="9" x2="17" y2="15" />
+            <line x1="17" y1="9" x2="23" y2="15" />
+          </svg>
+        )}
+      </button>
+    </>
   );
 }

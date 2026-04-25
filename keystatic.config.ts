@@ -321,6 +321,19 @@ export default config({
           label: 'SoundCloud Podcast Playlist URL',
           description: 'Paste the SoundCloud playlist/set URL — shown as a full embed on the Podcasts page',
         }),
+        announcementActive: fields.checkbox({
+          label: 'Announcement Bar Active',
+          description: 'Show the scrolling announcement strip below the navigation bar',
+          defaultValue: false,
+        }),
+        announcementText: fields.text({
+          label: 'Announcement Text',
+          description: 'e.g. MRGNL037 out now! Click to listen.',
+        }),
+        announcementUrl: fields.url({
+          label: 'Announcement Link URL',
+          description: 'Where clicking the bar takes the user (leave empty for no link)',
+        }),
       },
     }),
 

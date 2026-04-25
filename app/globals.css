@@ -117,3 +117,9 @@ body {
 @keyframes videoSnapIn {
   to { opacity: 0.8; }
 }
+
+/* ─── Announcement bar marquee ───────────────────────────────── */
+@keyframes announcement-scroll {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-25%); }
+}
