@@ -9,22 +9,26 @@ import AnnouncementBar from '@/components/layout/AnnouncementBar';
 // Extract YouTube video ID via regex and build a safe embed URL.
 // The raw CMS URL is NEVER used directly as an iframe src — only the
 // constructed youtube.com/embed/{ID}?{params} URL reaches the DOM.
-function buildYouTubeEmbedUrl(url: string | null | undefined, startSecond?: number | null): string | null {
+function buildYouTubeEmbedUrl(url: string | null | undefined, startSecond?: number | null, mobile = false): string | null {
   if (!url) return null;
+  const isShorts = url.includes('/shorts/');
   const match = url.match(/(?:v=|youtu\.be\/|embed\/|shorts\/)([a-zA-Z0-9_-]{11})/);
   if (!match) return null;
   const params = new URLSearchParams({
     autoplay: '1',
     mute: '1',
-    loop: '1',
-    controls: '0',
-    playlist: match[1],
     playsinline: '1',
     rel: '0',
-    showinfo: '0',
     iv_load_policy: '3',
     modestbranding: '1',
   });
+  if (!mobile || !isShorts) {
+    // Shorts don't support playlist loop — skip for mobile Shorts
+    params.set('loop', '1');
+    params.set('playlist', match[1]);
+    params.set('controls', '0');
+    params.set('showinfo', '0');
+  }
   if (startSecond) params.set('start', String(startSecond));
   return `https://www.youtube.com/embed/${match[1]}?${params.toString()}`;
 }
@@ -51,7 +55,7 @@ export default async function HomePage() {
 
   // Build YouTube embed URLs server-side — extract video ID via regex, never pass raw URL as src.
   const desktopEmbedUrl = buildYouTubeEmbedUrl(heroVideoUrl, heroVideoStartSecond);
-  const mobileEmbedUrl = buildYouTubeEmbedUrl(heroVideoMobileUrl, heroVideoStartSecond);
+  const mobileEmbedUrl = buildYouTubeEmbedUrl(heroVideoMobileUrl, heroVideoStartSecond, true);
 
   // Featured releases — filter by featured=true flag (per D-07, NOT featuredReleaseSlug).
   const allReleases = await reader.collections.releases.all();
