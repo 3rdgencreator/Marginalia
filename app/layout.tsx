@@ -3,6 +3,7 @@ import './globals.css';
 import SiteNav from '@/components/layout/SiteNav';
 import SiteFooter from '@/components/layout/SiteFooter';
 import MiniPlayer from '@/components/layout/MiniPlayer';
+import FirstVisitPrompt from '@/components/ui/FirstVisitPrompt';
 import { PlayerProvider } from '@/lib/player-context';
 import { reader } from '@/lib/keystatic';
 import { buildSoundCloudPlaylistEmbedUrl, buildSoundCloudEmbedUrl } from '@/lib/releases';
@@ -64,6 +65,15 @@ export default async function RootLayout({
           <main className="flex-1">{children}</main>
           <SiteFooter />
           <MiniPlayer />
+          {latestEmbedUrl && scUrl && (
+            <div className="hidden md:block">
+              <FirstVisitPrompt
+                embedUrl={latestEmbedUrl}
+                scUrl={scUrl}
+                trackTitle={latestTitle}
+              />
+            </div>
+          )}
         </PlayerProvider>
       </body>
     </html>
