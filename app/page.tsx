@@ -47,15 +47,14 @@ export default async function HomePage() {
   ]);
 
   const heroVideoUrl = homeData?.heroVideoUrl ?? null;
-  const heroVideoMobileUrl = homeData?.heroVideoMobileUrl ?? null;
+  const heroVideoMobile = homeData?.heroVideoMobile ?? null;
   const heroVideoStartSecond = homeData?.heroVideoStartSecond ?? null;
   const beatportAccolade = homeData?.beatportAccolade ?? null;
   const featuredArtistSlugs = homeData?.featuredArtistSlugs ?? [];
   const heroLayloEmbedUrl = homeData?.heroLayloEmbedUrl ?? null;
 
-  // Build YouTube embed URLs server-side — extract video ID via regex, never pass raw URL as src.
+  // Build YouTube embed URL server-side — extract video ID via regex, never pass raw URL as src.
   const desktopEmbedUrl = buildYouTubeEmbedUrl(heroVideoUrl, heroVideoStartSecond);
-  const mobileEmbedUrl = buildYouTubeEmbedUrl(heroVideoMobileUrl, heroVideoStartSecond, true);
 
   // Featured releases — filter by featured=true flag (per D-07, NOT featuredReleaseSlug).
   const allReleases = await reader.collections.releases.all();
@@ -118,23 +117,25 @@ export default async function HomePage() {
             </div>
           </div>
         )}
-        {/* Mobile video — same trick */}
-        {mobileEmbedUrl && (
+        {/* Mobile video — native <video> for reliable autoplay on iOS Safari */}
+        {heroVideoMobile && (
           <div className="block md:hidden absolute inset-0 overflow-hidden" style={{ opacity: 0.8 }}>
             <div style={{
               position: 'absolute',
               top: '50%', left: '50%',
               transform: 'translate(-50%, -50%)',
-              width: 'max(120vw, calc(120dvh * 16 / 9))',
-              height: 'max(120dvh, calc(120vw * 9 / 16))',
+              width: 'max(120vw, calc(120dvh * 9 / 16))',
+              height: 'max(120dvh, calc(120vw * 16 / 9))',
             }}>
-              <iframe
-                style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', pointerEvents: 'none' }}
-                src={mobileEmbedUrl}
-                title="Marginalia hero background video"
+              {/* eslint-disable-next-line jsx-a11y/media-has-caption */}
+              <video
+                src={heroVideoMobile}
+                autoPlay
+                muted
+                loop
+                playsInline
                 aria-hidden="true"
-                allow="autoplay; encrypted-media"
-                loading="eager"
+                style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', objectFit: 'cover', pointerEvents: 'none' }}
               />
             </div>
           </div>

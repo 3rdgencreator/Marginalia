@@ -352,9 +352,11 @@ export default config({
           label: 'Hero Video Start (seconds)',
           description: 'Videoyu kaçıncı saniyeden başlat (boş = baştan)',
         }),
-        heroVideoMobileUrl: fields.url({
-          label: 'Hero Video URL (mobile 9:16)',
-          description: 'Unlisted YouTube URL for mobile portrait hero background',
+        heroVideoMobile: fields.file({
+          label: 'Hero Video (mobile 9:16)',
+          description: 'Short looping MP4/WebM video for mobile portrait hero background',
+          directory: 'public/videos',
+          publicPath: '/videos/',
         }),
         featuredReleaseSlug: fields.text({
           label: 'Featured Release Slug',
