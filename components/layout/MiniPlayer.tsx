@@ -159,7 +159,7 @@ export default function MiniPlayer({ bgColor }: { bgColor?: string }) {
             )}
             {currentTitle && (
               <span style={{
-                fontSize: 12, fontWeight: 300, color: 'rgba(255,255,255,0.55)',
+                fontSize: 12, fontWeight: 500, color: 'rgba(255,255,255,0.9)',
                 whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis',
                 letterSpacing: '0.01em',
               }}>

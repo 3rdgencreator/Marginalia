@@ -61,11 +61,11 @@ export default function ReleaseCard({ slug, entry }: CardProps) {
           transition-opacity duration-200 ease-out
         "
       >
-        <span className="text-(--text-body) font-bold text-center text-(--color-text-primary)">
+        <span className="text-(--text-body) font-bold text-center text-white">
           {entry.title}
         </span>
         {artistsForOverlay && (
-          <span className="text-(--text-label) text-(--color-text-secondary) text-center">
+          <span className="text-(--text-label) text-white text-center">
             {artistsForOverlay}
           </span>
         )}
