@@ -33,7 +33,7 @@ export default function GenreChip({ genre }: GenreChipProps) {
   const style = GENRE_STYLE[genre] ?? FALLBACK_STYLE;
   return (
     <span
-      className={`inline-flex items-center rounded-full px-3 py-1 text-(--text-label) ${style.bg} ${style.fg}`}
+      className={`inline-flex items-center px-3 py-1 text-(--text-label) ${style.bg} ${style.fg}`}
     >
       {genreLabelFor(genre)}
     </span>

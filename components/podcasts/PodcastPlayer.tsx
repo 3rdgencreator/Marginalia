@@ -49,7 +49,7 @@ export default function PodcastPlayer({
         className="w-full lg:sticky lg:top-28 lg:self-start shrink-0"
         style={{ maxWidth: 380 }}
       >
-        <div className="rounded-2xl border border-white/20 overflow-hidden bg-white/5 backdrop-blur-sm">
+        <div className="border border-white/20 overflow-hidden bg-white/5 backdrop-blur-sm">
           {/* Artwork */}
           <div className="relative bg-white/10" style={{ aspectRatio: '1 / 1' }}>
             {artworkUrl ? (
@@ -62,7 +62,7 @@ export default function PodcastPlayer({
               className="absolute inset-0 flex items-center justify-center bg-black/20 hover:bg-black/30 transition-colors duration-150"
               aria-label={isPlaying ? 'Pause' : 'Play'}
             >
-              <div className="w-14 h-14 rounded-full bg-black/60 backdrop-blur-sm flex items-center justify-center">
+              <div className="w-14 h-14 bg-black/60 backdrop-blur-sm flex items-center justify-center">
                 {isPlaying ? (
                   <svg width="22" height="22" viewBox="0 0 24 24" fill="white">
                     <rect x="6" y="4" width="4" height="16" rx="1"/>
@@ -88,14 +88,14 @@ export default function PodcastPlayer({
 
             {/* Seekable progress bar */}
             <div
-              className="mt-3 h-1.5 w-full rounded-full bg-white/20 overflow-hidden cursor-pointer"
+              className="mt-3 h-1.5 w-full bg-white/20 overflow-hidden cursor-pointer"
               onClick={(e) => {
                 const rect = e.currentTarget.getBoundingClientRect();
                 seekTo((e.clientX - rect.left) / rect.width);
               }}
             >
               <div
-                className="h-full rounded-full transition-all duration-300"
+                className="h-full transition-all duration-300"
                 style={{ width: `${progress * 100}%`, backgroundColor: 'var(--color-accent-lime)' }}
               />
             </div>
@@ -134,8 +134,7 @@ export default function PodcastPlayer({
           href={playlistUrl}
           target="_blank"
           rel="noopener noreferrer"
-          className="mt-4 flex items-center justify-center gap-2 rounded-full px-6 py-3 bg-white/10 border border-white/40 text-(--color-text-primary) hover:bg-white/20 transition-all duration-150 text-sm font-semibold tracking-wide"
-          style={{ boxShadow: '0 0 16px 4px rgba(202,201,249,0.18), 0 0 5px 1px rgba(202,201,249,0.28)' }}
+          className="mt-4 flex items-center justify-center gap-2 px-6 py-3 bg-white/10 border border-white/40 text-(--color-text-primary) hover:bg-white/20 transition-all duration-150 text-sm font-semibold tracking-wide"
         >
           View all on
           <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-label="SoundCloud">
@@ -170,11 +169,11 @@ export default function PodcastPlayer({
                 alt={track.title}
                 width={48}
                 height={48}
-                className="w-12 h-12 object-cover rounded shrink-0"
+                className="w-12 h-12 object-cover shrink-0"
                 unoptimized
               />
             ) : (
-              <div className="w-12 h-12 rounded bg-white/10 shrink-0" />
+              <div className="w-12 h-12 bg-white/10 shrink-0" />
             )}
             <div className="flex-1 min-w-0">
               <p className={`text-sm font-semibold truncate ${

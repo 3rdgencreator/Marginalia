@@ -55,7 +55,7 @@ function VUMeter({ isPlaying, volume }: { isPlaying: boolean; volume: number }) 
           const dimColor = i >= 10 ? 'rgba(255,40,40,0.07)' : i >= 6 ? 'rgba(255,255,255,0.06)' : 'rgba(158,255,10,0.08)';
           return (
             <div key={i} style={{
-              width: 4, height: 4, borderRadius: '50%',
+              width: 4, height: 4,
               backgroundColor: lit ? litColor : dimColor,
               transition: lit ? 'none' : 'background-color 0.08s',
             }} />
@@ -74,7 +74,7 @@ function VUMeter({ isPlaying, volume }: { isPlaying: boolean; volume: number }) 
 }
 
 
-export default function MiniPlayer() {
+export default function MiniPlayer({ bgColor }: { bgColor?: string }) {
   const pathname = usePathname();
   const {
     isPlaying, hasPlayed, dismissed, volume,
@@ -128,15 +128,14 @@ export default function MiniPlayer() {
           alt={currentTitle}
           style={{
             position: 'fixed', bottom: 48, left: 20, zIndex: 9998,
-            width: 60, height: 60, borderRadius: 6, objectFit: 'cover',
-            boxShadow: '0 0 20px 6px rgba(158,255,10,0.18), 0 0 6px 2px rgba(158,255,10,0.3)',
+            width: 60, height: 60, objectFit: 'cover',
           }}
         />
       )}
       <div style={{
         position: 'fixed', bottom: 0, left: 0, right: 0, zIndex: 9999,
         transform: 'translateZ(0)',
-        background: 'rgba(10,10,12,0.10)',
+        background: bgColor ?? 'rgba(10,10,12,0.85)',
         backdropFilter: 'blur(16px)', WebkitBackdropFilter: 'blur(16px)',
         borderTop: '1px solid rgba(255,255,255,0.08)',
         fontFamily: 'inherit', color: 'inherit',
@@ -154,7 +153,7 @@ export default function MiniPlayer() {
           {/* Left — now playing + track title */}
           <div style={{ flex: 1, overflow: 'hidden', display: 'flex', alignItems: 'center', gap: 8 }}>
             {isPlaying && (
-              <span style={{ fontSize: 8, fontWeight: 300, color: 'rgba(220,50,50,0.85)', letterSpacing: '0.08em', textTransform: 'uppercase', flexShrink: 0 }}>
+              <span style={{ fontSize: 8, fontWeight: 300, color: '#9EFF0A', letterSpacing: '0.08em', textTransform: 'uppercase', flexShrink: 0 }}>
                 Now Playing
               </span>
             )}
@@ -169,55 +168,46 @@ export default function MiniPlayer() {
             )}
           </div>
 
-          {/* Center — Pioneer CDJ circular transport controls */}
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}>
-            {/* CUE — seeks to track beginning; orange when paused, dim when playing */}
-            <button onClick={() => seekTo(0)} aria-label="Cue" style={{
-              width: 22, height: 22, borderRadius: '50%',
-              background: 'radial-gradient(circle at 42% 36%, #555 0%, #333 38%, #1e1e1e 68%, #141414 100%)',
-              border: `1px solid ${isPlaying ? 'rgba(255,136,0,0.18)' : '#ff8800'}`,
-              boxShadow: isPlaying
-                ? 'inset 0 0 4px rgba(0,0,0,0.7)'
-                : '0 0 6px rgba(255,136,0,0.6), 0 0 12px rgba(255,136,0,0.2), inset 0 0 4px rgba(0,0,0,0.7)',
-              cursor: 'pointer',
-              color: isPlaying ? 'rgba(255,255,255,0.3)' : 'rgba(255,255,255,0.75)',
-              display: 'flex', alignItems: 'center', justifyContent: 'center',
-              flexShrink: 0,
-              fontSize: 6, fontWeight: 700, letterSpacing: '0.04em',
-            }}>
-              CUE
+          {/* Center — Spotify-style transport controls */}
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 16 }}>
+            {/* Skip to beginning */}
+            <button onClick={() => seekTo(0)} aria-label="Restart" style={{
+              background: 'none', border: 'none', padding: 0, cursor: 'pointer',
+              color: 'rgba(255,255,255,0.55)', display: 'flex', alignItems: 'center',
+              transition: 'color 150ms',
+            }}
+              onMouseEnter={e => (e.currentTarget.style.color = '#fff')}
+              onMouseLeave={e => (e.currentTarget.style.color = 'rgba(255,255,255,0.55)')}
+            >
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M6 6h2v12H6zm3.5 6 8.5 6V6z"/></svg>
             </button>
 
-            {/* Play / Pause — green when playing, dim when paused */}
+            {/* Play / Pause — white circle */}
             <button onClick={togglePlay} aria-label={isPlaying ? 'Pause' : 'Play'} style={{
-              width: 22, height: 22, borderRadius: '50%',
-              background: 'radial-gradient(circle at 42% 36%, #606060 0%, #383838 35%, #222 62%, #161616 100%)',
-              border: `1px solid ${isPlaying ? '#14e014' : 'rgba(20,224,20,0.18)'}`,
-              boxShadow: isPlaying
-                ? '0 0 7px rgba(20,224,20,0.75), 0 0 15px rgba(20,224,20,0.25), inset 0 0 5px rgba(0,0,0,0.7)'
-                : 'inset 0 0 5px rgba(0,0,0,0.7)',
-              cursor: 'pointer',
-              color: 'rgba(255,255,255,0.85)',
+              width: 32, height: 32, borderRadius: '50%',
+              background: '#fff', border: 'none',
+              cursor: 'pointer', color: '#000',
               display: 'flex', alignItems: 'center', justifyContent: 'center',
-              flexShrink: 0,
-            }}>
+              flexShrink: 0, transition: 'transform 150ms',
+            }}
+              onMouseEnter={e => (e.currentTarget.style.transform = 'scale(1.06)')}
+              onMouseLeave={e => (e.currentTarget.style.transform = 'scale(1)')}
+            >
               {isPlaying
-                ? <svg width="9" height="9" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="4" width="4" height="16" rx="1"/><rect x="14" y="4" width="4" height="16" rx="1"/></svg>
-                : <svg width="9" height="9" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>}
+                ? <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>
+                : <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>}
             </button>
 
-            {/* Skip next — neutral, smaller */}
+            {/* Skip next */}
             <button onClick={skipNext} aria-label="Next" style={{
-              width: 18, height: 18, borderRadius: '50%',
-              background: 'radial-gradient(circle at 42% 36%, #555 0%, #333 38%, #1e1e1e 68%, #141414 100%)',
-              border: '1px solid rgba(255,255,255,0.14)',
-              boxShadow: 'inset 0 0 4px rgba(0,0,0,0.7)',
-              cursor: 'pointer',
-              color: 'rgba(255,255,255,0.45)',
-              display: 'flex', alignItems: 'center', justifyContent: 'center',
-              flexShrink: 0,
-            }}>
-              <svg width="8" height="8" viewBox="0 0 24 24" fill="currentColor"><path d="M6 18l8.5-6L6 6v12zm8.5-6v6h2V6h-2z"/></svg>
+              background: 'none', border: 'none', padding: 0, cursor: 'pointer',
+              color: 'rgba(255,255,255,0.55)', display: 'flex', alignItems: 'center',
+              transition: 'color 150ms',
+            }}
+              onMouseEnter={e => (e.currentTarget.style.color = '#fff')}
+              onMouseLeave={e => (e.currentTarget.style.color = 'rgba(255,255,255,0.55)')}
+            >
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M6 18l8.5-6L6 6v12zm8.5-6v6h2V6h-2z"/></svg>
             </button>
           </div>
 

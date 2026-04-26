@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { reader } from '@/lib/keystatic';
+import { resolveNavbarColor } from '@/lib/navbar-colors';
 import Container from './Container';
 import Logo from '@/components/ui/Logo';
 import SocialIcon, { type Platform } from '@/components/ui/SocialIcon';
@@ -41,7 +42,8 @@ export default async function SiteFooter() {
 
   return (
     <footer
-      className="bg-(--color-surface) pt-12 pb-8 mt-auto"
+      className="pt-12 pb-8 mt-auto"
+      style={{ backgroundColor: resolveNavbarColor(config?.footerColor ?? 'surface') }}
       aria-label="Site footer"
     >
       <Container>
@@ -51,8 +53,7 @@ export default async function SiteFooter() {
             <Logo className="h-10 w-auto text-(--color-text-primary)" />
             <div
               id="newsletter"
-              className="mt-6 rounded-xl border border-white/70 bg-white/10 backdrop-blur-sm px-4 py-3 max-w-xs"
-              style={{ boxShadow: '0 0 20px 6px rgba(202,201,249,0.25), 0 0 6px 2px rgba(202,201,249,0.35)' }}
+              className="mt-6 border border-white/70 bg-white/10 backdrop-blur-sm px-4 py-3 max-w-xs"
             >
               <p className="text-[10px] font-bold uppercase tracking-widest text-(--color-text-primary) mb-1">
                 Newsletter
@@ -117,7 +118,7 @@ export default async function SiteFooter() {
         </div>
 
         {/* Bottom bar */}
-        <div className="mt-12 pt-8 border-t border-white/10">
+        <div className="mt-4 pt-3 border-t border-white/10">
           <p className="text-(--text-label) text-(--color-text-secondary)">
             © {year} Marginalia. All rights reserved.
           </p>

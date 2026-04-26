@@ -3,6 +3,7 @@ import './globals.css';
 import SiteNav from '@/components/layout/SiteNav';
 import SiteFooter from '@/components/layout/SiteFooter';
 import MiniPlayer from '@/components/layout/MiniPlayer';
+import { resolveMiniPlayerColor } from '@/lib/navbar-colors';
 import FirstVisitPrompt from '@/components/ui/FirstVisitPrompt';
 import { PlayerProvider } from '@/lib/player-context';
 import { reader } from '@/lib/keystatic';
@@ -64,7 +65,7 @@ export default async function RootLayout({
           <SiteNav />
           <main className="flex-1">{children}</main>
           <SiteFooter />
-          <MiniPlayer />
+          <MiniPlayer bgColor={resolveMiniPlayerColor(siteConfig?.miniPlayerColor)} />
           {latestEmbedUrl && scUrl && (
             <div className="hidden md:block">
               <FirstVisitPrompt

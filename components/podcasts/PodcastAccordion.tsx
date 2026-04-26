@@ -47,7 +47,7 @@ export default function PodcastAccordion({
       {/* Left — player card */}
       {activeUrl && (
         <div className="w-full md:w-[340px] shrink-0">
-          <div className="rounded-2xl overflow-hidden border border-white/20">
+          <div className="overflow-hidden border border-white/20">
             <SoundCloudEmbed embedUrl={activeUrl} height={420} />
           </div>
         </div>
@@ -85,10 +85,10 @@ export default function PodcastAccordion({
                   alt={ep.title}
                   width={48}
                   height={48}
-                  className="w-12 h-12 object-cover rounded shrink-0"
+                  className="w-12 h-12 object-cover shrink-0"
                 />
               ) : (
-                <div className="w-12 h-12 rounded bg-white/10 shrink-0" />
+                <div className="w-12 h-12 bg-white/10 shrink-0" />
               )}
 
               {/* Title + artist */}

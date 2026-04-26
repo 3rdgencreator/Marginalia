@@ -98,7 +98,7 @@ export default async function HomePage() {
       <section className="relative h-[100dvh] overflow-hidden bg-(--color-bg)">
         {/* Desktop video — 300% wide trick clips YouTube title/logo at edges */}
         {desktopEmbedUrl && (
-          <div className="hidden md:block absolute inset-0 overflow-hidden" style={{ opacity: 0.8 }}>
+          <div className="hidden md:block absolute inset-0 overflow-hidden" style={{ opacity: 1 }}>
             <div style={{
               position: 'absolute',
               top: '50%', left: '50%',
@@ -119,7 +119,7 @@ export default async function HomePage() {
         )}
         {/* Mobile video — native <video> for reliable autoplay on iOS Safari */}
         {heroVideoMobile && (
-          <div className="block md:hidden absolute inset-0 overflow-hidden" style={{ opacity: 0.8 }}>
+          <div className="block md:hidden absolute inset-0 overflow-hidden" style={{ opacity: 1 }}>
             <div style={{
               position: 'absolute',
               top: '50%', left: '50%',
@@ -140,51 +140,9 @@ export default async function HomePage() {
             </div>
           </div>
         )}
-        {/* Dark overlay — ensures logo legibility over video */}
-        <div className="absolute inset-0 bg-black/30" aria-hidden="true" />
-        {/* SVG filter defs — shared by logo and CTA button.
-            NOTE: width/height must be > 0 for iOS Safari to render the defs. */}
-        <svg
-          width="1"
-          height="1"
-          aria-hidden="true"
-          style={{ position: 'absolute', width: 0, height: 0, overflow: 'hidden', pointerEvents: 'none' }}
-        >
-          <defs>
-            <filter id="crystal-outline" x="-50%" y="-150%" width="200%" height="400%">
-              <feMorphology in="SourceAlpha" result="expanded" operator="dilate" radius="16" />
-              <feGaussianBlur in="expanded" result="softEdge" stdDeviation="28" />
-              <feFlood floodColor="rgba(202,201,249,0.45)" result="color" />
-              <feComposite in="color" in2="softEdge" operator="in" result="glow" />
-              <feComposite in="SourceGraphic" in2="glow" operator="over" />
-            </filter>
-            <filter id="crystal-outline-pill" x="-50%" y="-200%" width="200%" height="500%">
-              <feMorphology in="SourceAlpha" result="expanded" operator="dilate" radius="5" />
-              <feGaussianBlur in="expanded" result="softEdge" stdDeviation="10" />
-              <feFlood floodColor="rgba(202,201,249,0.5)" result="color" />
-              <feComposite in="color" in2="softEdge" operator="in" result="glow" />
-              <feComposite in="SourceGraphic" in2="glow" operator="over" />
-            </filter>
-          </defs>
-        </svg>
-        {/* Logo centered over video — SVG morphology organic glass shape.
-            Two-layer approach: glow via filter (may silently fail in Safari) +
-            real logo always rendered on top so it never disappears. */}
+        {/* Logo centered over video */}
         <div className="absolute inset-0 flex items-center justify-center">
-          <div className="relative inline-block">
-            {/* Glow layer — filter only, aria-hidden so screen readers skip duplicate */}
-            <div
-              aria-hidden="true"
-              className="absolute top-0 left-0 pointer-events-none"
-              style={{ filter: 'url(#crystal-outline)', WebkitFilter: 'url(#crystal-outline)' }}
-            >
-              <Logo className="h-16 md:h-24 w-auto" />
-            </div>
-            {/* Real logo — no filter, always visible */}
-            <span className="relative z-[1] inline-block">
-              <Logo className="h-16 md:h-24 w-auto" />
-            </span>
-          </div>
+          <Logo className="h-16 md:h-24 w-auto" />
         </div>
         {/* Laylo CTA — bottom-center */}
         {heroLayloEmbedUrl && (
@@ -193,8 +151,7 @@ export default async function HomePage() {
               href={heroLayloEmbedUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="group flex items-center gap-3 rounded-full px-5 py-3 bg-white/10 backdrop-blur-sm border-2 border-white/70 text-white hover:bg-white/20 transition-all duration-150"
-              style={{ boxShadow: '0 0 20px 6px rgba(202,201,249,0.25), 0 0 6px 2px rgba(202,201,249,0.35)' }}
+              className="group flex items-center gap-3 px-5 py-3 bg-gradient-to-r from-[#580AFF] to-[#9B30FF] text-white hover:from-[#4A08D6] hover:to-[#8B25EE] transition-all duration-150"
             >
                 <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="currentColor" className="shrink-0">
                   <path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-6V11c0-3.07-1.63-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.64 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z" />

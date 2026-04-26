@@ -24,8 +24,7 @@ export default function ReleaseCard({ slug, entry }: CardProps) {
     <Link
       href={`/releases/${slug}`}
       aria-label={ariaLabel}
-      className="group relative block aspect-square overflow-hidden rounded-2xl border-2 border-white/70 bg-white/10"
-      style={{ boxShadow: '0 0 20px 6px rgba(202,201,249,0.25), 0 0 6px 2px rgba(202,201,249,0.35)' }}
+      className="group relative block aspect-square overflow-hidden border-2 border-white/70 bg-white/10"
     >
       {(() => {
         const src = entry.coverArt

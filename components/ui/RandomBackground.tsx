@@ -15,10 +15,8 @@ const BACKGROUNDS = [
 
 export default function RandomBackground({
   children,
-  overlay = 'bg-black/65',
 }: {
   children: React.ReactNode;
-  overlay?: string;
 }) {
   const [bg, setBg] = useState('');
 
@@ -30,10 +28,10 @@ export default function RandomBackground({
     <div className="relative min-h-screen">
       <div
         className="absolute inset-0 bg-cover bg-center bg-fixed"
-        style={bg ? { backgroundImage: `url('${bg}')`, opacity: 0.7, filter: 'blur(3px)', transform: 'scale(1.01)' } : {}}
+        style={bg ? { backgroundImage: `url('${bg}')`, opacity: 0.45, filter: 'blur(2px)', transform: 'scale(1.01)' } : {}}
         aria-hidden="true"
       />
-      <div className={`relative min-h-screen ${overlay}`}>{children}</div>
+      <div className="relative min-h-screen">{children}</div>
     </div>
   );
 }

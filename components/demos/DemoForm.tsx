@@ -29,7 +29,7 @@ const FIELDS: Field[] = [
 ];
 
 const inputClass =
-  'w-full rounded-xl px-4 py-2.5 text-sm bg-white/8 border border-white/20 text-white placeholder:text-(--color-text-muted) focus:outline-none focus:border-white/50 focus:bg-white/12 transition-all';
+  'w-full px-4 py-2.5 text-sm bg-white/8 border border-white/20 text-white placeholder:text-(--color-text-muted) focus:outline-none focus:border-white/50 focus:bg-white/12 transition-all';
 
 export default function DemoForm({
   heading = 'Submit a Demo',
@@ -76,13 +76,10 @@ export default function DemoForm({
     }
   }
 
-  const glow = '0 0 24px 8px rgba(158,255,10,0.08), 0 0 6px 2px rgba(158,255,10,0.12)';
-
   if (state === 'ok') {
     return (
       <div
-        className="rounded-2xl border border-white/20 bg-white/8 backdrop-blur-sm p-8 w-full max-w-lg text-center"
-        style={{ boxShadow: glow }}
+        className="border border-white/20 bg-white/8 backdrop-blur-sm p-8 w-full max-w-lg text-center"
       >
         <div className="text-3xl mb-4">✓</div>
         <h2 className="text-lg font-bold text-white mb-2">Demo received</h2>
@@ -95,11 +92,10 @@ export default function DemoForm({
 
   return (
     <div
-      className="rounded-2xl border border-white/20 bg-white/8 backdrop-blur-sm p-5 sm:p-8 w-full max-w-lg"
-      style={{ boxShadow: glow }}
+      className="border border-white/20 bg-white/8 backdrop-blur-sm p-5 sm:p-8 w-full max-w-lg"
     >
       {!acceptingDemos && (
-        <div className="mb-5 rounded-xl border border-white/20 bg-white/6 px-4 py-4 text-sm text-(--color-text-secondary) leading-relaxed space-y-2">
+        <div className="mb-5 border border-white/20 bg-white/6 px-4 py-4 text-sm text-(--color-text-secondary) leading-relaxed space-y-2">
           <p>We are no longer accepting demos for 2026 — you are more than welcome to send demos for consideration for 2027 onwards.</p>
           <p>Please send as a download enabled private SoundCloud link with correctly tagged metadata.</p>
           <p>Thank you for your music and your patience!</p>
@@ -200,7 +196,7 @@ export default function DemoForm({
         <button
           type="submit"
           disabled={state === 'loading'}
-          className="mt-1 rounded-full px-6 py-3 text-sm font-bold uppercase tracking-widest bg-(--color-accent-lime) text-(--color-bg) hover:opacity-90 transition-opacity disabled:opacity-50 cursor-pointer disabled:cursor-not-allowed"
+          className="mt-1 px-6 py-3 text-sm font-bold uppercase tracking-widest bg-(--color-accent-lime) text-(--color-bg) hover:opacity-90 transition-opacity disabled:opacity-50 cursor-pointer disabled:cursor-not-allowed"
         >
           {state === 'loading' ? 'Sending…' : 'Submit Demo'}
         </button>

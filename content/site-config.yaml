@@ -10,6 +10,9 @@ demoEmail: elif@marginalialabel.com
 layloUrl: https://laylo.com/elifmusique/marginaliacommunity
 soundcloudPlaylistUrl: >-
   https://soundcloud.com/marginalialabel/sets/marginalia-podcasts?si=71af8efb8a3f4e25abeb069b6cecbb67&utm_source=clipboard&utm_medium=text&utm_campaign=social_sharing
-announcementActive: true
+navbarColor: green-light
+miniPlayerColor: green-light
+footerColor: surface-purple
+announcementActive: false
 announcementText: MRGNL037 Out Now! Click here to listen!
 announcementUrl: https://hypeddit.com/marginalialabel/infected

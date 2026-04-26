@@ -20,16 +20,14 @@ type ShowcaseCardProps = {
   variant: 'upcoming' | 'past';
 };
 
-const glowUpcoming = '0 0 24px 8px rgba(158,255,10,0.1), 0 0 6px 2px rgba(158,255,10,0.18)';
-
 export default function ShowcaseCard({ entry, variant }: ShowcaseCardProps) {
   const isUpcoming = variant === 'upcoming';
   return (
     <article
-      className="rounded-xl overflow-hidden bg-(--color-surface) border p-(--space-lg) transition-all duration-300"
+      className="overflow-hidden bg-(--color-surface) border p-(--space-lg) transition-all duration-300"
       style={
         isUpcoming
-          ? { borderColor: 'rgba(158,255,10,0.3)', boxShadow: glowUpcoming }
+          ? { borderColor: 'rgba(158,255,10,0.3)' }
           : { borderColor: 'rgba(255,255,255,0.06)', opacity: 0.45, filter: 'grayscale(0.5)' }
       }
     >

@@ -4,6 +4,7 @@ import { reader } from '@/lib/keystatic';
 import NavLinks from './NavLinks';
 import MobileMenu from './MobileMenu';
 import SocialIcon, { type Platform } from '@/components/ui/SocialIcon';
+import { resolveNavbarColor } from '@/lib/navbar-colors';
 
 const PRIMARY_LINKS = [
   { href: '/about', label: 'About' },
@@ -41,8 +42,8 @@ export default async function SiteNav() {
 
   return (
     <header
-      className="sticky top-0 z-50 bg-black/70"
-      style={{ height: 'var(--nav-height-mobile)' }}
+      className="sticky top-0 z-50 h-[var(--nav-height-mobile)] md:h-[var(--nav-height-desktop)]"
+      style={{ backgroundColor: resolveNavbarColor(config?.navbarColor) }}
       aria-label="Main navigation"
     >
       <div

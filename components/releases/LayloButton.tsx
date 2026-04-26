@@ -21,7 +21,7 @@ export default function LayloButton({
       target="_blank"
       rel="noopener noreferrer"
       aria-label={`${verb} "${releaseTitle}" on Laylo`}
-      className="group flex items-center gap-4 rounded-lg px-5 py-4 bg-gradient-to-r from-[#580AFF] to-[#9B30FF] text-white hover:from-[#4A08D6] hover:to-[#8B25EE] transition-all duration-150"
+      className="group flex items-center gap-4 px-5 py-4 bg-gradient-to-r from-[#580AFF] to-[#9B30FF] text-white hover:from-[#4A08D6] hover:to-[#8B25EE] transition-all duration-150"
     >
       {/* Bell icon */}
       <svg

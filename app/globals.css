@@ -72,8 +72,8 @@
 
   /* Layout */
   --max-width-content: 1280px;
-  --nav-height-desktop: 64px;
-  --nav-height-mobile:  56px;
+  --nav-height-desktop: 80px;
+  --nav-height-mobile:  68px;
 }
 
 /* ─── Base ───────────────────────────────────────────────────── */
@@ -105,12 +105,6 @@ body {
 :focus-visible {
   outline: 2px solid var(--color-accent-lime);
   outline-offset: 3px;
-}
-
-/* ─── Hero logo glow fade out ────────────────────────────────── */
-@keyframes glowFadeOut {
-  0%   { opacity: 1; }
-  100% { opacity: 0; }
 }
 
 /* ─── Hero video snap in at 3s ───────────────────────────────── */

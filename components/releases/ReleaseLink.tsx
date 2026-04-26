@@ -26,7 +26,7 @@ export default function ReleaseLink({
       target="_blank"
       rel="noopener noreferrer"
       aria-label={`Listen on ${label} — ${releaseTitle}`}
-      className="group flex items-center gap-4 rounded-lg border border-(--color-surface) bg-(--color-surface) px-5 py-4 text-(--color-text-primary) hover:border-(--color-accent-lime) hover:text-(--color-accent-lime) transition-all duration-150"
+      className="group flex items-center gap-4 border border-(--color-surface) bg-(--color-surface) px-5 py-4 text-(--color-text-primary) hover:border-(--color-accent-lime) hover:text-(--color-accent-lime) transition-all duration-150"
     >
       {iconPath && (
         <svg

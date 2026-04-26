@@ -32,8 +32,6 @@ export default function NewsletterForm({ listId }: { listId: string | null }) {
     );
   }
 
-  const glow = '0 0 12px 3px rgba(202,201,249,0.18), 0 0 4px 1px rgba(202,201,249,0.25)';
-
   return (
     <form onSubmit={handleSubmit} className="flex gap-2 mt-3">
       <input
@@ -43,14 +41,12 @@ export default function NewsletterForm({ listId }: { listId: string | null }) {
         value={email}
         onChange={(e) => { setEmail(e.target.value); setState('idle'); }}
         placeholder="email"
-        className="flex-1 min-w-0 rounded-full px-4 py-2 text-[10px] bg-white/10 border border-white/30 text-(--color-text-primary) placeholder:text-(--color-text-muted) placeholder:text-[10px] focus:outline-none focus:border-white/60 transition-all"
-        style={{ boxShadow: glow }}
+        className="flex-1 min-w-0 px-4 py-2 text-[10px] bg-white/10 border border-white/30 text-(--color-text-primary) placeholder:text-(--color-text-muted) placeholder:text-[10px] focus:outline-none focus:border-white/60 transition-all"
       />
       <button
         type="submit"
         disabled={state === 'loading'}
-        className="rounded-full px-4 py-2 text-[10px] font-bold uppercase tracking-widest bg-white/10 border border-white/30 text-(--color-text-primary) hover:bg-white/20 transition-all duration-150 disabled:opacity-50 shrink-0"
-        style={{ boxShadow: glow }}
+        className="px-4 py-2 text-[10px] font-bold uppercase tracking-widest bg-white/10 border border-white/30 text-(--color-text-primary) hover:bg-white/20 transition-all duration-150 disabled:opacity-50 shrink-0"
       >
         {state === 'loading' ? '…' : 'Subscribe'}
       </button>

@@ -30,7 +30,7 @@ export default function PressEntry({ entry }: PressEntryProps) {
       <div className="flex-1 min-w-0">
         {/* Type badge */}
         <span
-          className={`inline-block text-(--text-label) uppercase px-2 py-1 rounded-full mb-(--space-sm) ${badgeClass}`}
+          className={`inline-block text-(--text-label) uppercase px-2 py-1 mb-(--space-sm) ${badgeClass}`}
         >
           {entry.type}
         </span>

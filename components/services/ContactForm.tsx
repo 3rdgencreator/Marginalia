@@ -45,13 +45,10 @@ export default function ContactForm({
     }
   }
 
-  const glow = '0 0 20px 6px rgba(202,201,249,0.15), 0 0 6px 2px rgba(202,201,249,0.25)';
-
   if (state === 'ok') {
     return (
       <div
-        className="rounded-2xl border-2 border-white/40 bg-white/5 backdrop-blur-sm p-8 text-center"
-        style={{ boxShadow: glow }}
+        className="border-2 border-white/40 bg-white/5 backdrop-blur-sm p-8 text-center"
       >
         <p className="text-(--color-text-primary) font-semibold text-lg mb-1">Message sent.</p>
         <p className="text-sm text-(--color-text-muted)">We&apos;ll get back to you soon.</p>
@@ -74,10 +71,9 @@ export default function ContactForm({
                 key={name}
                 type="button"
                 onClick={() => setInstructor(name)}
-                className={`rounded-xl px-6 py-4 text-sm font-semibold tracking-wide border transition-all duration-150
+                className={`px-6 py-4 text-sm font-semibold tracking-wide border transition-all duration-150
                   ${instructor === name ? 'border-white/70 bg-white/15 text-(--color-text-primary)' : 'border-white/30 bg-white/5 text-(--color-text-secondary) hover:bg-white/10 hover:border-white/50'}
                 `}
-                style={instructor === name ? { boxShadow: glow } : {}}
               >
                 {name}
               </button>
@@ -99,7 +95,7 @@ export default function ContactForm({
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="your@email.com"
-              className="w-full rounded-xl px-5 py-4 text-base bg-white/10 border border-white/30 text-(--color-text-primary) placeholder:text-(--color-text-muted) focus:outline-none focus:border-white/60 transition-all"
+              className="w-full px-5 py-4 text-base bg-white/10 border border-white/30 text-(--color-text-primary) placeholder:text-(--color-text-muted) focus:outline-none focus:border-white/60 transition-all"
             />
           </div>
 
@@ -113,15 +109,14 @@ export default function ContactForm({
               onChange={(e) => setMessage(e.target.value)}
               placeholder="Tell us about yourself and what you're looking for…"
               rows={5}
-              className="w-full rounded-xl px-5 py-4 text-base bg-white/10 border border-white/30 text-(--color-text-primary) placeholder:text-(--color-text-muted) focus:outline-none focus:border-white/60 transition-all resize-none"
+              className="w-full px-5 py-4 text-base bg-white/10 border border-white/30 text-(--color-text-primary) placeholder:text-(--color-text-muted) focus:outline-none focus:border-white/60 transition-all resize-none"
             />
           </div>
 
           <button
             type="submit"
             disabled={state === 'loading'}
-            className="self-start rounded-full px-9 py-4 text-sm font-bold uppercase tracking-widest border-2 border-white/70 bg-white/10 text-(--color-text-primary) hover:bg-white/20 transition-all duration-150 disabled:opacity-50"
-            style={{ boxShadow: glow }}
+            className="self-start px-9 py-4 text-sm font-bold uppercase tracking-widest border-2 border-white/70 bg-white/10 text-(--color-text-primary) hover:bg-white/20 transition-all duration-150 disabled:opacity-50"
           >
             {state === 'loading' ? 'Sending…' : 'Send →'}
           </button>
