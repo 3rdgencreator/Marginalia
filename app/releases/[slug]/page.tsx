@@ -122,7 +122,7 @@ export default async function ReleaseDetailPage({ params }: Props) {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
-      <RandomBackground darkContent>
+      <RandomBackground>
       <Container className="py-12 md:py-16">
         {/* Mobile: stacked. Desktop (lg+): two-column sticky */}
         <div className="flex flex-col lg:flex-row lg:gap-12 lg:items-start">
