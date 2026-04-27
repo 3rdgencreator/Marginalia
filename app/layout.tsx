@@ -3,7 +3,7 @@ import './globals.css';
 import SiteNav from '@/components/layout/SiteNav';
 import SiteFooter from '@/components/layout/SiteFooter';
 import MiniPlayer from '@/components/layout/MiniPlayer';
-import { resolveMiniPlayerColor } from '@/lib/navbar-colors';
+import { resolveMiniPlayerColor, resolveButtonColor } from '@/lib/navbar-colors';
 import FirstVisitPrompt from '@/components/ui/FirstVisitPrompt';
 import { PlayerProvider } from '@/lib/player-context';
 import { reader } from '@/lib/keystatic';
@@ -44,6 +44,10 @@ export default async function RootLayout({
   return (
     <html lang="en" className="h-full antialiased">
       <head>
+        <link rel="preconnect" href="https://www.youtube.com" />
+        <link rel="preconnect" href="https://i.ytimg.com" />
+        <link rel="dns-prefetch" href="https://www.youtube.com" />
+        <link rel="dns-prefetch" href="https://i.ytimg.com" />
         {/* AMENDMENT 5: preload both woff2 weights for LCP (replaces next/font/local's auto-preload) */}
         <link
           rel="preload"
@@ -60,7 +64,9 @@ export default async function RootLayout({
           crossOrigin="anonymous"
         />
       </head>
-      <body className="min-h-full flex flex-col font-sans text-(--color-text-primary)">
+      <body
+        className="min-h-full flex flex-col font-sans text-(--color-text-primary)"
+        style={{ '--color-button': resolveButtonColor(siteConfig?.buttonColor) } as React.CSSProperties}>
         <PlayerProvider>
           <SiteNav />
           <main className="flex-1">{children}</main>

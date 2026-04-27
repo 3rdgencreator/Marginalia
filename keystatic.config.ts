@@ -53,6 +53,15 @@ export default config({
           label: 'Featured on Homepage',
           defaultValue: false,
         }),
+        presave: fields.checkbox({
+          label: 'Pre-Save',
+          description: 'Show badge on Releases page and sort to top.',
+          defaultValue: false,
+        }),
+        badgeText: fields.text({
+          label: 'Badge Text',
+          description: 'Short label shown on the artwork (e.g. Pre-Save, Out Now, New). Leave blank for no badge.',
+        }),
       },
     }),
 
@@ -79,7 +88,8 @@ export default config({
           publicPath: '/images/artists/',
         }),
         featured: fields.checkbox({
-          label: 'Featured on Roster',
+          label: 'Show on Roster',
+          description: 'Display this artist on the Roster page.',
           defaultValue: true,
         }),
         // Social/platform URLs (all optional)
@@ -90,9 +100,25 @@ export default config({
         residentAdvisorUrl: fields.url({ label: 'Resident Advisor URL' }),
         youtubeUrl: fields.url({ label: 'YouTube URL' }),
         layloUrl: fields.url({ label: 'Laylo URL' }),
+        managementEmail: fields.text({
+          label: 'Management Email',
+          description: 'For management and general enquiries',
+        }),
         bookingEmail: fields.text({
-          label: 'Booking Email',
-          description: 'Optional booking contact email',
+          label: 'Booking Email (General)',
+          description: 'Single booking contact — use if NA/ROW split is not needed',
+        }),
+        bookingNAEmail: fields.text({
+          label: 'Booking Email — NA',
+          description: 'North America booking contact',
+        }),
+        bookingROWEmail: fields.text({
+          label: 'Booking Email — ROW',
+          description: 'Rest of World booking contact',
+        }),
+        pressKitUrl: fields.url({
+          label: 'Press Kit URL',
+          description: 'Link to downloadable press kit (Google Drive, Dropbox, etc.)',
         }),
       },
     }),
@@ -346,6 +372,25 @@ export default config({
             { label: 'Sky (#a9c2e7)', value: 'sky' },
           ],
         }),
+        buttonColor: fields.select({
+          label: 'Button Color',
+          description: 'Text and border color for outline buttons across the site (embed/branded buttons excluded)',
+          defaultValue: 'white',
+          options: [
+            { label: 'White (default)', value: 'white' },
+            { label: 'Lime (#9EFF0A)', value: 'lime' },
+            { label: 'Violet (#580AFF)', value: 'violet' },
+            { label: 'Purple (#8656FF)', value: 'surface-purple' },
+            { label: 'Pink (#ef6b8e)', value: 'pink' },
+            { label: 'Orange (#f29753)', value: 'orange' },
+            { label: 'Yellow (#f9c432)', value: 'yellow' },
+            { label: 'Olive (#c0c020)', value: 'olive' },
+            { label: 'Mint (#66cc99)', value: 'mint' },
+            { label: 'Green Light (#7ed35e)', value: 'green-light' },
+            { label: 'Lavender (#b088d0)', value: 'lavender' },
+            { label: 'Sky (#a9c2e7)', value: 'sky' },
+          ],
+        }),
         miniPlayerColor: fields.select({
           label: 'Mini Player Background Color',
           description: 'Background color of the bottom music player bar',
@@ -410,14 +455,6 @@ export default config({
           label: 'Announcement Link URL',
           description: 'Where clicking the bar takes the user (leave empty for no link)',
         }),
-        footerPresaveSlugs: fields.array(
-          fields.text({ label: 'Release Slug' }),
-          {
-            label: 'Footer Pre-Save Releases',
-            description: 'Up to 2 release slugs shown as pre-save cards in the footer',
-            itemLabel: (props) => props.value || 'Release',
-          }
-        ),
       },
     }),
 
@@ -428,20 +465,30 @@ export default config({
       schema: {
         heroHeadline: fields.text({ label: 'Hero Headline' }),
         heroSubtext: fields.text({ label: 'Hero Subtext' }),
-        heroVideoUrl: fields.url({
-          label: 'Hero Video URL (desktop 16:9)',
-          description: 'Unlisted YouTube URL for desktop hero background',
-        }),
+        heroVideoDesktop: fields.object({
+          file: fields.file({
+            label: 'Upload MP4 (bilgisayardan — öncelikli)',
+            directory: 'public/videos',
+            publicPath: '/videos/',
+          }),
+          youtubeUrl: fields.url({
+            label: 'YouTube URL (yedek — dosya yüklü değilse kullanılır)',
+          }),
+        }, { label: 'Hero Video — Desktop (16:9)' }),
         heroVideoStartSecond: fields.integer({
-          label: 'Hero Video Start (seconds)',
-          description: 'Videoyu kaçıncı saniyeden başlat (boş = baştan)',
+          label: 'Hero Video Start (seconds) — desktop YouTube only',
+          description: 'YouTube videosunu kaçıncı saniyeden başlat (boş = baştan)',
         }),
-        heroVideoMobile: fields.file({
-          label: 'Hero Video (mobile 9:16)',
-          description: 'Short looping MP4/WebM video for mobile portrait hero background',
-          directory: 'public/videos',
-          publicPath: '/videos/',
-        }),
+        heroVideoMobile: fields.object({
+          file: fields.file({
+            label: 'Upload MP4 (bilgisayardan — öncelikli)',
+            directory: 'public/videos',
+            publicPath: '/videos/',
+          }),
+          youtubeUrl: fields.url({
+            label: 'YouTube URL (yedek — dosya yüklü değilse kullanılır)',
+          }),
+        }, { label: 'Hero Video — Mobile (9:16)' }),
         featuredReleaseSlug: fields.text({
           label: 'Featured Release Slug',
           description: 'Manually curated featured release',

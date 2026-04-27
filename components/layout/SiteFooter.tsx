@@ -1,5 +1,5 @@
-import Image from 'next/image';
 import Link from 'next/link';
+import Image from 'next/image';
 import { reader } from '@/lib/keystatic';
 import { resolveNavbarColor } from '@/lib/navbar-colors';
 import Container from './Container';
@@ -8,7 +8,10 @@ import SocialIcon, { type Platform } from '@/components/ui/SocialIcon';
 import NewsletterForm from './NewsletterForm';
 
 export default async function SiteFooter() {
-  const config = await reader.singletons.siteConfig.read();
+  const [config, allReleases] = await Promise.all([
+    reader.singletons.siteConfig.read(),
+    reader.collections.releases.all(),
+  ]);
 
   const socials: Array<{ platform: Platform; url: string | null | undefined }> = [
     { platform: 'instagram', url: config?.instagramUrl },
@@ -18,43 +21,19 @@ export default async function SiteFooter() {
     { platform: 'tiktok', url: config?.tiktokUrl },
     { platform: 'facebook', url: config?.facebookUrl },
   ];
+
+  const presaves = allReleases
+    .filter(({ entry }) => entry.presave === true)
+    .map(({ slug, entry }) => {
+      const pl = (entry.platformLinks ?? {}) as Record<string, string | undefined>;
+      const src = entry.coverArt
+        ? `/images/releases/${entry.coverArt}`
+        : pl.artworkUrl?.replace('3000x3000bb', '600x600bb') ?? null;
+      return { slug, title: entry.title, artistName: pl.artistName ?? null, src };
+    });
+
   const newsletterListId = config?.newsletterProvider ?? null;
   const year = new Date().getFullYear();
-
-  const manualSlugs = (config?.footerPresaveSlugs ?? []).slice(0, 2);
-
-  const slugsToShow: string[] = manualSlugs.length > 0
-    ? manualSlugs
-    : await (async () => {
-        const allSlugs = await reader.collections.releases.list();
-        const withDates = (
-          await Promise.all(
-            allSlugs.map(async (slug) => {
-              const r = await reader.collections.releases.read(slug);
-              return r ? { slug, releaseDate: r.releaseDate ?? '' } : null;
-            })
-          )
-        ).filter(Boolean) as Array<{ slug: string; releaseDate: string }>;
-        return withDates
-          .sort((a, b) => b.releaseDate.localeCompare(a.releaseDate))
-          .slice(0, 2)
-          .map((r) => r.slug);
-      })();
-
-  const presaveReleases = (
-    await Promise.all(
-      slugsToShow.map(async (slug) => {
-        const release = await reader.collections.releases.read(slug);
-        if (!release) return null;
-        const coverSrc = release.coverArt
-          ? `/images/releases/${release.coverArt}`
-          : (release.platformLinks as { artworkUrl?: string })?.artworkUrl ?? null;
-        const layloUrl = (release.platformLinks as { layloUrl?: string })?.layloUrl ?? null;
-        const artistName = (release.platformLinks as { artistName?: string })?.artistName ?? null;
-        return { slug, title: release.title, artistName, coverSrc, layloUrl };
-      })
-    )
-  ).filter(Boolean) as Array<{ slug: string; title: string; artistName: string | null; coverSrc: string | null; layloUrl: string | null }>;
 
   return (
     <footer
@@ -75,15 +54,15 @@ export default async function SiteFooter() {
                 Newsletter
               </p>
               <p className="text-[11px] text-(--color-text-secondary) leading-relaxed mb-0">
-                New releases, free downloads &amp; events — straight to your inbox.
+                New releases, free downloads &amp; events, straight to your inbox.
               </p>
               <NewsletterForm listId={newsletterListId} />
             </div>
           </div>
 
-          {/* Column 2 — Connect (mobile only) + Pre-Save Releases */}
+          {/* Column 2 — Pre-Saves + Connect (mobile) */}
           <div className="flex flex-col gap-6">
-            {/* Connect — mobile only */}
+            {/* Mobile connect */}
             <div className="md:hidden">
               <h2 className="text-(--text-label) text-(--color-text-primary) font-bold mb-3">
                 Connect
@@ -97,49 +76,66 @@ export default async function SiteFooter() {
               </ul>
             </div>
 
-            {/* Pre-Save Releases */}
-            {presaveReleases.length > 0 && (
-              <div>
-                <h2 className="text-(--text-label) text-(--color-text-primary) font-bold mb-3 uppercase tracking-widest text-[10px]">
-                  Pre-Save
-                </h2>
-                <div style={{ display: 'flex', gap: '1rem' }}>
-                  {presaveReleases.map(({ slug, title, artistName, coverSrc, layloUrl }) => (
-                    <div key={slug} className="group flex flex-col gap-2" style={{ width: 112, flexShrink: 0 }}>
-                      <Link href={`/releases/${slug}`} className="relative bg-white/10 overflow-hidden" style={{ display: 'block', width: 112, height: 112, flexShrink: 0 }}>
-                        {coverSrc && (
-                          <Image
-                            src={coverSrc}
-                            alt={title}
-                            width={112}
-                            height={112}
-                            style={{ width: 112, height: 112, objectFit: 'cover' }}
-                          />
-                        )}
-                        <div
-                          aria-hidden="true"
-                          className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center gap-1 p-2 bg-[rgba(31,31,33,0.70)] opacity-0 group-hover:opacity-100 transition-opacity duration-200"
-                        >
-                          {artistName && (
-                            <span className="text-[9px] text-white uppercase tracking-widest text-center line-clamp-1">{artistName}</span>
-                          )}
-                          <span className="text-[10px] font-bold text-white text-center line-clamp-2">{title}</span>
-                        </div>
-                      </Link>
-                      <p className="text-[11px] text-(--color-text-primary) leading-tight line-clamp-2">{title}</p>
-                      {layloUrl && (
-                        <Link
-                          href={layloUrl}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="text-[10px] font-bold uppercase tracking-widest text-(--color-bg) bg-(--color-accent-lime) px-2 py-1 text-center hover:opacity-80 transition-opacity"
-                        >
-                          Pre-Save
-                        </Link>
+            {/* Pre-Save releases */}
+            {presaves.length > 0 && (
+              <div className="mt-6">
+              <ul
+                className="grid gap-3"
+                style={{
+                  gridTemplateColumns: `repeat(auto-fill, minmax(${Math.max(80, Math.min(130, Math.floor(400 / presaves.length)))}px, 1fr))`,
+                }}
+              >
+                {presaves.map(({ slug, title, artistName, src }) => (
+                  <li key={slug}>
+                    <Link
+                      href={`/releases/${slug}`}
+                      aria-label={artistName ? `${title} by ${artistName}` : title}
+                      className="group relative block aspect-square overflow-hidden border-2 border-white/70 bg-white/10"
+                    >
+                      {src ? (
+                        <Image
+                          src={src}
+                          alt={title}
+                          width={120}
+                          height={120}
+                          className="h-full w-full object-cover"
+                        />
+                      ) : (
+                        <span className="flex h-full w-full items-center justify-center text-[10px] text-(--color-text-muted)">
+                          {title[0]}
+                        </span>
                       )}
-                    </div>
-                  ))}
-                </div>
+                      {/* Pre-Save badge */}
+                      <span
+                        style={{
+                          position: 'absolute', top: 6, left: 6,
+                          background: 'var(--color-accent-lime)',
+                          color: '#000',
+                          fontSize: 9,
+                          fontWeight: 700,
+                          letterSpacing: '0.08em',
+                          padding: '2px 5px',
+                          textTransform: 'uppercase',
+                          pointerEvents: 'none',
+                          zIndex: 2,
+                        }}
+                      >
+                        Pre-Save
+                      </span>
+                      {/* Hover overlay */}
+                      <div
+                        aria-hidden="true"
+                        className="pointer-events-none absolute inset-0 hidden md:flex flex-col items-center justify-center gap-1 p-2 bg-[rgba(31,31,33,0.70)] opacity-0 group-hover:opacity-100 group-focus-visible:opacity-100 transition-opacity duration-200 ease-out"
+                      >
+                        <span className="text-[10px] font-bold text-center text-white leading-tight">{title}</span>
+                        {artistName && (
+                          <span className="text-[9px] text-white/70 text-center">{artistName}</span>
+                        )}
+                      </div>
+                    </Link>
+                  </li>
+                ))}
+              </ul>
               </div>
             )}
           </div>

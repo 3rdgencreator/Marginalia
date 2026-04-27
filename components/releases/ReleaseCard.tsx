@@ -8,6 +8,8 @@ type CardProps = {
     artistName?: string;
     coverArt: string | null;
     artworkUrl?: string | null;
+    presave?: boolean;
+    badgeText?: string | null;
   };
 };
 
@@ -48,6 +50,27 @@ export default function ReleaseCard({ slug, entry }: CardProps) {
           </span>
         );
       })()}
+
+      {/* Badge — shown when badgeText is set; falls back to presave flag with "Pre-Save" */}
+      {(entry.badgeText || entry.presave) && (
+        <span
+          aria-label={entry.badgeText ?? 'Pre-Save'}
+          style={{
+            position: 'absolute', top: 8, left: 8,
+            background: 'var(--color-accent-lime)',
+            color: '#000',
+            fontSize: 10,
+            fontWeight: 700,
+            letterSpacing: '0.08em',
+            padding: '2px 7px',
+            textTransform: 'uppercase',
+            pointerEvents: 'none',
+            zIndex: 2,
+          }}
+        >
+          {entry.badgeText || 'Pre-Save'}
+        </span>
+      )}
 
       {/* Desktop-only hover overlay (D-03/D-04). Hidden on mobile via `hidden md:flex`. */}
       <div

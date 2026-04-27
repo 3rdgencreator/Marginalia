@@ -20,7 +20,6 @@ export default async function PodcastsPage() {
     ? buildSoundCloudPlaylistEmbedUrl(siteConfig.soundcloudPlaylistUrl)
     : null;
 
-  // Sort date descending — newest episodes first (per D-13)
   const sorted = [...all].sort((a, b) =>
     (b.entry.date ?? '').localeCompare(a.entry.date ?? '')
   );

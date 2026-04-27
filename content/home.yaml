@@ -1,6 +1,8 @@
-heroVideoUrl: https://www.youtube.com/watch?v=oLUkjl7lVH4&list=RDoLUkjl7lVH4&start_radio=1
-heroVideoStartSecond: 3655
-heroVideoMobile: hero-mobile.mp4
+heroVideoDesktop:
+  youtubeUrl: >-
+    https://www.youtube.com/watch?v=oLUkjl7lVH4&list=RDoLUkjl7lVH4&start_radio=1&t=3664s
+heroVideoStartSecond: 3596
+heroVideoMobile: {}
 featuredArtistSlugs: []
 heroLayloEmbedUrl: https://laylo.com/elifmusique/marginaliacommunity
 showSpotifyPlaylist: false

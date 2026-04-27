@@ -3,12 +3,18 @@ import { reader } from '@/lib/keystatic';
 import Container from '@/components/layout/Container';
 import Logo from '@/components/ui/Logo';
 import ReleaseCard from '@/components/releases/ReleaseCard';
-import ArtistCard from '@/components/artists/ArtistCard';
 import AnnouncementBar from '@/components/layout/AnnouncementBar';
+import HeroYouTube from '@/components/ui/HeroYouTube';
 
 // Extract YouTube video ID via regex and build a safe embed URL.
 // The raw CMS URL is NEVER used directly as an iframe src — only the
 // constructed youtube.com/embed/{ID}?{params} URL reaches the DOM.
+function extractYouTubeId(url: string | null | undefined): string | null {
+  if (!url) return null;
+  const match = url.match(/(?:v=|youtu\.be\/|embed\/|shorts\/)([a-zA-Z0-9_-]{11})/);
+  return match ? match[1] : null;
+}
+
 function buildYouTubeEmbedUrl(url: string | null | undefined, startSecond?: number | null, mobile = false): string | null {
   if (!url) return null;
   const isShorts = url.includes('/shorts/');
@@ -46,43 +52,39 @@ export default async function HomePage() {
     reader.singletons.siteConfig.read(),
   ]);
 
-  const heroVideoUrl = homeData?.heroVideoUrl ?? null;
-  const heroVideoMobile = homeData?.heroVideoMobile ? `/videos/${homeData.heroVideoMobile}` : null;
+  const heroDesktop = (homeData?.heroVideoDesktop as { file?: string; youtubeUrl?: string } | null | undefined) ?? null;
+  const heroMobile = (homeData?.heroVideoMobile as { file?: string; youtubeUrl?: string } | null | undefined) ?? null;
   const heroVideoStartSecond = homeData?.heroVideoStartSecond ?? null;
   const beatportAccolade = homeData?.beatportAccolade ?? null;
-  const featuredArtistSlugs = homeData?.featuredArtistSlugs ?? [];
   const heroLayloEmbedUrl = homeData?.heroLayloEmbedUrl ?? null;
 
-  // Build YouTube embed URL server-side — extract video ID via regex, never pass raw URL as src.
-  const desktopEmbedUrl = buildYouTubeEmbedUrl(heroVideoUrl, heroVideoStartSecond);
+  const desktopFile = heroDesktop?.file ?? null;
+  const mobileFile = heroMobile?.file ?? null;
+
+  // Build YouTube embed URL server-side — only used when no uploaded file is set.
+  const desktopEmbedUrl = !desktopFile ? buildYouTubeEmbedUrl(heroDesktop?.youtubeUrl, heroVideoStartSecond) : null;
+  const mobileEmbedUrl = !mobileFile ? buildYouTubeEmbedUrl(heroMobile?.youtubeUrl, null, true) : null;
+  const desktopYouTubeId = !desktopFile ? extractYouTubeId(heroDesktop?.youtubeUrl) : null;
+  const desktopThumbnailUrl = desktopYouTubeId ? `https://i.ytimg.com/vi/${desktopYouTubeId}/maxresdefault.jpg` : null;
 
   // Featured releases — filter by featured=true flag (per D-07, NOT featuredReleaseSlug).
   const allReleases = await reader.collections.releases.all();
   const featured = allReleases
     .filter(({ entry }) => entry.featured === true)
-    .map(({ slug, entry }) => ({
-      slug,
-      entry: {
-        title: entry.title,
-        coverArt: entry.coverArt,
-      },
-    }));
-
-  // Artist teaser — filter by featuredArtistSlugs if non-empty, otherwise show all (per D-08).
-  const artistSlugs = await reader.collections.artists.list();
-  const allArtists = (
-    await Promise.all(
-      artistSlugs.map(async (slug) => {
-        const entry = await reader.collections.artists.read(slug);
-        return entry ? { slug, entry } : null;
-      })
-    )
-  ).filter((a): a is NonNullable<typeof a> => a !== null);
-
-  const artists =
-    Array.isArray(featuredArtistSlugs) && featuredArtistSlugs.length > 0
-      ? allArtists.filter(({ slug }) => featuredArtistSlugs.includes(slug))
-      : allArtists;
+    .map(({ slug, entry }) => {
+      const pl = (entry.platformLinks ?? {}) as Record<string, string | undefined>;
+      return {
+        slug,
+        entry: {
+          title: entry.title,
+          coverArt: entry.coverArt,
+          artistName: pl.artistName,
+          artworkUrl: pl.artworkUrl,
+          presave: true,
+          badgeText: entry.badgeText || null,
+        },
+      };
+    });
 
   return (
     <main>
@@ -96,46 +98,45 @@ export default async function HomePage() {
       {/* <SplashScreen /> */}
       {/* HERO — full viewport, YouTube video background, Logo centered */}
       <section className="relative h-[100dvh] overflow-hidden bg-(--color-bg)">
-        {/* Desktop video — 300% wide trick clips YouTube title/logo at edges */}
-        {desktopEmbedUrl && (
-          <div className="hidden md:block absolute inset-0 overflow-hidden" style={{ opacity: 1 }}>
-            <div style={{
-              position: 'absolute',
-              top: '50%', left: '50%',
-              transform: 'translate(-50%, -50%)',
-              width: 'max(120vw, calc(120dvh * 16 / 9))',
-              height: 'max(120dvh, calc(120vw * 9 / 16))',
-            }}>
-              <iframe
-                style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', pointerEvents: 'none' }}
-                src={desktopEmbedUrl}
-                title="Marginalia hero background video"
-                aria-hidden="true"
-                allow="autoplay; encrypted-media"
-                loading="eager"
-              />
+        {/* Desktop — direct MP4 (priority) */}
+        {desktopFile && (
+          <div className="hidden md:block absolute inset-0 overflow-hidden">
+            <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', width: 'max(120vw, calc(120dvh * 16 / 9))', height: 'max(120dvh, calc(120vw * 9 / 16))' }}>
+              {/* eslint-disable-next-line jsx-a11y/media-has-caption */}
+              <video src={`${desktopFile}#t=0.001`} autoPlay muted loop playsInline preload="metadata" aria-hidden="true"
+                style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', objectFit: 'cover', pointerEvents: 'none', imageRendering: 'auto', willChange: 'transform' }} />
             </div>
           </div>
         )}
-        {/* Mobile video — native <video> for reliable autoplay on iOS Safari */}
-        {heroVideoMobile && (
-          <div className="block md:hidden absolute inset-0 overflow-hidden" style={{ opacity: 1 }}>
-            <div style={{
-              position: 'absolute',
-              top: '50%', left: '50%',
-              transform: 'translate(-50%, -50%)',
-              width: 'max(120vw, calc(120dvh * 9 / 16))',
-              height: 'max(120dvh, calc(120vw * 16 / 9))',
-            }}>
+        {/* Desktop — YouTube embed with thumbnail poster */}
+        {!desktopFile && desktopEmbedUrl && desktopThumbnailUrl && (
+          <div className="hidden md:block absolute inset-0 overflow-hidden">
+            <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', width: 'max(120vw, calc(120dvh * 16 / 9))', height: 'max(120dvh, calc(120vw * 9 / 16))' }}>
+              <HeroYouTube embedUrl={desktopEmbedUrl} thumbnailUrl={desktopThumbnailUrl} />
+            </div>
+          </div>
+        )}
+        {/* Mobile — direct MP4 (priority) */}
+        {mobileFile && (
+          <div className="block md:hidden absolute inset-0 overflow-hidden">
+            <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', width: 'max(120vw, calc(120dvh * 9 / 16))', height: 'max(120dvh, calc(120vw * 16 / 9))' }}>
               {/* eslint-disable-next-line jsx-a11y/media-has-caption */}
-              <video
-                src={heroVideoMobile}
-                autoPlay
-                muted
-                loop
-                playsInline
+              <video src={`${mobileFile}#t=0.001`} autoPlay muted loop playsInline preload="metadata" aria-hidden="true"
+                style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', objectFit: 'cover', pointerEvents: 'none' }} />
+            </div>
+          </div>
+        )}
+        {/* Mobile — YouTube embed fallback */}
+        {!mobileFile && mobileEmbedUrl && (
+          <div className="block md:hidden absolute inset-0 overflow-hidden">
+            <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', width: 'max(120vw, calc(120dvh * 9 / 16))', height: 'max(120dvh, calc(120vw * 16 / 9))' }}>
+              <iframe
+                style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', pointerEvents: 'none' }}
+                src={mobileEmbedUrl}
+                title="Marginalia hero background video (mobile)"
                 aria-hidden="true"
-                style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', objectFit: 'cover', pointerEvents: 'none' }}
+                allow="autoplay; encrypted-media"
+                loading="eager"
               />
             </div>
           </div>
@@ -156,10 +157,12 @@ export default async function HomePage() {
                 <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="currentColor" className="shrink-0">
                   <path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-6V11c0-3.07-1.63-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.64 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z" />
                 </svg>
-                <span className="text-sm font-semibold tracking-tight">Stay in the loop</span>
+                <span className="text-sm font-semibold tracking-tight">Join the community</span>
             </a>
           </div>
         )}
+
+
       </section>
 
       {/* BEATPORT ACCOLADE BADGE — omit section entirely when field is empty (per D-06) */}
@@ -190,21 +193,6 @@ export default async function HomePage() {
         </Container>
       )}
 
-      {/* ARTIST ROSTER TEASER — always shown when artists exist (per D-08) */}
-      {artists.length > 0 && (
-        <Container className="py-(--space-3xl)">
-          <h2 className="mb-(--space-xl) text-(--text-heading) font-bold uppercase text-(--color-text-primary)">
-            ARTISTS
-          </h2>
-          <ul className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-(--space-sm)">
-            {artists.map(({ slug, entry }) => (
-              <li key={slug}>
-                <ArtistCard slug={slug} name={entry.name} role={entry.role ?? null} photo={entry.photo ?? null} />
-              </li>
-            ))}
-          </ul>
-        </Container>
-      )}
     </main>
   );
 }

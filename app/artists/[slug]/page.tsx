@@ -4,6 +4,7 @@ import Image from 'next/image';
 import { reader } from '@/lib/keystatic';
 import { plainTextFromDocument } from '@/lib/releases';
 import Container from '@/components/layout/Container';
+import RandomBackground from '@/components/ui/RandomBackground';
 import ArtistSocialRow from '@/components/artists/ArtistSocialRow';
 
 type Props = { params: Promise<{ slug: string }> };
@@ -19,7 +20,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   if (!entry) return {};
 
   const name = entry.name as string;
-  const bioPlain = plainTextFromDocument(entry.bio, 160);
+  const bioNodes = entry.bio ? await entry.bio() : null;
+  const bioPlain = plainTextFromDocument(bioNodes, 160);
   const description = bioPlain || `${name} on Marginalia.`;
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://marginalialabel.com';
 
@@ -53,7 +55,8 @@ export default async function ArtistDetailPage({ params }: Props) {
   if (!entry) notFound();
 
   const name = entry.name as string;
-  const bioPlain = plainTextFromDocument(entry.bio, 800);
+  const bioNodes2 = entry.bio ? await entry.bio() : null;
+  const bioPlain = plainTextFromDocument(bioNodes2, 800);
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://marginalialabel.com';
 
   const jsonLd = {
@@ -70,7 +73,7 @@ export default async function ArtistDetailPage({ params }: Props) {
   };
 
   return (
-    <>
+    <RandomBackground>
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
@@ -83,7 +86,7 @@ export default async function ArtistDetailPage({ params }: Props) {
             <div className="aspect-square w-full overflow-hidden bg-(--color-surface)">
               {entry.photo ? (
                 <Image
-                  src={`/images/artists/${entry.photo}`}
+                  src={entry.photo}
                   alt={`${name} photo`}
                   width={800}
                   height={800}
@@ -105,11 +108,6 @@ export default async function ArtistDetailPage({ params }: Props) {
               <h1 className="text-(--text-hero) text-(--color-text-primary)">
                 {name}
               </h1>
-              {entry.role && (
-                <p className="text-(--text-label) text-(--color-text-secondary) uppercase tracking-widest">
-                  {entry.role}
-                </p>
-              )}
             </div>
 
             <ArtistSocialRow
@@ -128,22 +126,54 @@ export default async function ArtistDetailPage({ params }: Props) {
               </div>
             )}
 
-            {entry.bookingEmail && (
-              <div className="pt-4 border-t border-(--color-surface)">
-                <p className="text-(--text-label) text-(--color-text-secondary)">
-                  Booking:{' '}
-                  <a
-                    href={`mailto:${entry.bookingEmail}`}
-                    className="text-(--color-text-primary) hover:text-(--color-accent-lime) transition-colors duration-150"
-                  >
-                    {entry.bookingEmail}
-                  </a>
-                </p>
+            {entry.pressKitUrl && (
+              <div>
+                <a
+                  href={entry.pressKitUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 px-5 py-2 border border-(--color-button) text-(--text-label) font-bold uppercase tracking-widest text-(--color-button) hover:opacity-80 transition-opacity duration-150"
+                >
+                  Press Kit ↓
+                </a>
+              </div>
+            )}
+
+            {(entry.managementEmail || entry.bookingEmail || entry.bookingNAEmail || entry.bookingROWEmail) && (
+              <div className="pt-4 border-t border-(--color-surface) flex flex-col gap-2">
+                {entry.managementEmail && (
+                  <p className="text-(--text-label) text-(--color-text-secondary)">
+                    Management:{' '}
+                    <a href={`mailto:${entry.managementEmail}`} className="text-(--color-text-primary) hover:text-(--color-accent-lime) transition-colors duration-150">
+                      {entry.managementEmail}
+                    </a>
+                  </p>
+                )}
+                {entry.bookingEmail && (
+                  <p className="text-(--text-label) text-(--color-text-secondary)">
+                    Booking:{' '}
+                    <a href={`mailto:${entry.bookingEmail}`} className="text-(--color-text-primary) hover:text-(--color-accent-lime) transition-colors duration-150">
+                      {entry.bookingEmail}
+                    </a>
+                  </p>
+                )}
+                {(entry.bookingNAEmail || entry.bookingROWEmail) && (
+                  <p className="text-(--text-label) text-(--color-text-secondary)">
+                    Booking:{' '}
+                    {entry.bookingNAEmail && (
+                      <>NA: <a href={`mailto:${entry.bookingNAEmail}`} className="text-(--color-text-primary) hover:text-(--color-accent-lime) transition-colors duration-150">{entry.bookingNAEmail}</a></>
+                    )}
+                    {entry.bookingNAEmail && entry.bookingROWEmail && <span className="mx-2 opacity-30">·</span>}
+                    {entry.bookingROWEmail && (
+                      <>ROW: <a href={`mailto:${entry.bookingROWEmail}`} className="text-(--color-text-primary) hover:text-(--color-accent-lime) transition-colors duration-150">{entry.bookingROWEmail}</a></>
+                    )}
+                  </p>
+                )}
               </div>
             )}
           </div>
         </div>
       </Container>
-    </>
+    </RandomBackground>
   );
 }

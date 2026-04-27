@@ -13,38 +13,45 @@ export const metadata: Metadata = {
 export default async function ReleasesPage() {
   const releases = await reader.collections.releases.all();
 
-  const sorted = [...releases].sort((a, b) => {
-    const aDate = a.entry.releaseDate ?? '';
-    const bDate = b.entry.releaseDate ?? '';
-    return bDate.localeCompare(aDate);
+  const mapped = releases.map(({ slug, entry }) => {
+    const pl = (entry.platformLinks ?? {}) as Record<string, string | undefined>;
+    return {
+      slug,
+      entry: {
+        title: entry.title,
+        artistName: pl.artistName,
+        coverArt: entry.coverArt,
+        artworkUrl: pl.artworkUrl,
+        presave: entry.presave === true,
+        badgeText: entry.badgeText || null,
+        releaseDate: entry.releaseDate ?? '',
+      },
+    };
+  });
+
+  // Pre-saves first, then by date descending
+  const sorted = [...mapped].sort((a, b) => {
+    if (a.entry.presave && !b.entry.presave) return -1;
+    if (!a.entry.presave && b.entry.presave) return 1;
+    return b.entry.releaseDate.localeCompare(a.entry.releaseDate);
   });
 
   return (
     <RandomBackground>
-        <Container className="py-12 md:py-16">
-          {sorted.length === 0 ? (
-            <div className="py-16 text-center">
-              <h2 className="mb-4 text-(--text-heading) font-bold text-(--color-text-primary)">
-                Catalog is loading.
-              </h2>
-              <p className="text-(--text-body) text-(--color-text-muted)">
-                No releases have been published yet. Check back soon. New music drops monthly.
-              </p>
-            </div>
-          ) : (
-            <ReleaseGrid
-              releases={sorted.map(({ slug, entry }) => ({
-                slug,
-                entry: {
-                  title: entry.title,
-                  artistName: ((entry.platformLinks ?? {}) as Record<string, string | undefined>).artistName,
-                  coverArt: entry.coverArt,
-                  artworkUrl: ((entry.platformLinks ?? {}) as Record<string, string | undefined>).artworkUrl,
-                },
-              }))}
-            />
-          )}
-        </Container>
+      <Container className="py-12 md:py-16">
+        {sorted.length === 0 ? (
+          <div className="py-16 text-center">
+            <h2 className="mb-4 text-(--text-heading) font-bold text-(--color-text-primary)">
+              Catalog is loading.
+            </h2>
+            <p className="text-(--text-body) text-(--color-text-muted)">
+              No releases have been published yet. Check back soon. New music drops monthly.
+            </p>
+          </div>
+        ) : (
+          <ReleaseGrid releases={sorted} />
+        )}
+      </Container>
     </RandomBackground>
   );
 }

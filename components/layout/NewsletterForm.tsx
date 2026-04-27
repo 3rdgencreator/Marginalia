@@ -46,7 +46,7 @@ export default function NewsletterForm({ listId }: { listId: string | null }) {
       <button
         type="submit"
         disabled={state === 'loading'}
-        className="px-4 py-2 text-[10px] font-bold uppercase tracking-widest bg-white/10 border border-white/30 text-(--color-text-primary) hover:bg-white/20 transition-all duration-150 disabled:opacity-50 shrink-0"
+        className="px-4 py-2 text-[10px] font-bold uppercase tracking-widest bg-white/10 border border-(--color-button) text-(--color-button) hover:opacity-80 transition-all duration-150 disabled:opacity-50 shrink-0"
       >
         {state === 'loading' ? '…' : 'Subscribe'}
       </button>

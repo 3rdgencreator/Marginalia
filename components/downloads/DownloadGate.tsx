@@ -42,7 +42,7 @@ function DownloadCard({ item }: { item: DownloadItem }) {
             href={item.downloadUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="mt-auto pt-4 inline-flex items-center gap-2 px-4 py-2 text-xs font-bold uppercase tracking-widest border-2 border-white/70 bg-white/10 text-(--color-text-primary) hover:bg-white/20 transition-all duration-150"
+            className="mt-auto pt-4 inline-flex items-center gap-2 px-4 py-2 text-xs font-bold uppercase tracking-widest border-2 border-(--color-button) bg-white/10 text-(--color-button) hover:opacity-80 transition-all duration-150"
           >
             <svg aria-hidden="true" width="12" height="12" viewBox="0 0 24 24" fill="currentColor">
               <path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z" />

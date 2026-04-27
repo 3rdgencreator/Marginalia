@@ -2,6 +2,7 @@ export const NAVBAR_COLORS: Record<string, string> = {
   'player-default':'rgba(10,10,12,0.85)',
   'black-70':      'rgba(0,0,0,0.70)',
   'black':         '#000000',
+  'white':         '#FFFFFF',
   'bg':            '#1F1F21',
   'surface':       '#2A2A2C',
   'violet':        '#580AFF',
@@ -26,4 +27,8 @@ export function resolveNavbarColor(key: string | null | undefined): string {
 
 export function resolveMiniPlayerColor(key: string | null | undefined): string {
   return NAVBAR_COLORS[key ?? 'player-default'] ?? NAVBAR_COLORS['player-default'];
+}
+
+export function resolveButtonColor(key: string | null | undefined): string {
+  return NAVBAR_COLORS[key ?? 'white'] ?? NAVBAR_COLORS['white'];
 }

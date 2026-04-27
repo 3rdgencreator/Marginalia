@@ -56,7 +56,7 @@ export default function SubscribePanel({
           <button
             type="submit"
             disabled={state === 'loading'}
-            className="px-5 py-2.5 text-xs font-bold uppercase tracking-widest bg-white/20 border border-white/70 text-(--color-text-primary) hover:bg-white/30 transition-all duration-150 disabled:opacity-50"
+            className="px-5 py-2.5 text-xs font-bold uppercase tracking-widest bg-white/10 border border-(--color-button) text-(--color-button) hover:opacity-80 transition-all duration-150 disabled:opacity-50"
           >
             {state === 'loading' ? '…' : 'Subscribe'}
           </button>

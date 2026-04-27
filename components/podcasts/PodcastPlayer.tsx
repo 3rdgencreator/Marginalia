@@ -146,7 +146,7 @@ export default function PodcastPlayer({
       {/* Vertical divider */}
       <div className="hidden lg:block w-px bg-white/20 self-stretch mx-10 shrink-0" />
 
-      {/* Right — track list */}
+      {/* Right — track list: newest first, numbered from oldest (01 = first ever) */}
       <div className="flex-1 min-w-0 w-full mt-8 lg:mt-0">
         {!isLoaded && (
           <p className="text-xs text-(--color-text-muted) py-8">Loading tracks…</p>
@@ -161,7 +161,7 @@ export default function PodcastPlayer({
             <span className={`text-xs w-6 shrink-0 text-right tabular-nums ${
               currentIndex === i ? 'text-(--color-accent-lime)' : 'text-(--color-text-muted)'
             }`}>
-              {String(i + 1).padStart(2, '0')}
+              {String(tracks.length - i).padStart(2, '0')}
             </span>
             {track.artwork_url ? (
               <Image

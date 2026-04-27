@@ -8,6 +8,8 @@ type GridProps = {
       artistName?: string;
       coverArt: string | null;
       artworkUrl?: string | null;
+      presave?: boolean;
+      badgeText?: string | null;
     };
   }>;
 };
@@ -15,10 +17,7 @@ type GridProps = {
 export default function ReleaseGrid({ releases }: GridProps) {
   return (
     <ul
-      className="
-        grid grid-cols-3 md:grid-cols-4 lg:grid-cols-5
-        gap-4 md:gap-5 lg:gap-6
-      "
+      className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 gap-3 md:gap-4"
       aria-label="Releases catalog"
     >
       {releases.map(({ slug, entry }) => (

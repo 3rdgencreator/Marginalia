@@ -11,7 +11,7 @@ export const metadata: Metadata = {
 export default function ServicesPage() {
   return (
     <RandomBackground>
-      <Container className="min-h-screen flex flex-col justify-center py-20">
+      <Container className="min-h-screen flex flex-col items-center justify-center py-20">
         <ServicesContent />
       </Container>
     </RandomBackground>

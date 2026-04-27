@@ -50,37 +50,6 @@ export default async function AboutPage() {
 
         {/* When body is empty, page renders headline + photo only — no filler text (per D-24) */}
 
-        {/* Press card — Mixmag feature */}
-        <div
-          className="not-prose mt-(--space-xl) border border-white/70 px-4 py-4"
-          style={{ backgroundColor: 'rgba(255,255,255,0.08)' }}
-        >
-          <p className="text-xs font-bold uppercase tracking-widest mb-1" style={{ color: '#E3000B' }}>
-            Featured in Mixmag
-          </p>
-          <p className="text-sm text-(--color-text-secondary) mb-3">
-            &ldquo;ELIF is on a meteoric rise and you can&apos;t lose sight of her&rdquo;
-          </p>
-          <a
-            href="https://mixmag.com.br/feature/turkish-artist-elif-is-on-a-meteoric-rise-and-you-cant-lose-sight-of-her"
-            target="_blank"
-            rel="noopener noreferrer"
-            style={{
-              display: 'inline-block',
-              backgroundColor: '#E3000B',
-              padding: '6px 18px',
-              color: 'white',
-              textDecoration: 'none',
-              fontSize: '11px',
-              fontWeight: 700,
-              textTransform: 'uppercase',
-              letterSpacing: '0.06em',
-            }}
-          >
-            Read the feature →
-          </a>
-        </div>
-
         {/* Stay in the loop — Laylo CTA */}
         {layloUrl && (
           <div className="mt-(--space-xl) flex justify-center">
@@ -93,7 +62,7 @@ export default async function AboutPage() {
               <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="currentColor" className="shrink-0">
                 <path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-6V11c0-3.07-1.63-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.64 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z" />
               </svg>
-              <span className="text-sm font-semibold tracking-tight">Stay in the loop</span>
+              <span className="text-sm font-semibold tracking-tight">Join the community</span>
             </a>
           </div>
         )}

@@ -67,9 +67,9 @@ export default function PodcastAccordion({
               type="button"
               onClick={() => selectEpisode(ep)}
               disabled={!ep.embedUrl}
-              className={`w-full flex items-center gap-5 py-5 text-left border-b border-white/10 transition-colors duration-150 first:border-t first:border-white/10 ${
+              className={`w-full flex items-center gap-5 py-5 text-left border-b border-white/10 bg-transparent transition-colors duration-150 first:border-t first:border-white/10 ${
                 ep.embedUrl ? 'hover:bg-white/5 cursor-pointer' : 'cursor-default opacity-40'
-              } ${activeSlug === ep.slug ? 'opacity-100' : ''}`}
+              } ${activeSlug === ep.slug ? 'opacity-100' : 'opacity-100'}`}
             >
               {/* Number */}
               <span className={`text-xs w-6 shrink-0 text-right tabular-nums transition-colors ${

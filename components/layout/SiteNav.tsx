@@ -17,6 +17,7 @@ const PRIMARY_LINKS = [
   { href: '/subscribe', label: 'Subscribe' },
   { href: '/press', label: 'Press' },
   { href: '/services', label: 'Services' },
+  { href: '/artists', label: 'Roster' },
 ] as const;
 
 const SOCIAL_PLATFORMS: Platform[] = [
