@@ -52,16 +52,17 @@ export default async function HomePage() {
     reader.singletons.siteConfig.read(),
   ]);
 
-  const heroDesktop = (homeData?.heroVideoDesktop as { file?: string; youtubeUrl?: string } | null | undefined) ?? null;
-  const heroMobile = (homeData?.heroVideoMobile as { file?: string; youtubeUrl?: string } | null | undefined) ?? null;
+  const heroDesktop = (homeData?.heroVideoDesktop as { r2Url?: string; file?: string; youtubeUrl?: string } | null | undefined) ?? null;
+  const heroMobile = (homeData?.heroVideoMobile as { r2Url?: string; file?: string; youtubeUrl?: string } | null | undefined) ?? null;
   const heroVideoStartSecond = homeData?.heroVideoStartSecond ?? null;
   const beatportAccolade = homeData?.beatportAccolade ?? null;
   const heroLayloEmbedUrl = homeData?.heroLayloEmbedUrl ?? null;
 
-  const desktopFile = heroDesktop?.file ?? null;
-  const mobileFile = heroMobile?.file ?? null;
+  // Priority: R2 URL → uploaded file → YouTube fallback
+  const desktopFile = heroDesktop?.r2Url ?? heroDesktop?.file ?? null;
+  const mobileFile = heroMobile?.r2Url ?? heroMobile?.file ?? null;
 
-  // Build YouTube embed URL server-side — only used when no uploaded file is set.
+  // Build YouTube embed URL server-side — only used when no direct video is set.
   const desktopEmbedUrl = !desktopFile ? buildYouTubeEmbedUrl(heroDesktop?.youtubeUrl, heroVideoStartSecond) : null;
   const mobileEmbedUrl = !mobileFile ? buildYouTubeEmbedUrl(heroMobile?.youtubeUrl, null, true) : null;
   const desktopYouTubeId = !desktopFile ? extractYouTubeId(heroDesktop?.youtubeUrl) : null;

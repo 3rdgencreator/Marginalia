@@ -466,27 +466,35 @@ export default config({
         heroHeadline: fields.text({ label: 'Hero Headline' }),
         heroSubtext: fields.text({ label: 'Hero Subtext' }),
         heroVideoDesktop: fields.object({
+          r2Url: fields.url({
+            label: 'Cloudflare R2 URL — primary (recommended)',
+            description: 'Public URL of the MP4 uploaded to R2 (pub-f441ae2a323d4899bd2029466fa3b584.r2.dev/...)',
+          }),
           file: fields.file({
-            label: 'Upload MP4 (bilgisayardan — öncelikli)',
+            label: 'Upload MP4 (local file — fallback)',
             directory: 'public/videos',
             publicPath: '/videos/',
           }),
           youtubeUrl: fields.url({
-            label: 'YouTube URL (yedek — dosya yüklü değilse kullanılır)',
+            label: 'YouTube URL (last resort fallback)',
           }),
         }, { label: 'Hero Video — Desktop (16:9)' }),
         heroVideoStartSecond: fields.integer({
           label: 'Hero Video Start (seconds) — desktop YouTube only',
-          description: 'YouTube videosunu kaçıncı saniyeden başlat (boş = baştan)',
+          description: 'Start the YouTube video at this second (leave empty to start from beginning)',
         }),
         heroVideoMobile: fields.object({
+          r2Url: fields.url({
+            label: 'Cloudflare R2 URL — primary (recommended)',
+            description: 'Public URL of the MP4 uploaded to R2 (pub-f441ae2a323d4899bd2029466fa3b584.r2.dev/...)',
+          }),
           file: fields.file({
-            label: 'Upload MP4 (bilgisayardan — öncelikli)',
+            label: 'Upload MP4 (local file — fallback)',
             directory: 'public/videos',
             publicPath: '/videos/',
           }),
           youtubeUrl: fields.url({
-            label: 'YouTube URL (yedek — dosya yüklü değilse kullanılır)',
+            label: 'YouTube URL (last resort fallback)',
           }),
         }, { label: 'Hero Video — Mobile (9:16)' }),
         featuredReleaseSlug: fields.text({
