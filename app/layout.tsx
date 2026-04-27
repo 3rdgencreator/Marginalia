@@ -13,7 +13,7 @@ export const metadata: Metadata = {
   metadataBase: new URL(
     process.env.NEXT_PUBLIC_SITE_URL ?? 'https://marginalialabel.com'
   ),
-  title: 'Marginalia — Melodic House & Techno Label',
+  title: 'Marginalia | Melodic House & Techno Label',
   description: 'Barcelona-based label for melodic house and techno.',
 };
 

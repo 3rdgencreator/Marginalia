@@ -5,7 +5,7 @@ import PressEntry from '@/components/press/PressEntry';
 import RandomBackground from '@/components/ui/RandomBackground';
 
 export const metadata: Metadata = {
-  title: 'Press — Marginalia',
+  title: 'Press | Marginalia',
   description: 'Press coverage, reviews, and interviews featuring Marginalia.',
 };
 

@@ -56,7 +56,7 @@ export default function SocialIcon({
     <a
       href={url}
       {...(!isAnchor && { target: '_blank', rel: 'noopener noreferrer' })}
-      aria-label={`${LABELS[platform]} — Marginalia`}
+      aria-label={`${LABELS[platform]}, Marginalia`}
       className={className ?? "inline-flex items-center justify-center p-2 text-(--color-text-secondary) hover:text-(--color-accent-lime) transition-colors duration-150"}
     >
       <svg

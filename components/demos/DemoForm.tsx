@@ -96,7 +96,7 @@ export default function DemoForm({
     >
       {!acceptingDemos && (
         <div className="mb-5 border border-white/20 bg-white/6 px-4 py-4 text-sm text-(--color-text-secondary) leading-relaxed space-y-2">
-          <p>We are no longer accepting demos for 2026 — you are more than welcome to send demos for consideration for 2027 onwards.</p>
+          <p>We are no longer accepting demos for 2026. You are more than welcome to send demos for consideration for 2027 onwards.</p>
           <p>Please send as a download enabled private SoundCloud link with correctly tagged metadata.</p>
           <p>Thank you for your music and your patience!</p>
         </div>
@@ -108,7 +108,7 @@ export default function DemoForm({
         </div>
       ) : (
         <p className="text-sm text-(--color-text-secondary) mb-5 leading-relaxed">
-          Share your music with Marginalia. We listen to everything — please give us time to respond.
+          Share your music with Marginalia. We listen to everything. Please give us time to respond.
         </p>
       )}
 
@@ -202,7 +202,7 @@ export default function DemoForm({
         </button>
 
         <p className="text-xs text-(--color-text-muted) text-center leading-relaxed">
-          We receive a high volume of demos. Response time may vary — thank you for your patience.
+          We receive a high volume of demos. Response time may vary. Thank you for your patience.
         </p>
       </form>
     </div>

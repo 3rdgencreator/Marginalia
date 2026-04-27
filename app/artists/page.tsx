@@ -5,8 +5,8 @@ import ArtistCard from '@/components/artists/ArtistCard';
 import RandomBackground from '@/components/ui/RandomBackground';
 
 export const metadata: Metadata = {
-  title: 'Marginalia Management — Artists',
-  description: 'Marginalia Management — artist management and representation.',
+  title: 'Marginalia Management | Artists',
+  description: 'Marginalia Management: artist management and representation.',
 };
 
 export default async function ArtistsPage() {

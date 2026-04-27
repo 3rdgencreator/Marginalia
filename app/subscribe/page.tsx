@@ -5,7 +5,7 @@ import RandomBackground from '@/components/ui/RandomBackground';
 import SubscribePanel from '@/components/subscribe/SubscribePanel';
 
 export const metadata: Metadata = {
-  title: 'Subscribe — Marginalia',
+  title: 'Subscribe | Marginalia',
   description: 'Stay in the loop. Subscribe to our newsletter or join on Laylo.',
 };
 

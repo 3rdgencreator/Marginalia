@@ -8,7 +8,7 @@ import RandomBackground from '@/components/ui/RandomBackground';
 export const revalidate = 3600;
 
 export const metadata: Metadata = {
-  title: 'Merch — Marginalia',
+  title: 'Merch | Marginalia',
   description: 'Official Marginalia merchandise store.',
 };
 

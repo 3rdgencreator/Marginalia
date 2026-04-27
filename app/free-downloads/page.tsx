@@ -6,16 +6,12 @@ import DownloadGate, { type DownloadItem } from '@/components/downloads/Download
 import type { SoundcloudDownloadValue } from '@/lib/soundcloud-download-field';
 
 export const metadata: Metadata = {
-  title: 'Free Downloads — Marginalia',
-  description: 'Free music from Marginalia. Join the community to unlock exclusive downloads.',
+  title: 'Free Downloads | Marginalia',
+  description: 'Free music from Marginalia. Exclusive downloads for the community.',
 };
 
 export default async function FreeDownloadsPage() {
-  const [allDownloads, siteConfig, homeData] = await Promise.all([
-    reader.collections.freeDownloads.all(),
-    reader.singletons.siteConfig.read(),
-    reader.singletons.homePage.read(),
-  ]);
+  const allDownloads = await reader.collections.freeDownloads.all();
 
   const items: DownloadItem[] = allDownloads
     .filter(({ entry }) => entry.active !== false)
@@ -28,22 +24,17 @@ export default async function FreeDownloadsPage() {
     .map(({ slug, entry }) => {
       const sc = entry.soundcloudDownload as SoundcloudDownloadValue;
       return {
-      slug,
-      title: entry.title,
-      artistName: entry.artistName ?? '',
-      description: entry.description ?? '',
-      // Manual upload takes precedence; SoundCloud artwork is fallback
-      coverImage: entry.coverImage
-        ? `/images/downloads/${entry.coverImage}`
-        : (sc?.artworkUrl ?? null),
-      downloadUrl: sc?.url ?? null,
-      releaseDate: entry.releaseDate ?? null,
+        slug,
+        title: entry.title,
+        artistName: entry.artistName ?? '',
+        description: entry.description ?? '',
+        coverImage: entry.coverImage
+          ? `/images/downloads/${entry.coverImage}`
+          : (sc?.artworkUrl ?? null),
+        downloadUrl: sc?.url ?? null,
+        releaseDate: entry.releaseDate ?? null,
       };
     });
-
-  const layloUrl = siteConfig?.layloUrl ?? homeData?.heroLayloEmbedUrl ?? null;
-
-  const newsletterListId = siteConfig?.newsletterProvider ?? null;
 
   return (
     <RandomBackground>
@@ -53,7 +44,7 @@ export default async function FreeDownloadsPage() {
             Free Downloads
           </h1>
           <p className="text-sm text-(--color-text-secondary)">
-            Exclusive music from Marginalia — free for the community.
+            Exclusive music from Marginalia, free for the community.
           </p>
         </div>
 
@@ -64,11 +55,7 @@ export default async function FreeDownloadsPage() {
             </p>
           </div>
         ) : (
-          <DownloadGate
-            items={items}
-            layloUrl={layloUrl}
-            newsletterListId={newsletterListId}
-          />
+          <DownloadGate items={items} />
         )}
       </Container>
     </RandomBackground>

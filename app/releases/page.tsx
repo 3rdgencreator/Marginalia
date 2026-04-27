@@ -5,9 +5,9 @@ import ReleaseGrid from '@/components/releases/ReleaseGrid';
 import RandomBackground from '@/components/ui/RandomBackground';
 
 export const metadata: Metadata = {
-  title: 'Releases — Marginalia',
+  title: 'Releases | Marginalia',
   description:
-    'The Marginalia catalog — melodic house, techno, and underground dance music from Barcelona.',
+    'The Marginalia catalog: melodic house, techno, and underground dance music from Barcelona.',
 };
 
 export default async function ReleasesPage() {
@@ -28,8 +28,7 @@ export default async function ReleasesPage() {
                 Catalog is loading.
               </h2>
               <p className="text-(--text-body) text-(--color-text-muted)">
-                No releases have been published yet. Check back soon — new music
-                drops monthly.
+                No releases have been published yet. Check back soon. New music drops monthly.
               </p>
             </div>
           ) : (

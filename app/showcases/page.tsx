@@ -5,7 +5,7 @@ import ShowcaseCard from '@/components/showcases/ShowcaseCard';
 import RandomBackground from '@/components/ui/RandomBackground';
 
 export const metadata: Metadata = {
-  title: 'Showcases — Marginalia',
+  title: 'Showcases | Marginalia',
   description: 'Marginalia live performances, showcases, and events.',
 };
 

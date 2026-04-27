@@ -11,7 +11,7 @@ export async function generateMetadata(): Promise<Metadata> {
   const body = about?.body ? await about.body() : null;
   const description = plainTextFromDocument(body, 160) || 'About Marginalia.';
   return {
-    title: 'About — Marginalia',
+    title: 'About | Marginalia',
     description,
   };
 }
@@ -34,7 +34,7 @@ export default async function AboutPage() {
           <div className="w-full mb-(--space-xl) overflow-hidden">
             <Image
               src={`/images/about/${about.photo}`}
-              alt="Elif — Marginalia"
+              alt="Elif, Marginalia"
               width={1200}
               height={675}
               sizes="(max-width: 65ch) 100vw, 65ch"

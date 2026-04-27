@@ -80,7 +80,7 @@ export default function PodcastPlayer({
           {/* Info + controls */}
           <div className="px-4 pt-3 pb-4">
             <p className="text-sm font-semibold text-(--color-text-primary) truncate">
-              {currentTrack?.title ?? (isLoaded ? '—' : 'Loading…')}
+              {currentTrack?.title ?? (isLoaded ? '' : 'Loading…')}
             </p>
             <p className="text-xs text-(--color-text-muted) mt-0.5 truncate">
               {currentTrack?.username ?? ''}

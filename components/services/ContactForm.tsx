@@ -3,9 +3,9 @@
 import { useState } from 'react';
 
 export const SERVICES = [
-  { id: 'management', label: 'Management', enabled: false, description: 'Full artist management — bookings, strategy, brand development, and career guidance tailored for emerging and established acts in the underground dance music scene.' },
+  { id: 'management', label: 'Management', enabled: false, description: 'Full artist management: bookings, strategy, brand development, and career guidance tailored for emerging and established acts in the underground dance music scene.' },
   { id: 'mix-mastering', label: 'Mix & Mastering', enabled: true, description: 'Professional mixing and mastering services with a deep understanding of melodic house and techno. Optimized for club systems, streaming platforms, and vinyl.' },
-  { id: 'production-classes', label: 'Production Classes', enabled: true, description: 'One-on-one and group production sessions covering sound design, arrangement, workflow, and the creative process — from beginner to advanced levels.' },
+  { id: 'production-classes', label: 'Production Classes', enabled: true, description: 'One-on-one and group production sessions covering sound design, arrangement, workflow, and the creative process, from beginner to advanced levels.' },
   { id: 'mentoring', label: 'Mentoring', enabled: false, description: 'Direct mentoring from industry professionals inside the Marginalia network. Navigate the music industry, build your identity, and accelerate your growth as an artist.' },
 ] as const;
 

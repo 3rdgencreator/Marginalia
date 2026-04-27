@@ -17,7 +17,7 @@ export default function ReleaseCard({ slug, entry }: CardProps) {
     ? `${entry.title} by ${entry.artistName}`
     : entry.title;
   const altText = entry.artistName
-    ? `${entry.title} — ${entry.artistName} cover artwork`
+    ? `${entry.title} by ${entry.artistName} cover artwork`
     : `${entry.title} cover artwork`;
 
   return (

@@ -6,7 +6,7 @@ import PodcastAccordion from '@/components/podcasts/PodcastAccordion';
 import RandomBackground from '@/components/ui/RandomBackground';
 
 export const metadata: Metadata = {
-  title: 'Podcasts & Mixes — Marginalia',
+  title: 'Podcasts & Mixes | Marginalia',
   description: 'Exclusive mixes, DJ sets, and podcast episodes from Marginalia.',
 };
 

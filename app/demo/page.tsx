@@ -5,7 +5,7 @@ import RandomBackground from '@/components/ui/RandomBackground';
 import DemoForm from '@/components/demos/DemoForm';
 
 export const metadata: Metadata = {
-  title: 'Demo Submission — Marginalia',
+  title: 'Demo Submission | Marginalia',
   description: 'Submit your music to Marginalia. Share a private SoundCloud link and we will listen.',
 };
 

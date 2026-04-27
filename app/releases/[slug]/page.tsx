@@ -28,12 +28,12 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
   const plMeta = (entry.platformLinks ?? {}) as Record<string, string | undefined>;
   const artistStr = plMeta.artistName ?? '';
-  const title = `${entry.title} — ${artistStr} — Marginalia`;
+  const title = artistStr ? `${entry.title} by ${artistStr} | Marginalia` : `${entry.title} | Marginalia`;
   const descFromDoc = plainTextFromDocument(entry.description, 160);
   const description = descFromDoc
     || (artistStr
       ? `${entry.title} by ${artistStr}, out ${entry.releaseDate ?? 'soon'} on Marginalia.`
-      : `${entry.title} — out ${entry.releaseDate ?? 'soon'} on Marginalia.`);
+      : `${entry.title}, out ${entry.releaseDate ?? 'soon'} on Marginalia.`);
 
   return {
     title,
