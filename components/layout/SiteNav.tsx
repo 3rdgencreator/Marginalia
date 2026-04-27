@@ -26,7 +26,6 @@ const SOCIAL_PLATFORMS: Platform[] = [
   'beatport',
   'youtube',
   'tiktok',
-  'facebook',
 ];
 
 export default async function SiteNav() {
@@ -70,7 +69,7 @@ export default async function SiteNav() {
           <ul className="hidden md:flex" style={{ alignItems: 'center', listStyle: 'none', margin: 0, padding: 0 }}>
             {socials.map(({ platform, url }) => (
               <li key={platform}>
-                <SocialIcon platform={platform} url={url} size={16} />
+                <SocialIcon platform={platform} url={url} size={16} className="inline-flex items-center justify-center p-2 text-[#444] hover:text-(--color-accent-lime) transition-colors duration-150" />
               </li>
             ))}
           </ul>

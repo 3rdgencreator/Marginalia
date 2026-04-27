@@ -410,6 +410,14 @@ export default config({
           label: 'Announcement Link URL',
           description: 'Where clicking the bar takes the user (leave empty for no link)',
         }),
+        footerPresaveSlugs: fields.array(
+          fields.text({ label: 'Release Slug' }),
+          {
+            label: 'Footer Pre-Save Releases',
+            description: 'Up to 2 release slugs shown as pre-save cards in the footer',
+            itemLabel: (props) => props.value || 'Release',
+          }
+        ),
       },
     }),
 

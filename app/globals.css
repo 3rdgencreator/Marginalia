@@ -72,9 +72,42 @@
 
   /* Layout */
   --max-width-content: 1280px;
-  --nav-height-desktop: 80px;
-  --nav-height-mobile:  68px;
+  --nav-height-desktop: 64px;
+  --nav-height-mobile:  53px;
 }
+
+/* ─── Light background context (RandomBackground pages) ─────── */
+.on-light-bg {
+  --color-text-primary:   #1F1F21;
+  --color-text-secondary: #3A3A3C;
+  --color-text-muted:     #5A5A6A;
+  --color-surface:        rgba(255, 255, 255, 0.75);
+}
+
+/* Prose: invert back to dark for light backgrounds */
+.on-light-bg .prose-invert {
+  --tw-prose-body:          #1F1F21;
+  --tw-prose-headings:      #1F1F21;
+  --tw-prose-lead:          #3A3A3C;
+  --tw-prose-links:         #580AFF;
+  --tw-prose-bold:          #1F1F21;
+  --tw-prose-counters:      #3A3A3C;
+  --tw-prose-bullets:       #3A3A3C;
+  --tw-prose-hr:            rgba(0,0,0,0.15);
+  --tw-prose-quotes:        #1F1F21;
+  --tw-prose-quote-borders: rgba(0,0,0,0.2);
+  --tw-prose-captions:      #5A5A6A;
+  --tw-prose-code:          #1F1F21;
+  --tw-prose-th-borders:    rgba(0,0,0,0.2);
+  --tw-prose-td-borders:    rgba(0,0,0,0.1);
+}
+
+/* Borders/backgrounds: podcast page only */
+.podcast-light-borders .border-white\/10  { border-color: rgba(0,0,0,0.10); }
+.podcast-light-borders .border-white\/20  { border-color: rgba(0,0,0,0.15); }
+.podcast-light-borders .border-white\/70  { border-color: rgba(0,0,0,0.30); }
+.podcast-light-borders .bg-white\/5       { background-color: rgba(0,0,0,0.03); }
+.podcast-light-borders .bg-white\/10      { background-color: rgba(0,0,0,0.06); }
 
 /* ─── Base ───────────────────────────────────────────────────── */
 *, *::before, *::after {

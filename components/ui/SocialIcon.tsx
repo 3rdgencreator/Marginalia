@@ -41,10 +41,12 @@ export default function SocialIcon({
   platform,
   url,
   size = 20,
+  className,
 }: {
   platform: Platform;
   url: string | null | undefined;
   size?: number;
+  className?: string;
 }) {
   if (!url) return null;
 
@@ -55,7 +57,7 @@ export default function SocialIcon({
       href={url}
       {...(!isAnchor && { target: '_blank', rel: 'noopener noreferrer' })}
       aria-label={`${LABELS[platform]} — Marginalia`}
-      className="inline-flex items-center justify-center p-2 text-(--color-text-secondary) hover:text-(--color-accent-lime) transition-colors duration-150"
+      className={className ?? "inline-flex items-center justify-center p-2 text-(--color-text-secondary) hover:text-(--color-accent-lime) transition-colors duration-150"}
     >
       <svg
         width={size}

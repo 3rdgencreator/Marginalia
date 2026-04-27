@@ -1,3 +1,4 @@
+import Image from 'next/image';
 import Link from 'next/link';
 import { reader } from '@/lib/keystatic';
 import { resolveNavbarColor } from '@/lib/navbar-colors';
@@ -6,29 +7,9 @@ import Logo from '@/components/ui/Logo';
 import SocialIcon, { type Platform } from '@/components/ui/SocialIcon';
 import NewsletterForm from './NewsletterForm';
 
-const FALLBACK_TAGLINE = 'Barcelona · Melodic House & Techno';
-
-const QUICK_LINKS = [
-  { href: '/releases', label: 'Releases' },
-  { href: '/artists', label: 'Artists' },
-  { href: '/podcasts', label: 'Podcasts' },
-  { href: '/press', label: 'Press' },
-  { href: '/showcases', label: 'Showcases' },
-  { href: '/about', label: 'About' },
-] as const;
-
-const INCUBATION_LABELS = [
-  'Management',
-  'Mix & Mastering',
-  'Production Classes',
-  'Mentoring',
-] as const;
-
 export default async function SiteFooter() {
-  // AMENDMENT 1: read() returns null if YAML missing; readOrThrow() would crash.
   const config = await reader.singletons.siteConfig.read();
 
-  const tagline = config?.tagline || FALLBACK_TAGLINE;
   const socials: Array<{ platform: Platform; url: string | null | undefined }> = [
     { platform: 'instagram', url: config?.instagramUrl },
     { platform: 'soundcloud', url: config?.soundcloudUrl },
@@ -40,6 +21,41 @@ export default async function SiteFooter() {
   const newsletterListId = config?.newsletterProvider ?? null;
   const year = new Date().getFullYear();
 
+  const manualSlugs = (config?.footerPresaveSlugs ?? []).slice(0, 2);
+
+  const slugsToShow: string[] = manualSlugs.length > 0
+    ? manualSlugs
+    : await (async () => {
+        const allSlugs = await reader.collections.releases.list();
+        const withDates = (
+          await Promise.all(
+            allSlugs.map(async (slug) => {
+              const r = await reader.collections.releases.read(slug);
+              return r ? { slug, releaseDate: r.releaseDate ?? '' } : null;
+            })
+          )
+        ).filter(Boolean) as Array<{ slug: string; releaseDate: string }>;
+        return withDates
+          .sort((a, b) => b.releaseDate.localeCompare(a.releaseDate))
+          .slice(0, 2)
+          .map((r) => r.slug);
+      })();
+
+  const presaveReleases = (
+    await Promise.all(
+      slugsToShow.map(async (slug) => {
+        const release = await reader.collections.releases.read(slug);
+        if (!release) return null;
+        const coverSrc = release.coverArt
+          ? `/images/releases/${release.coverArt}`
+          : (release.platformLinks as { artworkUrl?: string })?.artworkUrl ?? null;
+        const layloUrl = (release.platformLinks as { layloUrl?: string })?.layloUrl ?? null;
+        const artistName = (release.platformLinks as { artistName?: string })?.artistName ?? null;
+        return { slug, title: release.title, artistName, coverSrc, layloUrl };
+      })
+    )
+  ).filter(Boolean) as Array<{ slug: string; title: string; artistName: string | null; coverSrc: string | null; layloUrl: string | null }>;
+
   return (
     <footer
       className="pt-12 pb-8 mt-auto"
@@ -47,7 +63,7 @@ export default async function SiteFooter() {
       aria-label="Site footer"
     >
       <Container>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           {/* Column 1 — Brand + Newsletter */}
           <div>
             <Logo className="h-10 w-auto text-(--color-text-primary)" />
@@ -65,25 +81,10 @@ export default async function SiteFooter() {
             </div>
           </div>
 
-          {/* Column 2 — Quick Links */}
-          <nav aria-label="Footer quick links">
-            <ul className="flex flex-col gap-3">
-              {QUICK_LINKS.map(({ href, label }) => (
-                <li key={href}>
-                  <Link
-                    href={href}
-                    className="text-(--text-label) text-(--color-text-secondary) hover:text-(--color-surface-purple) transition-colors duration-150"
-                  >
-                    {label}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </nav>
-
-          {/* Column 3 — Connect (Social + Incubation) */}
+          {/* Column 2 — Connect (mobile only) + Pre-Save Releases */}
           <div className="flex flex-col gap-6">
-            <div>
+            {/* Connect — mobile only */}
+            <div className="md:hidden">
               <h2 className="text-(--text-label) text-(--color-text-primary) font-bold mb-3">
                 Connect
               </h2>
@@ -95,25 +96,52 @@ export default async function SiteFooter() {
                 ))}
               </ul>
             </div>
-            <div>
-              <h2 className="text-(--text-label) font-bold mb-3">
-                <Link href="/services" className="text-(--color-text-primary) hover:text-(--color-accent-lime) transition-colors duration-150">
-                  Incubation
-                </Link>
-              </h2>
-              <ul className="flex flex-col gap-2">
-                {INCUBATION_LABELS.map((label) => (
-                  <li key={label}>
-                    <Link
-                      href="/services"
-                      className="text-(--text-label) text-(--color-text-muted) hover:text-(--color-text-primary) transition-colors duration-150"
-                    >
-                      {label}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </div>
+
+            {/* Pre-Save Releases */}
+            {presaveReleases.length > 0 && (
+              <div>
+                <h2 className="text-(--text-label) text-(--color-text-primary) font-bold mb-3 uppercase tracking-widest text-[10px]">
+                  Pre-Save
+                </h2>
+                <div style={{ display: 'flex', gap: '1rem' }}>
+                  {presaveReleases.map(({ slug, title, artistName, coverSrc, layloUrl }) => (
+                    <div key={slug} className="group flex flex-col gap-2" style={{ width: 112, flexShrink: 0 }}>
+                      <Link href={`/releases/${slug}`} className="relative bg-white/10 overflow-hidden" style={{ display: 'block', width: 112, height: 112, flexShrink: 0 }}>
+                        {coverSrc && (
+                          <Image
+                            src={coverSrc}
+                            alt={title}
+                            width={112}
+                            height={112}
+                            style={{ width: 112, height: 112, objectFit: 'cover' }}
+                          />
+                        )}
+                        <div
+                          aria-hidden="true"
+                          className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center gap-1 p-2 bg-[rgba(31,31,33,0.70)] opacity-0 group-hover:opacity-100 transition-opacity duration-200"
+                        >
+                          {artistName && (
+                            <span className="text-[9px] text-white uppercase tracking-widest text-center line-clamp-1">{artistName}</span>
+                          )}
+                          <span className="text-[10px] font-bold text-white text-center line-clamp-2">{title}</span>
+                        </div>
+                      </Link>
+                      <p className="text-[11px] text-(--color-text-primary) leading-tight line-clamp-2">{title}</p>
+                      {layloUrl && (
+                        <Link
+                          href={layloUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-[10px] font-bold uppercase tracking-widest text-(--color-bg) bg-(--color-accent-lime) px-2 py-1 text-center hover:opacity-80 transition-opacity"
+                        >
+                          Pre-Save
+                        </Link>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
         </div>
 

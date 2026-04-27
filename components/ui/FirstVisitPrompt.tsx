@@ -59,17 +59,18 @@ export default function FirstVisitPrompt({
         style={{
           position: 'fixed',
           top: 'calc(var(--nav-height-mobile) + 6px + 20px + 8px)',
-          left: '2rem',
+          left: '30px',
           zIndex: 10000,
-          background: 'none',
+          background: 'rgba(255,255,255,0.15)',
           border: 'none',
           cursor: 'pointer',
-          padding: '6px',
-          color: 'rgba(255,255,255,0.7)',
+          padding: '8px',
+          borderRadius: '50%',
+          color: 'rgba(255,255,255,0.85)',
           lineHeight: 1,
-          opacity: 0.7,
-          filter: 'url(#fvp-glow)',
-          WebkitFilter: 'url(#fvp-glow)',
+          opacity: 1,
+          backdropFilter: 'blur(4px)',
+          WebkitBackdropFilter: 'blur(4px)',
         }}
       >
         {isPlaying ? (

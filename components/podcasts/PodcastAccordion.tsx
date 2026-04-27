@@ -47,7 +47,7 @@ export default function PodcastAccordion({
       {/* Left — player card */}
       {activeUrl && (
         <div className="w-full md:w-[340px] shrink-0">
-          <div className="overflow-hidden border border-white/20">
+          <div className="overflow-hidden border border-black/20">
             <SoundCloudEmbed embedUrl={activeUrl} height={420} />
           </div>
         </div>

@@ -47,7 +47,7 @@ export default async function HomePage() {
   ]);
 
   const heroVideoUrl = homeData?.heroVideoUrl ?? null;
-  const heroVideoMobile = homeData?.heroVideoMobile ?? null;
+  const heroVideoMobile = homeData?.heroVideoMobile ? `/videos/${homeData.heroVideoMobile}` : null;
   const heroVideoStartSecond = homeData?.heroVideoStartSecond ?? null;
   const beatportAccolade = homeData?.beatportAccolade ?? null;
   const featuredArtistSlugs = homeData?.featuredArtistSlugs ?? [];
@@ -146,7 +146,7 @@ export default async function HomePage() {
         </div>
         {/* Laylo CTA — bottom-center */}
         {heroLayloEmbedUrl && (
-          <div style={{ position: 'absolute', bottom: '7rem', left: 0, right: 0, display: 'flex', justifyContent: 'center' }}>
+          <div style={{ position: 'absolute', bottom: '9rem', left: 0, right: 0, display: 'flex', justifyContent: 'center' }}>
             <a
               href={heroLayloEmbedUrl}
               target="_blank"

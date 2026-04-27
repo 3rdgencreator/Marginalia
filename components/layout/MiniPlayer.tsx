@@ -95,7 +95,7 @@ export default function MiniPlayer({ bgColor }: { bgColor?: string }) {
       {/* Artwork — floats above mini player, bottom-left */}
       {/* Stereo VU meter — floats above the player bar, right side */}
       <div style={{
-        position: 'fixed', bottom: 44, right: 56, zIndex: 9999,
+        position: 'fixed', bottom: 52, right: 56, zIndex: 9999,
         display: 'flex', alignItems: 'flex-end',
       }}>
         <VUMeter isPlaying={isPlaying} volume={volume} />

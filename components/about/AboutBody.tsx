@@ -33,9 +33,9 @@ export default function AboutBody({ nodes }: { nodes: Node[] }) {
   const needsExpand = fullText.length > preview.length;
 
   return (
-    <div className="text-(--text-body) text-(--color-text-primary) leading-relaxed">
+    <div className="text-(--text-body) leading-relaxed" style={{ color: 'inherit' }}>
       {expanded ? (
-        <div className="prose prose-invert max-w-none">
+        <div className="prose max-w-none">
           <DocumentRenderer document={nodes} />
         </div>
       ) : (

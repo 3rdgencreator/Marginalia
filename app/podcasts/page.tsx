@@ -47,7 +47,7 @@ export default async function PodcastsPage() {
 
   return (
     <RandomBackground>
-      <Container className="min-h-screen flex flex-col justify-center py-20">
+      <Container className="podcast-light-borders min-h-screen flex flex-col justify-center py-20">
         {episodes.length === 0 && !playlistEmbedUrl ? (
           <p className="py-16 text-(--text-body) text-(--color-text-muted)">
             No episodes yet.

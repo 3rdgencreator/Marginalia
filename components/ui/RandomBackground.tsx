@@ -12,7 +12,15 @@ export default function RandomBackground({
         style={{ backgroundImage: `url('${BG}')`, opacity: 1, filter: 'blur(2px)', transform: 'scale(1.01)' }}
         aria-hidden="true"
       />
-      <div className="relative min-h-screen text-(--color-bg)">{children}</div>
+      <div
+        className="on-light-bg relative min-h-screen"
+        style={{
+          '--color-text-primary': '#1F1F21',
+          '--color-text-secondary': '#3A3A3C',
+          '--color-text-muted': '#5A5A6A',
+          color: '#1F1F21',
+        } as React.CSSProperties}
+      >{children}</div>
     </div>
   );
 }
