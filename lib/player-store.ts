@@ -129,19 +129,6 @@ class PlayerStore {
     this.widget = widget;
     const E = window.SC.Widget.Events;
 
-    widget.bind(E.READY, () => {
-      widget.getSounds((sounds) => {
-        if (!sounds?.length) return;
-        const tracks: SCTrack[] = sounds.map(s => ({
-          title: s.title ?? '',
-          artwork_url: s.artwork_url ?? null,
-          duration: s.duration ?? 0,
-          username: s.user?.username ?? '',
-        }));
-        this.setState({ tracks, isLoaded: true });
-      });
-    });
-
     widget.bind(E.PLAY, () => {
       this.setState({ isPlaying: true, hasPlayed: true, dismissed: false });
       widget.getCurrentSoundIndex((idx) => {
