@@ -30,6 +30,7 @@ interface SCWidget {
   isPaused(cb: (v: boolean) => void): void;
   getCurrentSoundIndex(cb: (index: number) => void): void;
   getDuration(cb: (v: number) => void): void;
+  getSounds(cb: (sounds: Array<{ title?: string; artwork_url?: string | null; duration?: number; user?: { username?: string } | null }>) => void): void;
 }
 
 export interface PlayerState {
@@ -127,6 +128,19 @@ class PlayerStore {
     const widget = window.SC.Widget(this.iframe);
     this.widget = widget;
     const E = window.SC.Widget.Events;
+
+    widget.bind(E.READY, () => {
+      widget.getSounds((sounds) => {
+        if (!sounds?.length) return;
+        const tracks: SCTrack[] = sounds.map(s => ({
+          title: s.title ?? '',
+          artwork_url: s.artwork_url ?? null,
+          duration: s.duration ?? 0,
+          username: s.user?.username ?? '',
+        }));
+        this.setState({ tracks, isLoaded: true });
+      });
+    });
 
     widget.bind(E.PLAY, () => {
       this.setState({ isPlaying: true, hasPlayed: true, dismissed: false });
