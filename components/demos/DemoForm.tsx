@@ -29,7 +29,7 @@ const FIELDS: Field[] = [
 ];
 
 const inputClass =
-  'w-full px-4 py-2.5 text-sm bg-white/8 border border-white/20 text-white placeholder:text-(--color-text-muted) focus:outline-none focus:border-white/50 focus:bg-white/12 transition-all';
+  'w-full px-4 py-2.5 text-sm bg-white/8 border border-white/20 text-(--color-text-primary) placeholder:text-(--color-text-muted) focus:outline-none focus:border-white/50 focus:bg-white/12 transition-all';
 
 export default function DemoForm({
   heading = 'Submit a Demo',

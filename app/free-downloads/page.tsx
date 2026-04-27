@@ -39,15 +39,6 @@ export default async function FreeDownloadsPage() {
   return (
     <RandomBackground>
       <Container className="py-(--space-3xl)">
-        <div className="mx-auto max-w-[75ch] mb-(--space-xl)">
-          <h1 className="text-(--text-heading) font-bold uppercase text-(--color-text-primary) mb-2">
-            Free Downloads
-          </h1>
-          <p className="text-sm text-(--color-text-secondary)">
-            Exclusive music from Marginalia, free for the community.
-          </p>
-        </div>
-
         {items.length === 0 ? (
           <div className="mx-auto max-w-[75ch]">
             <p className="text-(--color-text-muted) text-sm">
