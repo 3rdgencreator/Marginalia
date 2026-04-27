@@ -7,6 +7,7 @@ import {
   buildSoundCloudEmbedUrl,
 } from '@/lib/releases';
 import Container from '@/components/layout/Container';
+import RandomBackground from '@/components/ui/RandomBackground';
 import ReleaseMetaHeader from '@/components/releases/ReleaseMetaHeader';
 import LayloButton from '@/components/releases/LayloButton';
 import PlatformIconRow from '@/components/releases/PlatformIconRow';
@@ -121,6 +122,7 @@ export default async function ReleaseDetailPage({ params }: Props) {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
+      <RandomBackground darkContent>
       <Container className="py-12 md:py-16">
         {/* Mobile: stacked. Desktop (lg+): two-column sticky */}
         <div className="flex flex-col lg:flex-row lg:gap-12 lg:items-start">
@@ -195,6 +197,7 @@ export default async function ReleaseDetailPage({ params }: Props) {
           </div>
         </div>
       </Container>
+      </RandomBackground>
     </>
   );
 }
