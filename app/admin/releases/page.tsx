@@ -25,7 +25,7 @@ export default async function ReleasesAdmin() {
             )}
             <div className="flex-1 min-w-0">
               <p className="text-sm text-white font-medium truncate">{r.title}</p>
-              <p className="text-xs text-gray-500">{r.catalogNumber} · {r.releaseDate} · {r.releaseType}</p>
+              <p className="text-xs text-gray-500">{r.catalogNumber} · {r.releaseDate}</p>
             </div>
             <div className="flex items-center gap-2 shrink-0">
               {r.presave && <span className="text-[10px] bg-[#9EFF0A] text-black px-2 py-0.5 font-bold uppercase">Pre-Save</span>}

@@ -1,6 +1,7 @@
 import { createRelease } from '@/lib/db/actions/releases';
 import { Field, Textarea, Checkbox, Select, Section, Grid2 } from '@/components/admin/AdminField';
 import { ReleaseFetchWidget } from '@/components/admin/ReleaseFetchWidget';
+import { getSiteConfig } from '@/lib/db/queries';
 import Link from 'next/link';
 
 const RELEASE_TYPES = [
@@ -11,7 +12,8 @@ const RELEASE_TYPES = [
   { value: 'edit', label: 'Edit' },
 ];
 
-export default function NewReleasePage() {
+export default async function NewReleasePage() {
+  const cfg = await getSiteConfig();
   return (
     <div className="p-8 max-w-3xl">
       <div className="flex items-center gap-4 mb-8">
@@ -57,7 +59,7 @@ export default function NewReleasePage() {
         <Section title="Presave / CTA">
           <Grid2>
             <Field label="UPC" name="upc" placeholder="e.g. 4099964069441" />
-            <Field label="Laylo URL" name="layloUrl" placeholder="https://laylo.com/..." />
+            <Field label="Laylo URL" name="layloUrl" defaultValue={cfg?.layloUrl} placeholder="https://laylo.com/..." />
           </Grid2>
         </Section>
 
