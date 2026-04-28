@@ -6,6 +6,7 @@ function safeHref(url: string | null | undefined): string | null {
 }
 
 type ShowcaseCardProps = {
+  slug: string;
   entry: {
     title: string;
     date: string | null;
@@ -16,11 +17,12 @@ type ShowcaseCardProps = {
     aftermovieUrl: string | null | undefined;
     soundcloudSetUrl: string | null | undefined;
     flyer: string | null;
+    recapPhotos?: readonly { readonly image: string | null; readonly caption: string }[];
   };
   variant: 'upcoming' | 'past';
 };
 
-export default function ShowcaseCard({ entry, variant }: ShowcaseCardProps) {
+export default function ShowcaseCard({ slug, entry, variant }: ShowcaseCardProps) {
   const isUpcoming = variant === 'upcoming';
   return (
     <article
@@ -35,7 +37,7 @@ export default function ShowcaseCard({ entry, variant }: ShowcaseCardProps) {
       {entry.flyer && (
         <div className="aspect-video w-full overflow-hidden mb-(--space-md)">
           <Image
-            src={`/images/showcases/${entry.flyer}`}
+            src={entry.flyer}
             alt={`${entry.title} flyer`}
             width={800}
             height={450}
@@ -102,6 +104,16 @@ export default function ShowcaseCard({ entry, variant }: ShowcaseCardProps) {
           className="inline-block mt-(--space-md) text-(--text-label) text-(--color-text-muted) hover:text-(--color-text-primary) transition-colors duration-150"
         >
           WATCH AFTERMOVIE ↗
+        </a>
+      )}
+
+      {/* View detail page — past events */}
+      {variant === 'past' && (
+        <a
+          href={`/showcases/${slug}`}
+          className="inline-block mt-(--space-md) text-(--text-label) font-bold uppercase tracking-widest text-(--color-accent-lime) hover:opacity-70 transition-opacity duration-150"
+        >
+          VIEW GALLERY →
         </a>
       )}
     </article>

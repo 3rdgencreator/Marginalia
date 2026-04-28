@@ -1,15 +1,12 @@
 import type { Metadata } from 'next';
 import Image from 'next/image';
-import { reader } from '@/lib/keystatic';
-import { plainTextFromDocument } from '@/lib/releases';
+import { getAboutPage, getSiteConfig, resolveImageUrl } from '@/lib/db/queries';
 import Container from '@/components/layout/Container';
 import RandomBackground from '@/components/ui/RandomBackground';
-import AboutBody from '@/components/about/AboutBody';
 
 export async function generateMetadata(): Promise<Metadata> {
-  const about = await reader.singletons.about.read();
-  const body = about?.body ? await about.body() : null;
-  const description = plainTextFromDocument(body, 160) || 'About Marginalia.';
+  const about = await getAboutPage();
+  const description = about?.body ? about.body.slice(0, 160) : 'About Marginalia.';
   return {
     title: 'About | Marginalia',
     description,
@@ -17,23 +14,23 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function AboutPage() {
-  // CRITICAL: Use .read() NOT .readOrThrow() — about.yaml may not be populated
-  const about = await reader.singletons.about.read();
-  // body is stored as a separate .mdoc file — must call as function to get nodes
-  const body = about?.body ? await about.body() : null;
-  const siteConfig = await reader.singletons.siteConfig.read();
+  const [about, siteConfig] = await Promise.all([
+    getAboutPage(),
+    getSiteConfig(),
+  ]);
+
   const layloUrl = siteConfig?.layloUrl ?? null;
+  const photoSrc = resolveImageUrl(about?.photo, '/images/about/');
 
   return (
     <RandomBackground>
       <Container className="py-(--space-3xl)">
       <div className="mx-auto max-w-[65ch]">
 
-        {/* Optional photo of Elif — render only if photo field is set */}
-        {about?.photo && (
+        {photoSrc && (
           <div className="w-full mb-(--space-xl) overflow-hidden">
             <Image
-              src={`/images/about/${about.photo}`}
+              src={photoSrc}
               alt="Elif, Marginalia"
               width={1200}
               height={675}
@@ -44,13 +41,12 @@ export default async function AboutPage() {
           </div>
         )}
 
-        {Array.isArray(body) && body.length > 0 ? (
-          <AboutBody nodes={body} />
-        ) : null}
+        {about?.body && (
+          <div className="prose prose-invert max-w-none text-(--text-body) text-(--color-text-primary) leading-relaxed whitespace-pre-line">
+            {about.body}
+          </div>
+        )}
 
-        {/* When body is empty, page renders headline + photo only — no filler text (per D-24) */}
-
-        {/* Stay in the loop — Laylo CTA */}
         {layloUrl && (
           <div className="mt-(--space-xl) flex justify-center">
             <a

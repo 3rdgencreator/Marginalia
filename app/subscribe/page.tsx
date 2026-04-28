@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { reader } from '@/lib/keystatic';
+import { getSiteConfig } from '@/lib/db/queries';
 import Container from '@/components/layout/Container';
 import RandomBackground from '@/components/ui/RandomBackground';
 import SubscribePanel from '@/components/subscribe/SubscribePanel';
@@ -10,7 +10,7 @@ export const metadata: Metadata = {
 };
 
 export default async function SubscribePage() {
-  const config = await reader.singletons.siteConfig.read();
+  const config = await getSiteConfig();
   const layloUrl = config?.layloUrl ?? null;
   const newsletterListId = config?.newsletterProvider ?? null;
 

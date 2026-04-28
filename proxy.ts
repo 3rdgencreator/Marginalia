@@ -1,0 +1,16 @@
+import { auth } from '@/auth';
+import { NextResponse } from 'next/server';
+
+export default auth((req) => {
+  const isAdminRoute = req.nextUrl.pathname.startsWith('/admin');
+  const isLoginPage = req.nextUrl.pathname === '/admin/login';
+
+  if (isAdminRoute && !isLoginPage && !req.auth) {
+    return NextResponse.redirect(new URL('/admin/login', req.url));
+  }
+});
+
+export const config = {
+  // Exclude /admin/login from middleware so NextAuth doesn't redirect-loop
+  matcher: ['/admin/((?!login$).+)', '/admin'],
+};

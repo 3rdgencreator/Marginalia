@@ -1,5 +1,6 @@
+import type { ReactNode } from 'react';
+
 // Simple Icons CC0-1.0 — paths from simple-icons/simple-icons
-// RA has no Simple Icons slug; rendered as a text link.
 
 const ICONS: Record<string, string> = {
   instagram:
@@ -42,15 +43,32 @@ function IconLink({ href, label, iconKey }: IconLinkProps) {
   );
 }
 
-function TextLink({ href, label }: { href: string; label: string }) {
+function RaIcon() {
+  return (
+    // invert: black logo on white bg → white logo on black bg; screen: black bg becomes transparent
+    <img src="/ra-icon.png" alt="RA" width={20} height={20}
+      style={{ filter: 'invert(1)', mixBlendMode: 'screen', objectFit: 'contain' }} />
+  );
+}
+
+function LayloIcon() {
+  return (
+    // screen: black bg becomes transparent on dark theme, white logo stays visible
+    <img src="/laylo-icon.webp" alt="Laylo" width={20} height={20}
+      style={{ mixBlendMode: 'screen', objectFit: 'contain' }} />
+  );
+}
+
+function CustomIconLink({ href, label, icon }: { href: string; label: string; icon: ReactNode }) {
   return (
     <a
       href={href}
       target="_blank"
       rel="noopener noreferrer"
-      className="inline-flex items-center px-3 py-2 text-(--text-label) text-(--color-text-secondary) hover:text-(--color-accent-lime) transition-colors duration-150"
+      aria-label={label}
+      className="inline-flex items-center justify-center p-3 text-(--color-text-secondary) hover:text-(--color-accent-lime) transition-colors duration-150"
     >
-      {label}
+      {icon}
     </a>
   );
 }
@@ -77,8 +95,8 @@ export default function ArtistSocialRow({
       {spotifyUrl && <IconLink href={spotifyUrl} label="Spotify" iconKey="spotify" />}
       {beatportUrl && <IconLink href={beatportUrl} label="Beatport" iconKey="beatport" />}
       {youtubeUrl && <IconLink href={youtubeUrl} label="YouTube" iconKey="youtube" />}
-      {residentAdvisorUrl && <TextLink href={residentAdvisorUrl} label="RA" />}
-      {layloUrl && <TextLink href={layloUrl} label="Laylo" />}
+      {residentAdvisorUrl && <CustomIconLink href={residentAdvisorUrl} label="Resident Advisor" icon={<RaIcon />} />}
+      {layloUrl && <CustomIconLink href={layloUrl} label="Laylo" icon={<LayloIcon />} />}
     </div>
   );
 }

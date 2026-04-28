@@ -6,7 +6,7 @@ import MiniPlayer from '@/components/layout/MiniPlayer';
 import { resolveMiniPlayerColor, resolveButtonColor } from '@/lib/navbar-colors';
 import FirstVisitPrompt from '@/components/ui/FirstVisitPrompt';
 import { PlayerProvider } from '@/lib/player-context';
-import { reader } from '@/lib/keystatic';
+import { getAllPodcasts, getSiteConfig } from '@/lib/db/queries';
 import { buildSoundCloudPlaylistEmbedUrl, buildSoundCloudEmbedUrl } from '@/lib/releases';
 
 export const metadata: Metadata = {
@@ -15,6 +15,10 @@ export const metadata: Metadata = {
   ),
   title: 'Marginalia | Melodic House & Techno Label',
   description: 'Barcelona-based label for melodic house and techno.',
+  icons: {
+    icon: '/icon.png',
+    apple: '/icon.png',
+  },
 };
 
 export default async function RootLayout({
@@ -23,23 +27,23 @@ export default async function RootLayout({
   children: React.ReactNode;
 }>) {
   const [podcasts, siteConfig] = await Promise.all([
-    reader.collections.podcasts.all(),
-    reader.singletons.siteConfig.read(),
+    getAllPodcasts(),
+    getSiteConfig(),
   ]);
 
   const latest = podcasts
-    .filter(p => p.entry.soundcloudUrl)
-    .sort((a, b) => (b.entry.date ?? '').localeCompare(a.entry.date ?? ''))[0];
+    .filter(p => p.soundcloudUrl)
+    .sort((a, b) => (b.date ?? '').localeCompare(a.date ?? ''))[0];
 
   // Prefer playlist URL so the embed URL matches what PodcastPlayer uses —
   // loadPlaylist skips reinit when URL is unchanged, keeping music playing on nav.
   const playlistUrl = siteConfig?.soundcloudPlaylistUrl ?? null;
-  const episodeUrl = latest?.entry.soundcloudUrl ?? null;
+  const episodeUrl = latest?.soundcloudUrl ?? null;
   const scUrl = playlistUrl ?? episodeUrl ?? null;
   const latestEmbedUrl = playlistUrl
     ? buildSoundCloudPlaylistEmbedUrl(playlistUrl)
     : (episodeUrl ? buildSoundCloudEmbedUrl(episodeUrl) : null);
-  const latestTitle = latest?.entry.title ?? 'Marginalia Podcasts';
+  const latestTitle = latest?.title ?? 'Marginalia Podcasts';
 
   return (
     <html lang="en" className="h-full antialiased">

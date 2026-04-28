@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
-import { reader } from '@/lib/keystatic';
+import { db } from '@/lib/db';
+import { demoPage } from '@/lib/db/schema';
 import Container from '@/components/layout/Container';
 import RandomBackground from '@/components/ui/RandomBackground';
 import DemoForm from '@/components/demos/DemoForm';
@@ -10,15 +11,15 @@ export const metadata: Metadata = {
 };
 
 export default async function DemoPage() {
-  const demoPage = await reader.singletons.demoPage.read();
-  const introNodes = demoPage?.intro ? await demoPage.intro() : null;
-  const heading = demoPage?.heading ?? 'Submit a Demo';
-  const acceptingDemos = demoPage?.acceptingDemos ?? true;
+  const [page] = await db.select().from(demoPage).limit(1);
+  const heading = page?.heading ?? 'Submit a Demo';
+  const acceptingDemos = page?.acceptingDemos ?? true;
+  const intro = page?.intro ?? null;
 
   return (
     <RandomBackground>
       <Container className="min-h-screen flex flex-col items-center justify-center py-24">
-        <DemoForm heading={heading} introNodes={introNodes} acceptingDemos={acceptingDemos} />
+        <DemoForm heading={heading} intro={intro} acceptingDemos={acceptingDemos} />
       </Container>
     </RandomBackground>
   );

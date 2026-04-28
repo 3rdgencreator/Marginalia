@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { reader } from '@/lib/keystatic';
+import { getAllReleases, resolveImageUrl } from '@/lib/db/queries';
 import Container from '@/components/layout/Container';
 import ReleaseGrid from '@/components/releases/ReleaseGrid';
 import RandomBackground from '@/components/ui/RandomBackground';
@@ -11,30 +11,20 @@ export const metadata: Metadata = {
 };
 
 export default async function ReleasesPage() {
-  const releases = await reader.collections.releases.all();
+  const releases = await getAllReleases();
 
-  const mapped = releases.map(({ slug, entry }) => {
-    const pl = (entry.platformLinks ?? {}) as Record<string, string | undefined>;
-    return {
-      slug,
-      entry: {
-        title: entry.title,
-        artistName: pl.artistName,
-        coverArt: entry.coverArt,
-        artworkUrl: pl.artworkUrl,
-        presave: entry.presave === true,
-        badgeText: entry.badgeText || null,
-        releaseDate: entry.releaseDate ?? '',
-      },
-    };
-  });
-
-  // Pre-saves first, then by date descending
-  const sorted = [...mapped].sort((a, b) => {
-    if (a.entry.presave && !b.entry.presave) return -1;
-    if (!a.entry.presave && b.entry.presave) return 1;
-    return b.entry.releaseDate.localeCompare(a.entry.releaseDate);
-  });
+  const sorted = releases.map((r) => ({
+    slug: r.slug,
+    entry: {
+      title: r.title,
+      artistName: r.artistName ?? undefined,
+      coverArt: resolveImageUrl(r.coverArt, '/images/releases/'),
+      artworkUrl: r.artworkUrl ?? undefined,
+      presave: r.presave ?? false,
+      badgeText: r.badgeText || null,
+      releaseDate: r.releaseDate ?? '',
+    },
+  }));
 
   return (
     <RandomBackground>

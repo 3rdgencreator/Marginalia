@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { reader } from '@/lib/keystatic';
+import { getAllArtists, resolveImageUrl } from '@/lib/db/queries';
 import Container from '@/components/layout/Container';
 import RandomBackground from '@/components/ui/RandomBackground';
 import ArtistCard from '@/components/artists/ArtistCard';
@@ -10,20 +10,8 @@ export const metadata: Metadata = {
 };
 
 export default async function ArtistsPage() {
-  const slugs = await reader.collections.artists.list();
-  const artists = (
-    await Promise.all(
-      slugs.map(async (slug) => {
-        const entry = await reader.collections.artists.read(slug);
-        if (!entry) return null;
-        return { slug, entry };
-      })
-    )
-  )
-    .filter((a): a is NonNullable<typeof a> => a !== null && a.entry.featured !== false)
-    .sort((a, b) =>
-      (a.entry.name as string).localeCompare(b.entry.name as string)
-    );
+  const all = await getAllArtists();
+  const artists = all.filter((a) => a.featured !== false);
 
   return (
     <RandomBackground>
@@ -34,13 +22,13 @@ export default async function ArtistsPage() {
           </p>
         ) : (
           <ul className="grid grid-cols-2 md:grid-cols-[repeat(auto-fit,minmax(180px,1fr))] gap-(--space-sm) max-w-4xl mx-auto">
-            {artists.map(({ slug, entry }) => (
-              <li key={slug}>
+            {artists.map((a) => (
+              <li key={a.slug}>
                 <ArtistCard
-                  slug={slug}
-                  name={entry.name as string}
-                  role={entry.role ?? null}
-                  photo={entry.photo ?? null}
+                  slug={a.slug}
+                  name={a.name}
+                  role={a.role ?? null}
+                  photo={resolveImageUrl(a.photo, '/images/artists/')}
                 />
               </li>
             ))}

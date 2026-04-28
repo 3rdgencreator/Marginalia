@@ -1,115 +1,39 @@
-'use client';
-import { useEffect, useState, useCallback } from 'react';
+import { db } from '@/lib/db';
+import { releases } from '@/lib/db/schema';
+import { desc } from 'drizzle-orm';
+import Link from 'next/link';
 
-type Release = { slug: string; title: string; catalogNumber: string };
-
-export default function ReleasesAdminPage() {
-  const [releases, setReleases] = useState<Release[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [deletingSlug, setDeletingSlug] = useState<string | null>(null);
-
-  const load = useCallback(async () => {
-    setLoading(true);
-    const res = await fetch('/api/admin/releases');
-    const data = await res.json();
-    const sorted = (Array.isArray(data) ? data as Release[] : []).sort((a, b) => {
-      if (a.catalogNumber && b.catalogNumber) return a.catalogNumber.localeCompare(b.catalogNumber);
-      if (a.catalogNumber) return -1;
-      if (b.catalogNumber) return 1;
-      return (a.title || a.slug).localeCompare(b.title || b.slug);
-    });
-    setReleases(sorted);
-    setLoading(false);
-  }, []);
-
-  useEffect(() => { load(); }, [load]);
-
-  const handleDelete = async (slug: string, label: string) => {
-    if (!window.confirm(`Delete "${label}"?\n\nThis permanently removes the release file and cannot be undone.`)) return;
-    setDeletingSlug(slug);
-    try {
-      const res = await fetch(`/api/admin/releases/${slug}`, { method: 'DELETE' });
-      if (res.ok) {
-        await load();
-      } else {
-        const err = await res.json().catch(() => ({})) as { error?: string };
-        alert(`Delete failed: ${err.error ?? 'unknown error'}`);
-      }
-    } finally {
-      setDeletingSlug(null);
-    }
-  };
+export default async function ReleasesAdmin() {
+  const all = await db.select().from(releases).orderBy(desc(releases.releaseDate));
 
   return (
-    <div style={{ minHeight: '100vh', background: '#1F1F21', color: '#fff', fontFamily: 'system-ui, sans-serif' }}>
-      <div style={{ maxWidth: 680, margin: '0 auto', padding: '48px 24px' }}>
+    <div className="p-8">
+      <div className="flex items-center justify-between mb-8">
+        <h1 className="text-xl font-bold text-white uppercase tracking-widest">Releases</h1>
+        <Link href="/admin/releases/new" className="px-5 py-2 bg-[#580AFF] text-white text-sm font-bold uppercase tracking-widest hover:bg-[#9EFF0A] hover:text-black transition-colors duration-150">
+          + New
+        </Link>
+      </div>
 
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 32 }}>
-          <div>
-            <h1 style={{ fontSize: 18, fontWeight: 700, margin: 0, letterSpacing: '-0.01em' }}>Release Manager</h1>
-            <p style={{ fontSize: 12, color: '#6b7280', margin: '4px 0 0' }}>{releases.length} release{releases.length !== 1 ? 's' : ''}</p>
-          </div>
-          <div style={{ display: 'flex', gap: 8 }}>
-            <a href="/keystatic/collection/releases/create"
-              style={{ padding: '7px 14px', borderRadius: 6, background: '#9EFF0A', color: '#111', fontSize: 12, fontWeight: 700, textDecoration: 'none' }}>
-              + Add
-            </a>
-            <a href="/keystatic/collection/releases"
-              style={{ padding: '7px 14px', borderRadius: 6, border: '1px solid #3f3f41', color: '#9ca3af', fontSize: 12, fontWeight: 600, textDecoration: 'none' }}>
-              Keystatic →
-            </a>
-          </div>
-        </div>
-
-        {loading ? (
-          <p style={{ color: '#6b7280', fontSize: 13 }}>Loading…</p>
-        ) : releases.length === 0 ? (
-          <p style={{ color: '#6b7280', fontSize: 13 }}>No releases found.</p>
-        ) : (
-          <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: 3 }}>
-            {releases.map(r => {
-              const label = r.catalogNumber
-                ? `${r.catalogNumber} — ${r.title || r.slug}`
-                : (r.title || r.slug);
-              const isDel = deletingSlug === r.slug;
-              return (
-                <li key={r.slug} style={{
-                  display: 'flex', alignItems: 'center', gap: 10,
-                  padding: '10px 14px', background: '#2a2a2c', borderRadius: 6,
-                  opacity: isDel ? 0.5 : 1, transition: 'opacity 0.15s',
-                }}>
-                  <a href={`/keystatic/collection/releases/${r.slug}`}
-                    style={{ flex: 1, color: '#fff', textDecoration: 'none', fontSize: 13, fontWeight: 500 }}>
-                    {label}
-                    {!r.title && (
-                      <span style={{ marginLeft: 8, fontSize: 10, color: '#f59e0b', fontWeight: 600, background: '#2d2410', padding: '1px 5px', borderRadius: 3 }}>
-                        NO TITLE
-                      </span>
-                    )}
-                    {!r.catalogNumber && (
-                      <span style={{ marginLeft: 4, fontSize: 10, color: '#9ca3af', fontWeight: 600 }}>
-                        no cat#
-                      </span>
-                    )}
-                  </a>
-                  <span style={{ fontSize: 10, color: '#4b5563', fontFamily: 'monospace' }}>{r.slug}</span>
-                  <button
-                    onClick={() => handleDelete(r.slug, label)}
-                    disabled={isDel}
-                    style={{
-                      padding: '4px 10px', borderRadius: 4,
-                      border: '1px solid #3f3f41', background: 'transparent',
-                      color: isDel ? '#6b7280' : '#ef4444',
-                      fontSize: 11, fontWeight: 600,
-                      cursor: isDel ? 'default' : 'pointer',
-                    }}>
-                    {isDel ? '…' : 'Delete'}
-                  </button>
-                </li>
-              );
-            })}
-          </ul>
-        )}
+      <div className="flex flex-col gap-2">
+        {all.map(r => (
+          <Link key={r.slug} href={`/admin/releases/${r.slug}`}
+            className="flex items-center gap-4 bg-[#2A2A2C] border border-white/5 px-5 py-4 hover:border-white/20 transition-colors duration-150">
+            {r.coverArt && (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img src={r.coverArt} alt="" className="w-10 h-10 object-cover shrink-0" />
+            )}
+            <div className="flex-1 min-w-0">
+              <p className="text-sm text-white font-medium truncate">{r.title}</p>
+              <p className="text-xs text-gray-500">{r.catalogNumber} · {r.releaseDate} · {r.releaseType}</p>
+            </div>
+            <div className="flex items-center gap-2 shrink-0">
+              {r.presave && <span className="text-[10px] bg-[#9EFF0A] text-black px-2 py-0.5 font-bold uppercase">Pre-Save</span>}
+              {r.featured && <span className="text-[10px] bg-[#580AFF] text-white px-2 py-0.5 font-bold uppercase">Featured</span>}
+            </div>
+          </Link>
+        ))}
+        {all.length === 0 && <p className="text-gray-500 text-sm">No releases yet. Add your first one.</p>}
       </div>
     </div>
   );

@@ -30,8 +30,8 @@ export default function ReleaseCard({ slug, entry }: CardProps) {
     >
       {(() => {
         const src = entry.coverArt
-          ? `/images/releases/${entry.coverArt}`
-          : entry.artworkUrl?.replace('3000x3000bb', '600x600bb') ?? null;
+          ?? entry.artworkUrl?.replace('3000x3000bb', '600x600bb')
+          ?? null;
         return src ? (
           <Image
             src={src}

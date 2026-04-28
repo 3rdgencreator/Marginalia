@@ -1,11 +1,8 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import Image from 'next/image';
-import { reader } from '@/lib/keystatic';
-import {
-  plainTextFromDocument,
-  buildSoundCloudEmbedUrl,
-} from '@/lib/releases';
+import { getAllReleases, getReleaseBySlug, resolveImageUrl } from '@/lib/db/queries';
+import { buildSoundCloudEmbedUrl } from '@/lib/releases';
 import Container from '@/components/layout/Container';
 import RandomBackground from '@/components/ui/RandomBackground';
 import ReleaseMetaHeader from '@/components/releases/ReleaseMetaHeader';
@@ -18,23 +15,24 @@ import type { ReleasePlatform } from '@/components/releases/platform-icons';
 type Props = { params: Promise<{ slug: string }> };
 
 export async function generateStaticParams() {
-  const releases = await reader.collections.releases.list();
-  return releases.map((slug) => ({ slug }));
+  const releases = await getAllReleases();
+  return releases.map((r) => ({ slug: r.slug }));
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
-  const entry = await reader.collections.releases.read(slug);
-  if (!entry) return {};
+  const r = await getReleaseBySlug(slug);
+  if (!r) return {};
 
-  const plMeta = (entry.platformLinks ?? {}) as Record<string, string | undefined>;
-  const artistStr = plMeta.artistName ?? '';
-  const title = artistStr ? `${entry.title} by ${artistStr} | Marginalia` : `${entry.title} | Marginalia`;
-  const descFromDoc = plainTextFromDocument(entry.description, 160);
-  const description = descFromDoc
-    || (artistStr
-      ? `${entry.title} by ${artistStr}, out ${entry.releaseDate ?? 'soon'} on Marginalia.`
-      : `${entry.title}, out ${entry.releaseDate ?? 'soon'} on Marginalia.`);
+  const artistStr = r.artistName ?? '';
+  const title = artistStr ? `${r.title} by ${artistStr} | Marginalia` : `${r.title} | Marginalia`;
+  const description = r.description
+    ? r.description.slice(0, 160)
+    : (artistStr
+      ? `${r.title} by ${artistStr}, out ${r.releaseDate ?? 'soon'} on Marginalia.`
+      : `${r.title}, out ${r.releaseDate ?? 'soon'} on Marginalia.`);
+
+  const coverSrc = resolveImageUrl(r.coverArt, '/images/releases/') ?? r.artworkUrl ?? null;
 
   return {
     title,
@@ -44,75 +42,56 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       description,
       type: 'music.album',
       url: `/releases/${slug}`,
-      ...(entry.coverArt
-        ? {
-            images: [
-              {
-                url: `/images/releases/${entry.coverArt}`,
-                width: 1200,
-                height: 1200,
-                alt: `${entry.title} cover artwork`,
-              },
-            ],
-          }
-        : {}),
+      ...(coverSrc ? { images: [{ url: coverSrc, width: 1200, height: 1200, alt: `${r.title} cover artwork` }] } : {}),
     },
-    twitter: {
-      card: 'summary_large_image',
-    },
+    twitter: { card: 'summary_large_image' },
   };
 }
 
 export default async function ReleaseDetailPage({ params }: Props) {
   const { slug } = await params;
-  const entry = await reader.collections.releases.read(slug);
-  if (!entry) notFound();
+  const r = await getReleaseBySlug(slug);
+  if (!r) notFound();
 
-  // platformLinks is the compound custom field (all URLs + UPC + artistName live there)
-  const pl = (entry.platformLinks ?? {}) as Record<string, string | undefined>;
+  const artistStr = r.artistName ?? '';
 
-  const artistStr = pl.artistName ?? '';
-  const descPlain = plainTextFromDocument(entry.description, 500);
-
-  // Build the full platform URL map for PlatformIconRow and MorePlatforms
   const urls: Partial<Record<ReleasePlatform, string | null | undefined>> = {
-    beatport: pl.beatportUrl,
-    spotify: pl.spotifyUrl,
-    soundcloud: pl.soundcloudUrl,
-    appleMusic: pl.appleMusicUrl,
-    deezer: pl.deezerUrl,
-    bandcamp: pl.bandcampUrl,
-    tidal: pl.tidalUrl,
-    traxsource: pl.traxsourceUrl,
-    juno: pl.junoUrl,
-    boomkat: pl.boomkatUrl,
-    amazon: pl.amazonUrl,
-    youtube: pl.youtubeUrl,
-    anghami: pl.anghamiUrl,
-    mixcloud: pl.mixcloudUrl,
-    netEase: pl.netEaseUrl,
-    pandora: pl.pandoraUrl,
-    saavn: pl.saavnUrl,
-    facebook: pl.facebookUrl,
+    beatport: r.beatportUrl,
+    spotify: r.spotifyUrl,
+    soundcloud: r.soundcloudUrl,
+    appleMusic: r.appleMusicUrl,
+    deezer: r.deezerUrl,
+    bandcamp: r.bandcampUrl,
+    tidal: r.tidalUrl,
+    traxsource: r.traxsourceUrl,
+    juno: r.junoUrl,
+    boomkat: r.boomkatUrl,
+    amazon: r.amazonUrl,
+    youtube: r.youtubeUrl,
+    anghami: r.anghamiUrl,
+    mixcloud: r.mixcloudUrl,
+    netEase: r.netEaseUrl,
+    pandora: r.pandoraUrl,
+    saavn: r.saavnUrl,
+    facebook: r.soundcloudPodcastUrl,
   };
 
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://marginalialabel.com';
-  // Use uploaded file first, fall back to iTunes CDN URL stored in platformLinks
-  const coverSrc = entry.coverArt
-    ? `/images/releases/${entry.coverArt}`
-    : (pl.artworkUrl ? pl.artworkUrl.replace('3000x3000bb', '600x600bb') : null);
-  const coverArtAbsolute = entry.coverArt
-    ? `${siteUrl}/images/releases/${entry.coverArt}`
-    : (pl.artworkUrl ?? null);
+  const coverSrc = resolveImageUrl(r.coverArt, '/images/releases/')
+    ?? r.artworkUrl?.replace('3000x3000bb', '600x600bb')
+    ?? null;
+  const coverArtAbsolute = r.coverArt
+    ? (r.coverArt.startsWith('http') ? r.coverArt : `${siteUrl}/images/releases/${r.coverArt}`)
+    : (r.artworkUrl ?? null);
 
   const jsonLd = {
     '@context': 'https://schema.org',
     '@type': 'MusicAlbum',
-    name: entry.title,
+    name: r.title,
     ...(artistStr ? { byArtist: { '@type': 'MusicGroup', name: artistStr } } : {}),
-    ...(entry.releaseDate ? { datePublished: entry.releaseDate } : {}),
+    ...(r.releaseDate ? { datePublished: r.releaseDate } : {}),
     ...(coverArtAbsolute ? { image: coverArtAbsolute } : {}),
-    ...(descPlain ? { description: descPlain } : {}),
+    ...(r.description ? { description: r.description.slice(0, 500) } : {}),
     url: `${siteUrl}/releases/${slug}`,
   };
 
@@ -124,7 +103,14 @@ export default async function ReleaseDetailPage({ params }: Props) {
       />
       <RandomBackground>
       <Container className="py-12 md:py-16">
-        {/* Mobile: stacked. Desktop (lg+): two-column sticky */}
+        <div className="mb-8">
+          <a
+            href="/releases"
+            className="text-(--text-label) text-(--color-text-muted) hover:text-(--color-text-primary) transition-colors duration-150 uppercase tracking-widest"
+          >
+            ← All Releases
+          </a>
+        </div>
         <div className="flex flex-col lg:flex-row lg:gap-12 lg:items-start">
 
           {/* Left column — cover art (sticky on desktop) */}
@@ -133,7 +119,7 @@ export default async function ReleaseDetailPage({ params }: Props) {
               {coverSrc ? (
                 <Image
                   src={coverSrc}
-                  alt={`${entry.title} cover artwork`}
+                  alt={`${r.title} cover artwork`}
                   width={800}
                   height={800}
                   sizes="(max-width: 1024px) 100vw, 40vw"
@@ -152,50 +138,50 @@ export default async function ReleaseDetailPage({ params }: Props) {
           <div className="mt-8 lg:mt-0 flex flex-col gap-8 lg:w-[60%]">
 
             <ReleaseMetaHeader
-              title={entry.title}
-              artistName={pl.artistName}
-              releaseDate={entry.releaseDate}
+              title={r.title}
+              artistName={r.artistName ?? undefined}
+              releaseDate={r.releaseDate}
             />
 
-            {pl.layloUrl && (
+            {r.layloUrl && (
               <LayloButton
-                url={pl.layloUrl}
-                releaseTitle={entry.title}
-                releaseDate={entry.releaseDate}
+                url={r.layloUrl}
+                releaseTitle={r.title}
+                releaseDate={r.releaseDate}
               />
             )}
 
-            <PlatformIconRow releaseTitle={entry.title} urls={urls} />
+            <PlatformIconRow releaseTitle={r.title} urls={urls} />
 
-            {pl.soundcloudUrl && (
-              <SoundCloudEmbed embedUrl={buildSoundCloudEmbedUrl(pl.soundcloudUrl)} />
+            {r.soundcloudUrl && (
+              <SoundCloudEmbed embedUrl={buildSoundCloudEmbedUrl(r.soundcloudUrl)} />
             )}
 
-            {entry.description && Array.isArray(entry.description) && entry.description.length > 0 && (
-              <div className="prose prose-invert max-w-none text-(--text-body) text-(--color-text-primary) leading-relaxed">
-                {descPlain}
+            {r.description && (
+              <div className="prose prose-invert max-w-none text-(--text-body) text-(--color-text-primary) leading-relaxed whitespace-pre-line">
+                {r.description}
               </div>
             )}
 
-            {/* Secondary metadata */}
-            {(entry.catalogNumber || entry.releaseType) && (
+            {(r.catalogNumber || r.releaseType) && (
               <div className="flex flex-col gap-4 pt-8 border-t border-(--color-surface)">
-                {entry.catalogNumber && (
+                {r.catalogNumber && (
                   <p className="text-(--text-label) text-(--color-text-secondary)">
-                    {entry.catalogNumber}
+                    {r.catalogNumber}
                   </p>
                 )}
-                {entry.releaseType && (
+                {r.releaseType && (
                   <p className="text-(--text-label) text-(--color-text-secondary) capitalize">
-                    {entry.releaseType}
+                    {r.releaseType}
                   </p>
                 )}
               </div>
             )}
 
-            <MorePlatforms releaseTitle={entry.title} urls={urls} />
+            <MorePlatforms releaseTitle={r.title} urls={urls} />
           </div>
         </div>
+
       </Container>
       </RandomBackground>
     </>

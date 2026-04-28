@@ -1,9 +1,6 @@
 'use client';
 
 import { useState } from 'react';
-import { DocumentRenderer } from '@keystatic/core/renderer';
-
-type DocumentNode = Parameters<typeof DocumentRenderer>[0]['document'][number];
 
 type Field = {
   name: string;
@@ -33,11 +30,11 @@ const inputClass =
 
 export default function DemoForm({
   heading = 'Submit a Demo',
-  introNodes,
+  intro,
   acceptingDemos = true,
 }: {
   heading?: string;
-  introNodes?: DocumentNode[] | null;
+  intro?: string | null;
   acceptingDemos?: boolean;
 }) {
   const [fields, setFields] = useState({
@@ -102,10 +99,10 @@ export default function DemoForm({
         </div>
       )}
       <h1 className="text-2xl font-bold text-white mb-1">{heading}</h1>
-      {introNodes && introNodes.length > 0 ? (
-        <div className="prose prose-invert prose-sm max-w-none mb-5 text-(--color-text-secondary)">
-          <DocumentRenderer document={introNodes} />
-        </div>
+      {intro ? (
+        <p className="text-sm text-(--color-text-secondary) mb-5 leading-relaxed whitespace-pre-line">
+          {intro}
+        </p>
       ) : (
         <p className="text-sm text-(--color-text-secondary) mb-5 leading-relaxed">
           Share your music with Marginalia. We listen to everything. Please give us time to respond.

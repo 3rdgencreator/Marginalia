@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import Image from 'next/image';
-import { reader } from '@/lib/keystatic';
+import { getSiteConfig, getPresaveReleases, resolveImageUrl } from '@/lib/db/queries';
 import { resolveNavbarColor } from '@/lib/navbar-colors';
 import Container from './Container';
 import Logo from '@/components/ui/Logo';
@@ -8,9 +8,9 @@ import SocialIcon, { type Platform } from '@/components/ui/SocialIcon';
 import NewsletterForm from './NewsletterForm';
 
 export default async function SiteFooter() {
-  const [config, allReleases] = await Promise.all([
-    reader.singletons.siteConfig.read(),
-    reader.collections.releases.all(),
+  const [config, allPresaves] = await Promise.all([
+    getSiteConfig(),
+    getPresaveReleases(),
   ]);
 
   const socials: Array<{ platform: Platform; url: string | null | undefined }> = [
@@ -22,15 +22,12 @@ export default async function SiteFooter() {
     { platform: 'facebook', url: config?.facebookUrl },
   ];
 
-  const presaves = allReleases
-    .filter(({ entry }) => entry.presave === true)
-    .map(({ slug, entry }) => {
-      const pl = (entry.platformLinks ?? {}) as Record<string, string | undefined>;
-      const src = entry.coverArt
-        ? `/images/releases/${entry.coverArt}`
-        : pl.artworkUrl?.replace('3000x3000bb', '600x600bb') ?? null;
-      return { slug, title: entry.title, artistName: pl.artistName ?? null, src };
-    });
+  const presaves = allPresaves.map((r) => {
+    const src = resolveImageUrl(r.coverArt, '/images/releases/')
+      ?? r.artworkUrl?.replace('3000x3000bb', '600x600bb')
+      ?? null;
+    return { slug: r.slug, title: r.title, artistName: r.artistName ?? null, src };
+  });
 
   const newsletterListId = config?.newsletterProvider ?? null;
   const year = new Date().getFullYear();

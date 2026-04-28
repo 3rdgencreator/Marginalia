@@ -1,6 +1,6 @@
 import Image from 'next/image';
 import Link from 'next/link';
-import { reader } from '@/lib/keystatic';
+import { getSiteConfig } from '@/lib/db/queries';
 import NavLinks from './NavLinks';
 import MobileMenu from './MobileMenu';
 import SocialIcon, { type Platform } from '@/components/ui/SocialIcon';
@@ -30,7 +30,7 @@ const SOCIAL_PLATFORMS: Platform[] = [
 ];
 
 export default async function SiteNav() {
-  const config = await reader.singletons.siteConfig.read();
+  const config = await getSiteConfig();
 
   const socials: Array<{ platform: Platform; url: string | null | undefined }> =
     SOCIAL_PLATFORMS.map((platform) => ({

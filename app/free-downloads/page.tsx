@@ -1,9 +1,10 @@
 import type { Metadata } from 'next';
-import { reader } from '@/lib/keystatic';
+import { db } from '@/lib/db';
+import { freeDownloads } from '@/lib/db/schema';
+import { eq } from 'drizzle-orm';
 import Container from '@/components/layout/Container';
 import RandomBackground from '@/components/ui/RandomBackground';
 import DownloadGate, { type DownloadItem } from '@/components/downloads/DownloadGate';
-import type { SoundcloudDownloadValue } from '@/lib/soundcloud-download-field';
 
 export const metadata: Metadata = {
   title: 'Free Downloads | Marginalia',
@@ -11,30 +12,25 @@ export const metadata: Metadata = {
 };
 
 export default async function FreeDownloadsPage() {
-  const allDownloads = await reader.collections.freeDownloads.all();
+  const all = await db.select().from(freeDownloads)
+    .where(eq(freeDownloads.active, true));
 
-  const items: DownloadItem[] = allDownloads
-    .filter(({ entry }) => entry.active !== false)
+  const items: DownloadItem[] = all
     .sort((a, b) => {
-      if (!a.entry.releaseDate && !b.entry.releaseDate) return 0;
-      if (!a.entry.releaseDate) return 1;
-      if (!b.entry.releaseDate) return -1;
-      return b.entry.releaseDate.localeCompare(a.entry.releaseDate);
+      if (!a.releaseDate && !b.releaseDate) return 0;
+      if (!a.releaseDate) return 1;
+      if (!b.releaseDate) return -1;
+      return b.releaseDate.localeCompare(a.releaseDate);
     })
-    .map(({ slug, entry }) => {
-      const sc = entry.soundcloudDownload as SoundcloudDownloadValue;
-      return {
-        slug,
-        title: entry.title,
-        artistName: entry.artistName ?? '',
-        description: entry.description ?? '',
-        coverImage: entry.coverImage
-          ? `/images/downloads/${entry.coverImage}`
-          : (sc?.artworkUrl ?? null),
-        downloadUrl: sc?.url ?? null,
-        releaseDate: entry.releaseDate ?? null,
-      };
-    });
+    .map((d) => ({
+      slug: d.slug,
+      title: d.title,
+      artistName: d.artistName ?? '',
+      description: d.description ?? '',
+      coverImage: d.coverImage ?? null,
+      downloadUrl: d.soundcloudDownloadUrl ?? null,
+      releaseDate: d.releaseDate ?? null,
+    }));
 
   return (
     <RandomBackground>
