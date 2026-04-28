@@ -22,77 +22,67 @@ export default function ReleaseCard({ slug, entry }: CardProps) {
     ? `${entry.title} by ${entry.artistName} cover artwork`
     : `${entry.title} cover artwork`;
 
+  const badgeLabel = entry.badgeText || (entry.presave ? 'Pre-Save' : null);
+
   return (
     <Link
       href={`/releases/${slug}`}
       aria-label={ariaLabel}
-      className="group relative block aspect-square overflow-hidden border-2 border-white/70 bg-white/10"
+      className="group block"
     >
-      {(() => {
-        const src = entry.coverArt
-          ?? entry.artworkUrl?.replace('3000x3000bb', '600x600bb')
-          ?? null;
-        return src ? (
-          <Image
-            src={src}
-            alt={altText}
-            width={600}
-            height={600}
-            sizes="(max-width: 768px) 33vw, (max-width: 1024px) 25vw, 20vw"
-            className="h-full w-full object-cover"
-          />
-        ) : (
-          <span
-            aria-hidden="true"
-            className="flex h-full w-full items-center justify-center text-(--text-label) text-(--color-text-muted)"
-          >
-            No artwork
-          </span>
-        );
-      })()}
+      <div className="relative aspect-square overflow-hidden border-2 border-white/70 bg-white/10">
+        {(() => {
+          const src = entry.coverArt
+            ?? entry.artworkUrl?.replace('3000x3000bb', '600x600bb')
+            ?? null;
+          return src ? (
+            <Image
+              src={src}
+              alt={altText}
+              width={600}
+              height={600}
+              sizes="(max-width: 768px) 33vw, (max-width: 1024px) 25vw, 20vw"
+              className="h-full w-full object-cover"
+            />
+          ) : (
+            <span
+              aria-hidden="true"
+              className="flex h-full w-full items-center justify-center text-(--text-label) text-(--color-text-muted)"
+            >
+              No artwork
+            </span>
+          );
+        })()}
 
-      {/* Badge — shown when badgeText is set; falls back to presave flag with "Pre-Save" */}
-      {(entry.badgeText || entry.presave) && (
-        <span
-          aria-label={entry.badgeText ?? 'Pre-Save'}
-          style={{
-            position: 'absolute', top: 8, left: 8,
-            background: 'var(--color-accent-lime)',
-            color: '#000',
-            fontSize: 10,
-            fontWeight: 700,
-            letterSpacing: '0.08em',
-            padding: '2px 7px',
-            textTransform: 'uppercase',
-            pointerEvents: 'none',
-            zIndex: 2,
-          }}
+        {/* Desktop-only hover overlay */}
+        <div
+          aria-hidden="true"
+          className="
+            pointer-events-none
+            absolute inset-0
+            hidden md:flex flex-col items-center justify-center gap-2 p-4
+            bg-[rgba(31,31,33,0.70)]
+            opacity-0 group-hover:opacity-100 group-focus-visible:opacity-100
+            transition-opacity duration-200 ease-out
+          "
         >
-          {entry.badgeText || 'Pre-Save'}
-        </span>
-      )}
-
-      {/* Desktop-only hover overlay (D-03/D-04). Hidden on mobile via `hidden md:flex`. */}
-      <div
-        aria-hidden="true"
-        className="
-          pointer-events-none
-          absolute inset-0
-          hidden md:flex flex-col items-center justify-center gap-2 p-4
-          bg-[rgba(31,31,33,0.70)]
-          opacity-0 group-hover:opacity-100 group-focus-visible:opacity-100
-          transition-opacity duration-200 ease-out
-        "
-      >
-        <span className="text-(--text-body) font-bold text-center text-white">
-          {entry.title}
-        </span>
-        {artistsForOverlay && (
-          <span className="text-(--text-label) text-white text-center">
-            {artistsForOverlay}
+          <span className="text-(--text-body) font-bold text-center text-white">
+            {entry.title}
           </span>
-        )}
+          {artistsForOverlay && (
+            <span className="text-(--text-label) text-white text-center">
+              {artistsForOverlay}
+            </span>
+          )}
+        </div>
       </div>
+
+      {/* Badge footer — shown below card when badgeText or presave is set */}
+      {badgeLabel && (
+        <p className="mt-1.5 text-[10px] font-bold uppercase tracking-widest text-(--color-accent-lime)">
+          {badgeLabel}
+        </p>
+      )}
     </Link>
   );
 }
