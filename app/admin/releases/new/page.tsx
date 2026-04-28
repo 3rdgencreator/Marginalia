@@ -12,14 +12,20 @@ const RELEASE_TYPES = [
   { value: 'edit', label: 'Edit' },
 ];
 
-export default async function NewReleasePage() {
-  const cfg = await getSiteConfig();
+export default async function NewReleasePage({ searchParams }: { searchParams: Promise<{ error?: string; slug?: string }> }) {
+  const [cfg, params] = await Promise.all([getSiteConfig(), searchParams]);
   return (
     <div className="p-8 max-w-3xl">
       <div className="flex items-center gap-4 mb-8">
         <Link href="/admin/releases" className="text-gray-500 hover:text-white text-sm">← Releases</Link>
         <h1 className="text-xl font-bold text-white uppercase tracking-widest">New Release</h1>
       </div>
+
+      {params.error === 'duplicate-slug' && (
+        <div className="mb-6 p-3 border border-red-500/40 bg-red-500/10 text-red-400 text-sm">
+          Slug <code className="font-mono bg-red-500/10 px-1">{params.slug}</code> already exists. Change the slug or edit the existing release.
+        </div>
+      )}
 
       <ReleaseFetchWidget />
 

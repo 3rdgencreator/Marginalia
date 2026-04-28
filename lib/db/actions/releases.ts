@@ -11,6 +11,11 @@ export async function createRelease(formData: FormData) {
   const title = formStr(formData, 'title')!;
   const slug = formStr(formData, 'slug') ?? toSlug(title);
 
+  const existing = await db.select({ slug: releases.slug }).from(releases).where(eq(releases.slug, slug)).limit(1);
+  if (existing.length > 0) {
+    redirect(`/admin/releases/new?error=duplicate-slug&slug=${encodeURIComponent(slug)}`);
+  }
+
   await db.insert(releases).values({
     slug,
     title,
