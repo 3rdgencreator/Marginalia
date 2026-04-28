@@ -1,8 +1,7 @@
 import type { Metadata } from 'next';
-import { getHomePage, getSiteConfig, getFeaturedReleases, resolveImageUrl } from '@/lib/db/queries';
+import { getHomePage, getSiteConfig } from '@/lib/db/queries';
 import Container from '@/components/layout/Container';
 import Logo from '@/components/ui/Logo';
-import ReleaseCard from '@/components/releases/ReleaseCard';
 import AnnouncementBar from '@/components/layout/AnnouncementBar';
 import HeroYouTube from '@/components/ui/HeroYouTube';
 
@@ -41,10 +40,9 @@ export const metadata: Metadata = {
 };
 
 export default async function HomePage() {
-  const [homeData, siteConfig, featuredReleases] = await Promise.all([
+  const [homeData, siteConfig] = await Promise.all([
     getHomePage(),
     getSiteConfig(),
-    getFeaturedReleases(),
   ]);
 
   const desktopFile = homeData?.heroVideoDesktopR2Url ?? null;
@@ -57,18 +55,6 @@ export default async function HomePage() {
   const mobileEmbedUrl = !mobileFile ? buildYouTubeEmbedUrl(homeData?.heroVideoMobileYoutubeUrl, null, true) : null;
   const desktopYouTubeId = !desktopFile ? extractYouTubeId(homeData?.heroVideoDesktopYoutubeUrl) : null;
   const desktopThumbnailUrl = desktopYouTubeId ? `https://i.ytimg.com/vi/${desktopYouTubeId}/maxresdefault.jpg` : null;
-
-  const featured = featuredReleases.map((r) => ({
-    slug: r.slug,
-    entry: {
-      title: r.title,
-      coverArt: resolveImageUrl(r.coverArt, '/images/releases/'),
-      artistName: r.artistName ?? undefined,
-      artworkUrl: r.artworkUrl ?? undefined,
-      presave: r.presave ?? false,
-      badgeText: r.badgeText || null,
-    },
-  }));
 
   return (
     <main>
@@ -154,20 +140,6 @@ export default async function HomePage() {
         </div>
       )}
 
-      {featured.length > 0 && (
-        <Container className="py-(--space-3xl)">
-          <h2 className="mb-(--space-xl) text-(--text-heading) font-bold uppercase text-(--color-text-primary)">
-            RELEASES
-          </h2>
-          <ul className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-(--space-sm)">
-            {featured.map(({ slug, entry }) => (
-              <li key={slug}>
-                <ReleaseCard slug={slug} entry={entry} />
-              </li>
-            ))}
-          </ul>
-        </Container>
-      )}
 
     </main>
   );

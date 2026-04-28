@@ -22,9 +22,7 @@ export default async function SiteFooter() {
     { platform: 'facebook', url: config?.facebookUrl },
   ];
 
-  const presaves = allBadged
-    .filter(r => r.badgeText || r.presave)
-    .map((r) => {
+  const presaves = allBadged.map((r) => {
       const src = resolveImageUrl(r.coverArt, '/images/releases/')
         ?? r.artworkUrl?.replace('3000x3000bb', '600x600bb')
         ?? null;
