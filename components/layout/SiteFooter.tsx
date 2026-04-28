@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import Image from 'next/image';
-import { getSiteConfig, getPresaveReleases, resolveImageUrl } from '@/lib/db/queries';
+import { getSiteConfig, getFooterBadgeReleases, resolveImageUrl } from '@/lib/db/queries';
 import { resolveNavbarColor } from '@/lib/navbar-colors';
 import Container from './Container';
 import Logo from '@/components/ui/Logo';
@@ -8,9 +8,9 @@ import SocialIcon, { type Platform } from '@/components/ui/SocialIcon';
 import NewsletterForm from './NewsletterForm';
 
 export default async function SiteFooter() {
-  const [config, allPresaves] = await Promise.all([
+  const [config, allBadged] = await Promise.all([
     getSiteConfig(),
-    getPresaveReleases(),
+    getFooterBadgeReleases(),
   ]);
 
   const socials: Array<{ platform: Platform; url: string | null | undefined }> = [
@@ -22,12 +22,15 @@ export default async function SiteFooter() {
     { platform: 'facebook', url: config?.facebookUrl },
   ];
 
-  const presaves = allPresaves.map((r) => {
-    const src = resolveImageUrl(r.coverArt, '/images/releases/')
-      ?? r.artworkUrl?.replace('3000x3000bb', '600x600bb')
-      ?? null;
-    return { slug: r.slug, title: r.title, artistName: r.artistName ?? null, src };
-  });
+  const presaves = allBadged
+    .filter(r => r.badgeText || r.presave)
+    .map((r) => {
+      const src = resolveImageUrl(r.coverArt, '/images/releases/')
+        ?? r.artworkUrl?.replace('3000x3000bb', '600x600bb')
+        ?? null;
+      const badge = r.badgeText || (r.presave ? 'Pre-Save' : null);
+      return { slug: r.slug, title: r.title, artistName: r.artistName ?? null, src, badge };
+    });
 
   const newsletterListId = config?.newsletterProvider ?? null;
   const year = new Date().getFullYear();
@@ -82,7 +85,7 @@ export default async function SiteFooter() {
                   gridTemplateColumns: `repeat(auto-fill, minmax(${Math.max(80, Math.min(130, Math.floor(400 / presaves.length)))}px, 1fr))`,
                 }}
               >
-                {presaves.map(({ slug, title, artistName, src }) => (
+                {presaves.map(({ slug, title, artistName, src, badge }) => (
                   <li key={slug}>
                     <Link
                       href={`/releases/${slug}`}
@@ -102,23 +105,25 @@ export default async function SiteFooter() {
                           {title[0]}
                         </span>
                       )}
-                      {/* Pre-Save badge */}
-                      <span
-                        style={{
-                          position: 'absolute', top: 6, left: 6,
-                          background: 'var(--color-accent-lime)',
-                          color: '#000',
-                          fontSize: 9,
-                          fontWeight: 700,
-                          letterSpacing: '0.08em',
-                          padding: '2px 5px',
-                          textTransform: 'uppercase',
-                          pointerEvents: 'none',
-                          zIndex: 2,
-                        }}
-                      >
-                        Pre-Save
-                      </span>
+                      {/* Badge */}
+                      {badge && (
+                        <span
+                          style={{
+                            position: 'absolute', top: 6, left: 6,
+                            background: 'var(--color-accent-lime)',
+                            color: '#000',
+                            fontSize: 9,
+                            fontWeight: 700,
+                            letterSpacing: '0.08em',
+                            padding: '2px 5px',
+                            textTransform: 'uppercase',
+                            pointerEvents: 'none',
+                            zIndex: 2,
+                          }}
+                        >
+                          {badge}
+                        </span>
+                      )}
                       {/* Hover overlay */}
                       <div
                         aria-hidden="true"

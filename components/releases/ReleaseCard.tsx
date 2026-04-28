@@ -22,8 +22,6 @@ export default function ReleaseCard({ slug, entry }: CardProps) {
     ? `${entry.title} by ${entry.artistName} cover artwork`
     : `${entry.title} cover artwork`;
 
-  const badgeLabel = entry.badgeText || (entry.presave ? 'Pre-Save' : null);
-
   return (
     <Link
       href={`/releases/${slug}`}
@@ -77,12 +75,6 @@ export default function ReleaseCard({ slug, entry }: CardProps) {
         </div>
       </div>
 
-      {/* Badge footer — shown below card when badgeText or presave is set */}
-      {badgeLabel && (
-        <p className="mt-1.5 text-[10px] font-bold uppercase tracking-widest text-(--color-accent-lime)">
-          {badgeLabel}
-        </p>
-      )}
     </Link>
   );
 }

@@ -22,9 +22,9 @@ export async function getFeaturedReleases() {
     .orderBy(desc(releases.releaseDate));
 }
 
-export async function getPresaveReleases() {
+export async function getFooterBadgeReleases() {
   return db.select().from(releases)
-    .where(eq(releases.presave, true))
+    .where(eq(releases.featured, true))
     .orderBy(desc(releases.releaseDate));
 }
 
