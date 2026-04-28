@@ -1,5 +1,6 @@
 import { createRelease } from '@/lib/db/actions/releases';
 import { Field, Textarea, Checkbox, Select, Section, Grid2 } from '@/components/admin/AdminField';
+import { ReleaseFetchWidget } from '@/components/admin/ReleaseFetchWidget';
 import Link from 'next/link';
 
 const RELEASE_TYPES = [
@@ -17,6 +18,8 @@ export default function NewReleasePage() {
         <Link href="/admin/releases" className="text-gray-500 hover:text-white text-sm">← Releases</Link>
         <h1 className="text-xl font-bold text-white uppercase tracking-widest">New Release</h1>
       </div>
+
+      <ReleaseFetchWidget />
 
       <form action={createRelease} className="flex flex-col gap-6">
         <Section title="Basic Info">

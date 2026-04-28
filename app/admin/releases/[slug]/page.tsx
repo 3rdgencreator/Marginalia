@@ -5,6 +5,7 @@ import { notFound } from 'next/navigation';
 import { updateRelease, deleteRelease } from '@/lib/db/actions/releases';
 import { Field, Textarea, Checkbox, Select, Section, Grid2 } from '@/components/admin/AdminField';
 import { DeleteButton } from '@/components/admin/DeleteButton';
+import { ReleaseFetchWidget } from '@/components/admin/ReleaseFetchWidget';
 import Link from 'next/link';
 
 const RELEASE_TYPES = [
@@ -33,6 +34,8 @@ export default async function EditReleasePage({ params }: Props) {
         <a href={`/releases/${slug}`} target="_blank" rel="noopener noreferrer"
           className="ml-auto text-xs text-gray-500 hover:text-[#9EFF0A] shrink-0">View ↗</a>
       </div>
+
+      <ReleaseFetchWidget />
 
       <form action={update} className="flex flex-col gap-6">
         <Section title="Basic Info">
