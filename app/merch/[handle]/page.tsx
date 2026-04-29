@@ -39,12 +39,12 @@ export default async function ProductPage({ params }: Props) {
   if (!product) notFound();
 
   return (
-    <RandomBackground darkContent>
+    <RandomBackground>
       <Container className="py-12 md:py-16">
         <div className="mb-8">
           <a
             href="/merch"
-            className="text-(--text-label) text-white/60 hover:text-white transition-colors duration-150 uppercase tracking-widest"
+            className="text-(--text-label) text-(--color-text-muted) hover:text-(--color-text-primary) transition-colors duration-150 uppercase tracking-widest"
           >
             ← All Merch
           </a>

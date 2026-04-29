@@ -54,7 +54,7 @@ export default function ProductDetail({ product }: Props) {
     <div className="flex flex-col lg:flex-row lg:gap-12 lg:items-start">
       {/* Left — gallery */}
       <div className="w-full lg:w-[55%] shrink-0 flex flex-col gap-3">
-        <div className="aspect-square w-full bg-white/5 border border-white/10 relative overflow-hidden">
+        <div className="aspect-square w-full bg-white/40 border-2 border-white/70 relative overflow-hidden">
           {product.images[activeImage] ? (
             <Image
               src={product.images[activeImage].url}
@@ -66,7 +66,7 @@ export default function ProductDetail({ product }: Props) {
               unoptimized
             />
           ) : (
-            <div className="flex h-full w-full items-center justify-center text-white/40 uppercase text-xs tracking-widest">
+            <div className="flex h-full w-full items-center justify-center text-(--color-text-muted) uppercase text-xs tracking-widest">
               No image
             </div>
           )}
@@ -78,8 +78,8 @@ export default function ProductDetail({ product }: Props) {
                 key={img.url}
                 onClick={() => setActiveImage(i)}
                 aria-label={`View image ${i + 1}`}
-                className={`shrink-0 w-16 h-16 bg-white/5 border relative overflow-hidden transition-colors ${
-                  i === activeImage ? 'border-white' : 'border-white/15 hover:border-white/40'
+                className={`shrink-0 w-16 h-16 bg-white/40 border-2 relative overflow-hidden transition-colors ${
+                  i === activeImage ? 'border-(--color-text-primary)' : 'border-white/60 hover:border-(--color-text-primary)'
                 }`}
               >
                 <Image
@@ -99,19 +99,19 @@ export default function ProductDetail({ product }: Props) {
       {/* Right — info + add to cart */}
       <div className="mt-8 lg:mt-0 flex flex-col gap-6 lg:w-[45%]">
         <div>
-          <h1 className="text-(--text-heading) font-bold text-white leading-tight">
+          <h1 className="text-(--text-heading) font-bold text-(--color-text-primary) leading-tight">
             {product.title}
           </h1>
-          <p className="text-(--text-body) text-white/70 mt-2 tabular-nums">
+          <p className="text-(--text-body) text-(--color-text-secondary) mt-2 tabular-nums">
             {variant ? formatPrice(variant.price.amount, variant.price.currencyCode) : '—'}
           </p>
         </div>
 
         {hasRealOptions && product.options?.map((option) => (
           <div key={option.name} className="flex flex-col gap-2">
-            <p className="text-(--text-label) uppercase tracking-widest text-white/60">
+            <p className="text-(--text-label) uppercase tracking-widest text-(--color-text-muted)">
               {option.name}
-              <span className="ml-2 text-white/40 normal-case tracking-normal">
+              <span className="ml-2 text-(--color-text-secondary) normal-case tracking-normal">
                 {selection[option.name]}
               </span>
             </p>
@@ -126,12 +126,12 @@ export default function ProductDetail({ product }: Props) {
                     key={value}
                     onClick={() => setSelection(trial)}
                     disabled={!trialVariant}
-                    className={`px-4 py-2 text-(--text-label) uppercase tracking-widest border transition-colors ${
+                    className={`px-4 py-2 text-(--text-label) uppercase tracking-widest border-2 transition-colors ${
                       selected
-                        ? 'border-white bg-white text-black'
+                        ? 'border-(--color-text-primary) bg-(--color-text-primary) text-white'
                         : available
-                        ? 'border-white/30 text-white/80 hover:border-white'
-                        : 'border-white/10 text-white/30 line-through cursor-not-allowed'
+                        ? 'border-(--color-text-primary)/30 text-(--color-text-primary) hover:border-(--color-text-primary)'
+                        : 'border-(--color-text-muted)/30 text-(--color-text-muted) line-through cursor-not-allowed'
                     }`}
                   >
                     {value}
@@ -143,22 +143,22 @@ export default function ProductDetail({ product }: Props) {
         ))}
 
         <div className="flex flex-col gap-2">
-          <p className="text-(--text-label) uppercase tracking-widest text-white/60">Quantity</p>
-          <div className="flex items-center border border-white/30 w-fit">
+          <p className="text-(--text-label) uppercase tracking-widest text-(--color-text-muted)">Quantity</p>
+          <div className="flex items-center border-2 border-(--color-text-primary)/30 w-fit">
             <button
               onClick={() => setQuantity((q) => Math.max(1, q - 1))}
               aria-label="Decrease quantity"
-              className="w-10 h-10 flex items-center justify-center text-white/70 hover:text-white hover:bg-white/5 transition-colors"
+              className="w-10 h-10 flex items-center justify-center text-(--color-text-secondary) hover:text-(--color-text-primary) hover:bg-(--color-text-primary)/5 transition-colors"
             >
               −
             </button>
-            <span className="w-12 text-center text-(--text-body) text-white tabular-nums">
+            <span className="w-12 text-center text-(--text-body) text-(--color-text-primary) tabular-nums">
               {quantity}
             </span>
             <button
               onClick={() => setQuantity((q) => q + 1)}
               aria-label="Increase quantity"
-              className="w-10 h-10 flex items-center justify-center text-white/70 hover:text-white hover:bg-white/5 transition-colors"
+              className="w-10 h-10 flex items-center justify-center text-(--color-text-secondary) hover:text-(--color-text-primary) hover:bg-(--color-text-primary)/5 transition-colors"
             >
               +
             </button>
@@ -168,7 +168,7 @@ export default function ProductDetail({ product }: Props) {
         <button
           onClick={handleAdd}
           disabled={!variant || !variant.availableForSale || isPending}
-          className="w-full bg-[#580AFF] hover:bg-[#9EFF0A] hover:text-black disabled:bg-white/10 disabled:text-white/40 disabled:cursor-not-allowed text-white py-4 text-(--text-label) uppercase tracking-widest transition-colors"
+          className="w-full bg-[#580AFF] hover:bg-[#9EFF0A] hover:text-black disabled:bg-(--color-text-muted)/20 disabled:text-(--color-text-muted) disabled:cursor-not-allowed text-white py-4 text-(--text-label) uppercase tracking-widest transition-colors"
         >
           {!variant
             ? 'Unavailable'
@@ -180,7 +180,7 @@ export default function ProductDetail({ product }: Props) {
         </button>
 
         {product.description && (
-          <div className="text-(--text-body) text-white/70 leading-relaxed whitespace-pre-line pt-6 border-t border-white/10">
+          <div className="text-(--text-body) text-(--color-text-secondary) leading-relaxed whitespace-pre-line pt-6 border-t border-(--color-text-primary)/15">
             {product.description}
           </div>
         )}
