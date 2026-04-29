@@ -1,9 +1,9 @@
 import type { NextConfig } from 'next';
 
 const nextConfig: NextConfig = {
-  // Phase 3: ship unoptimized — avoid /_next/image 404 on Cloudflare Workers
-  // (no IMAGES binding configured yet). Phase 7 will flip this off and add
-  // a custom Cloudflare Images loader. See 03-RESEARCH.md Pitfall #5.
+  // Cloudflare Workers: /_next/image requires an IMAGES binding which is not
+  // configured. Keep unoptimized: true — release cover art comes from external
+  // CDNs (already optimized); local images are pre-compressed at build time.
   images: {
     unoptimized: true,
   },

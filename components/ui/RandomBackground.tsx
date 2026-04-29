@@ -8,10 +8,10 @@ export default function RandomBackground({
   darkContent?: boolean;
 }) {
   return (
-    <div className="relative min-h-screen">
+    <div className="relative min-h-screen overflow-hidden">
       <div
-        className="absolute inset-0 bg-cover bg-center bg-fixed"
-        style={{ backgroundImage: `url('${BG}')`, opacity: 1, filter: 'blur(2px)', transform: 'scale(1.01)' }}
+        className="absolute inset-0 bg-cover bg-center"
+        style={{ backgroundImage: `url('${BG}')`, filter: 'blur(2px)', transform: 'scale(1.01)' }}
         aria-hidden="true"
       />
       {darkContent ? (
