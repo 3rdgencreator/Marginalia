@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import Image from 'next/image';
 import { getAllReleases, getReleaseBySlug, resolveImageUrl } from '@/lib/db/queries';
@@ -53,6 +54,8 @@ export default async function ReleaseDetailPage({ params }: Props) {
   const r = await getReleaseBySlug(slug);
   if (!r) notFound();
 
+  const today = new Date().toISOString().slice(0, 10);
+  const isOut = r.releaseDate !== null && r.releaseDate <= today;
   const artistStr = r.artistName ?? '';
 
   const urls: Partial<Record<ReleasePlatform, string | null | undefined>> = {
@@ -106,12 +109,12 @@ export default async function ReleaseDetailPage({ params }: Props) {
       <RandomBackground>
       <Container className="py-12 md:py-16">
         <div className="mb-8">
-          <a
+          <Link
             href="/releases"
             className="text-(--text-label) text-(--color-text-muted) hover:text-(--color-text-primary) transition-colors duration-150 uppercase tracking-widest"
           >
             ← All Releases
-          </a>
+          </Link>
         </div>
         <div className="flex flex-col lg:flex-row lg:gap-12 lg:items-start">
 
@@ -145,18 +148,35 @@ export default async function ReleaseDetailPage({ params }: Props) {
               releaseDate={r.releaseDate}
             />
 
-            {r.layloUrl && (
-              <LayloButton
-                url={r.layloUrl}
-                releaseTitle={r.title}
-                releaseDate={r.releaseDate}
-              />
-            )}
-
-            <PlatformIconRow releaseTitle={r.title} urls={urls} />
-
-            {r.soundcloudUrl && (
-              <SoundCloudEmbed embedUrl={buildSoundCloudEmbedUrl(r.soundcloudUrl)} />
+            {!isOut ? (
+              <>
+                {r.presaveLayloUrl && (
+                  <LayloButton
+                    url={r.presaveLayloUrl}
+                    label="Turn on notifications"
+                    releaseTitle={r.title}
+                    variant="mail"
+                  />
+                )}
+                {r.hypedditUrl && (
+                  <LayloButton
+                    url={r.hypedditUrl}
+                    label="Pre-Save"
+                    releaseTitle={r.title}
+                    variant="none"
+                  />
+                )}
+              </>
+            ) : (
+              <>
+                {r.layloUrl && (
+                  <LayloButton url={r.layloUrl} label="Join the community" releaseTitle={r.title} />
+                )}
+                <PlatformIconRow releaseTitle={r.title} urls={urls} />
+                {r.soundcloudUrl && (
+                  <SoundCloudEmbed embedUrl={buildSoundCloudEmbedUrl(r.soundcloudUrl)} />
+                )}
+              </>
             )}
 
             {r.description && (
@@ -180,7 +200,7 @@ export default async function ReleaseDetailPage({ params }: Props) {
               </div>
             )}
 
-            <MorePlatforms releaseTitle={r.title} urls={urls} />
+            {isOut && <MorePlatforms releaseTitle={r.title} urls={urls} />}
           </div>
         </div>
 

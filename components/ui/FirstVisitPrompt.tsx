@@ -6,11 +6,9 @@ import { usePlayer } from '@/lib/player-context';
 export default function FirstVisitPrompt({
   embedUrl,
   scUrl,
-  trackTitle,
 }: {
   embedUrl: string;
   scUrl: string;
-  trackTitle: string;
 }) {
   const [visible, setVisible] = useState(false);
   const [loaded, setLoaded] = useState(false);

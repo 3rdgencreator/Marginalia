@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import Image from 'next/image';
 
 interface FetchResult {
   title?: string | null;
@@ -70,7 +71,7 @@ function CardPreview({ data }: { data: FetchResult }) {
       <p className="text-[10px] text-gray-500 uppercase tracking-widest mb-2">Card Preview</p>
       <div className="relative aspect-square border-2 border-white/70 bg-white/10 overflow-hidden group">
         {img ? (
-          <img src={img} alt="cover" className="h-full w-full object-cover" />
+          <Image src={img} alt="cover" fill sizes="192px" className="object-cover" unoptimized />
         ) : (
           <div className="flex h-full w-full items-center justify-center text-gray-600 text-xs">
             No artwork
@@ -104,7 +105,9 @@ export function ReleaseFetchWidget() {
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<FetchResult | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [isPresave, setIsPresave] = useState(false);
 
+  // Mirror release-type select changes back into the preview
   useEffect(() => {
     const sel = document.querySelector<HTMLSelectElement>('[name="releaseType"]');
     if (!sel) return;
@@ -113,7 +116,26 @@ export function ReleaseFetchWidget() {
     return () => sel.removeEventListener('change', handler);
   }, []);
 
+  // Mirror the pre-save checkbox state — when checked, only Spotify URL search is allowed
+  // (UPC search doesn't return pre-release content from Spotify's public index).
+  useEffect(() => {
+    const cb = document.querySelector<HTMLInputElement>('input[name="presave"]');
+    if (!cb) return;
+    const sync = () => setIsPresave(cb.checked);
+    sync();
+    cb.addEventListener('change', sync);
+    return () => cb.removeEventListener('change', sync);
+  }, []);
+
+  function buildParams(useUpc: boolean, useUrl: boolean): string {
+    const parts: string[] = [];
+    if (useUpc && upc) parts.push(`upc=${encodeURIComponent(upc)}`);
+    if (useUrl && url) parts.push(`url=${encodeURIComponent(url)}`);
+    return parts.join('&');
+  }
+
   async function fetchData(params: string) {
+    if (!params) return;
     setLoading(true);
     setError(null);
     setResult(null);
@@ -130,52 +152,72 @@ export function ReleaseFetchWidget() {
     }
   }
 
+  // When user clicks any fetch button, send BOTH params if BOTH fields are filled
+  // (route merges the responses, deduping matching fields and using extras).
+  function fetchSmart(focused: 'upc' | 'url') {
+    const useUpc = !isPresave && !!upc;
+    const useUrl = !!url;
+    if (!useUpc && !useUrl) return;
+    if (focused === 'upc' && !useUpc) return;
+    if (focused === 'url' && !useUrl) return;
+    fetchData(buildParams(useUpc, useUrl));
+  }
+
   const filledLinks = result
     ? PLATFORM_LABELS.filter(([key]) => result[key])
     : [];
 
   return (
     <div className="mb-8 p-4 border border-[#580AFF]/40 bg-[#580AFF]/5">
-      <h2 className="text-xs text-[#9EFF0A] uppercase tracking-widest mb-4 flex items-center gap-2">
-        <span>⚡</span> Auto-Fill — UPC or Platform URL
+      <h2 className="text-xs text-[#9EFF0A] uppercase tracking-widest mb-2 flex items-center gap-2">
+        <span>⚡</span> Auto-Fill — {isPresave ? 'Spotify / Apple Music URL only' : 'UPC and / or Platform URL'}
       </h2>
+      <p className="text-[11px] text-gray-500 mb-4">
+        {isPresave
+          ? 'Pre-save mode: Spotify search by UPC does not return pre-release tracks. Paste the Spotify or Apple Music URL from your distributor (or Spotify for Artists).'
+          : 'Tip — filling both UPC and URL gives the most complete metadata; matching fields are de-duped and extras are merged in.'}
+      </p>
 
       {/* Inputs */}
       <div className="flex flex-col sm:flex-row gap-3">
-        <div className="flex gap-2 flex-1">
-          <input
-            type="text"
-            value={upc}
-            onChange={e => setUpc(e.target.value)}
-            onKeyDown={e => e.key === 'Enter' && upc && fetchData(`upc=${encodeURIComponent(upc)}`)}
-            placeholder="UPC code (e.g. 4099964069441)"
-            className="flex-1 bg-[#2A2A2C] border border-white/10 text-white px-3 py-2 text-sm focus:outline-none focus:border-[#9EFF0A] placeholder:text-gray-600"
-          />
-          <button
-            type="button"
-            disabled={!upc || loading}
-            onClick={() => fetchData(`upc=${encodeURIComponent(upc)}`)}
-            className="px-4 py-2 bg-[#580AFF] text-white text-xs font-bold uppercase tracking-widest hover:bg-[#9EFF0A] hover:text-black transition-colors disabled:opacity-40 disabled:cursor-not-allowed shrink-0"
-          >
-            {loading ? '...' : 'Fetch'}
-          </button>
-        </div>
+        {!isPresave && (
+          <>
+            <div className="flex gap-2 flex-1">
+              <input
+                type="text"
+                value={upc}
+                onChange={e => setUpc(e.target.value)}
+                onKeyDown={e => e.key === 'Enter' && fetchSmart('upc')}
+                placeholder="UPC code (e.g. 4099964069441)"
+                className="flex-1 bg-[#2A2A2C] border border-white/10 text-white px-3 py-2 text-sm focus:outline-none focus:border-[#9EFF0A] placeholder:text-gray-600"
+              />
+              <button
+                type="button"
+                disabled={!upc || loading}
+                onClick={() => fetchSmart('upc')}
+                className="px-4 py-2 bg-[#580AFF] text-white text-xs font-bold uppercase tracking-widest hover:bg-[#9EFF0A] hover:text-black transition-colors disabled:opacity-40 disabled:cursor-not-allowed shrink-0"
+              >
+                {loading ? '...' : 'Fetch'}
+              </button>
+            </div>
 
-        <span className="text-gray-600 text-xs self-center hidden sm:block">or</span>
+            <span className="text-gray-600 text-xs self-center hidden sm:block">+ or</span>
+          </>
+        )}
 
         <div className="flex gap-2 flex-1">
           <input
             type="text"
             value={url}
             onChange={e => setUrl(e.target.value)}
-            onKeyDown={e => e.key === 'Enter' && url && fetchData(`url=${encodeURIComponent(url)}`)}
+            onKeyDown={e => e.key === 'Enter' && fetchSmart('url')}
             placeholder="Spotify / Apple Music URL"
             className="flex-1 bg-[#2A2A2C] border border-white/10 text-white px-3 py-2 text-sm focus:outline-none focus:border-[#9EFF0A] placeholder:text-gray-600"
           />
           <button
             type="button"
             disabled={!url || loading}
-            onClick={() => fetchData(`url=${encodeURIComponent(url)}`)}
+            onClick={() => fetchSmart('url')}
             className="px-4 py-2 bg-[#580AFF] text-white text-xs font-bold uppercase tracking-widest hover:bg-[#9EFF0A] hover:text-black transition-colors disabled:opacity-40 disabled:cursor-not-allowed shrink-0"
           >
             {loading ? '...' : 'Fetch'}

@@ -34,6 +34,8 @@ export const releases = pgTable('releases', {
   artworkUrl: varchar('artwork_url', { length: 1000 }),
   upc: varchar('upc', { length: 50 }),
   layloUrl: varchar('laylo_url', { length: 1000 }),
+  presaveLayloUrl: varchar('presave_laylo_url', { length: 1000 }),
+  hypedditUrl: varchar('hypeddit_url', { length: 1000 }),
   beatportUrl: varchar('beatport_url', { length: 1000 }),
   spotifyUrl: varchar('spotify_url', { length: 1000 }),
   soundcloudUrl: varchar('soundcloud_url', { length: 1000 }),

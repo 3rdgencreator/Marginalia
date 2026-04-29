@@ -1,6 +1,7 @@
 import { createRelease } from '@/lib/db/actions/releases';
 import { Field, Textarea, Checkbox, Select, Section, Grid2 } from '@/components/admin/AdminField';
 import { ReleaseFetchWidget } from '@/components/admin/ReleaseFetchWidget';
+import { PresaveSection } from '@/components/admin/PresaveSection';
 import { getSiteConfig } from '@/lib/db/queries';
 import Link from 'next/link';
 
@@ -27,9 +28,18 @@ export default async function NewReleasePage({ searchParams }: { searchParams: P
         </div>
       )}
 
-      <ReleaseFetchWidget />
-
       <form action={createRelease} className="flex flex-col gap-6">
+        <Section title="Release Mode">
+          <Checkbox label="Pre-Save (release date is in the future, distributor has not pushed to iTunes yet)" name="presave" />
+          <PresaveSection>
+            <Field label="UPC" name="upc" placeholder="e.g. 4099964069441" />
+            <Field label="Hypeddit URL (smart link)" name="hypedditUrl" placeholder="https://hyped.it/..." />
+            <Field label="Pre-Save Laylo URL" name="presaveLayloUrl" placeholder="https://laylo.com/... (pre-save campaign)" hint="Separate from the standard Join the Community link. Auto-cleared on release date." />
+          </PresaveSection>
+        </Section>
+
+        <ReleaseFetchWidget />
+
         <Section title="Basic Info">
           <Grid2>
             <Field label="Title" name="title" required />
@@ -52,20 +62,10 @@ export default async function NewReleasePage({ searchParams }: { searchParams: P
         </Section>
 
         <Section title="Flags">
-          <Grid2>
-            <Checkbox label="Featured on Homepage" name="featured" />
-            <Checkbox label="Pre-Save" name="presave" />
-          </Grid2>
+          <Checkbox label="Featured on Homepage" name="featured" />
           <Grid2>
             <Field label="Badge Text" name="badgeText" placeholder="e.g. Out Now, Pre-Save" />
             <Field label="Sort Order" name="sortOrder" type="number" defaultValue={0} />
-          </Grid2>
-        </Section>
-
-        <Section title="Presave / CTA">
-          <Grid2>
-            <Field label="UPC" name="upc" placeholder="e.g. 4099964069441" />
-            <Field label="Laylo URL" name="layloUrl" defaultValue={cfg?.layloUrl} placeholder="https://laylo.com/..." />
           </Grid2>
         </Section>
 
@@ -78,6 +78,10 @@ export default async function NewReleasePage({ searchParams }: { searchParams: P
             <Field label="Deezer" name="deezerUrl" placeholder="https://www.deezer.com/..." />
             <Field label="Bandcamp" name="bandcampUrl" placeholder="https://..." />
           </Grid2>
+        </Section>
+
+        <Section title="Community">
+          <Field label="Laylo URL (Join the Community)" name="layloUrl" defaultValue={cfg?.layloUrl} placeholder="https://laylo.com/..." hint="Always-on link shown after release. For pre-save campaigns use the Pre-Save Laylo URL above instead." />
         </Section>
 
         <Section title="More Links">

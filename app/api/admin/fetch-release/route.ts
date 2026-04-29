@@ -116,8 +116,15 @@ async function fetchSpotifyAlbum(idOrUpc: string, token: string, byUpc = false) 
 // ── Route ──────────────────────────────────────────────────────────────────
 
 export async function GET(req: NextRequest) {
-  const session = await auth();
-  if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  // Auth: either an admin session, or a cron-secret header (for the
+  // release-day cleanup job calling itself).
+  const cronSecret = process.env.CRON_SECRET;
+  const headerSecret = req.headers.get('x-cron-secret');
+  const isCron = cronSecret && headerSecret && headerSecret === cronSecret;
+  if (!isCron) {
+    const session = await auth();
+    if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  }
 
   const { searchParams } = new URL(req.url);
   const upc = searchParams.get('upc')?.trim();
@@ -133,48 +140,59 @@ export async function GET(req: NextRequest) {
 
   const spotifyToken = await getSpotifyToken();
 
-  // ── UPC path ──────────────────────────────────────────────────────────────
-  if (upc) {
-    const [itunesRes, spotifyAlbum] = await Promise.all([
-      fetch(`https://itunes.apple.com/lookup?upc=${encodeURIComponent(upc)}&entity=song`, { next: { revalidate: 0 } }),
-      spotifyToken ? fetchSpotifyAlbum(upc, spotifyToken, true) : Promise.resolve(null),
-    ]);
-
-    const itunesData = await itunesRes.json();
-    const collection: ItunesItem = itunesData.results?.find((r: ItunesItem) => r.wrapperType === 'collection');
-    const tracks: ItunesItem[] = itunesData.results?.filter((r: ItunesItem) => r.wrapperType === 'track') ?? [];
-
-    if (!collection) return NextResponse.json({ error: 'UPC not found on iTunes' }, { status: 404 });
-    lookupUrl = collection.collectionViewUrl ?? collection.trackViewUrl ?? '';
-    if (!lookupUrl) return NextResponse.json({ error: 'No Apple Music link found for this UPC' }, { status: 404 });
-
-    title = (collection.collectionName ?? '').replace(/ - (Single|EP|Album|LP)$/i, '') || null;
-    artistName = resolveArtist(collection, tracks);
-    coverArt = hiRes(collection.artworkUrl100);
-    releaseDate = collection.releaseDate ? collection.releaseDate.split('T')[0] : null;
-    releaseType = detectReleaseType(collection.collectionName ?? null, collection.trackCount ?? tracks.length, spotifyAlbum?.album_type);
-    spotifyUrlResult = spotifyAlbum?.external_urls?.spotify ?? null;
-
-  // ── URL path ──────────────────────────────────────────────────────────────
-  } else if (url) {
-    lookupUrl = url;
-
-    // If Spotify URL: get full metadata directly from Spotify API
-    const spotifyAlbumId = extractSpotifyAlbumId(url);
-    if (spotifyAlbumId && spotifyToken) {
-      const album = await fetchSpotifyAlbum(spotifyAlbumId, spotifyToken);
-      if (album) {
-        title = album.name ?? null;
-        artistName = album.artists?.map((a: { name: string }) => a.name).join(', ') || null;
-        coverArt = album.images?.[0]?.url ?? null;
-        releaseDate = album.release_date?.length === 10 ? album.release_date : null;
-        releaseType = detectReleaseType(album.name, album.total_tracks ?? 1, album.album_type);
-        spotifyUrlResult = album.external_urls?.spotify ?? url;
-      }
-    }
-  } else {
+  if (!upc && !url) {
     return NextResponse.json({ error: 'upc or url required' }, { status: 400 });
   }
+
+  // ── Run all available lookups in parallel ─────────────────────────────────
+  const spotifyUrlAlbumId = url ? extractSpotifyAlbumId(url) : null;
+
+  const [itunesUpcRes, spotifyByUpc, spotifyByUrl] = await Promise.all([
+    upc
+      ? fetch(`https://itunes.apple.com/lookup?upc=${encodeURIComponent(upc)}&entity=song`, { next: { revalidate: 0 } })
+      : Promise.resolve(null),
+    upc && spotifyToken ? fetchSpotifyAlbum(upc, spotifyToken, true) : Promise.resolve(null),
+    spotifyUrlAlbumId && spotifyToken ? fetchSpotifyAlbum(spotifyUrlAlbumId, spotifyToken) : Promise.resolve(null),
+  ]);
+
+  // Parse iTunes UPC response
+  let itunesCollection: ItunesItem | null = null;
+  let itunesTracks: ItunesItem[] = [];
+  if (itunesUpcRes) {
+    const itunesData = await itunesUpcRes.json();
+    itunesCollection = itunesData.results?.find((r: ItunesItem) => r.wrapperType === 'collection') ?? null;
+    itunesTracks = itunesData.results?.filter((r: ItunesItem) => r.wrapperType === 'track') ?? [];
+  }
+
+  const spotifyAlbum = spotifyByUrl ?? spotifyByUpc ?? null; // URL preferred (direct lookup more reliable)
+
+  if (!itunesCollection && !spotifyAlbum && !url) {
+    return NextResponse.json({ error: 'UPC not found on Spotify or iTunes' }, { status: 404 });
+  }
+
+  // ── Merge: each field uses first non-null source. Order: iTunes > Spotify ──
+  // (iTunes has richer track-level data; Spotify is the fallback when iTunes lacks it.)
+  if (itunesCollection) {
+    title = (itunesCollection.collectionName ?? '').replace(/ - (Single|EP|Album|LP)$/i, '') || null;
+    artistName = resolveArtist(itunesCollection, itunesTracks);
+    coverArt = hiRes(itunesCollection.artworkUrl100);
+    releaseDate = itunesCollection.releaseDate ? itunesCollection.releaseDate.split('T')[0] : null;
+    releaseType = detectReleaseType(itunesCollection.collectionName ?? null, itunesCollection.trackCount ?? itunesTracks.length, spotifyAlbum?.album_type);
+    lookupUrl = itunesCollection.collectionViewUrl ?? itunesCollection.trackViewUrl ?? '';
+  }
+
+  if (spotifyAlbum) {
+    title ??= (spotifyAlbum.name ?? '').replace(/ - (Single|EP|Album|LP)$/i, '') || null;
+    artistName ??= spotifyAlbum.artists?.map((a: { name: string }) => a.name).join(', ') || null;
+    coverArt ??= spotifyAlbum.images?.[0]?.url ?? null;
+    releaseDate ??= spotifyAlbum.release_date?.length === 10 ? spotifyAlbum.release_date : null;
+    releaseType ??= detectReleaseType(spotifyAlbum.name ?? null, spotifyAlbum.total_tracks ?? 1, spotifyAlbum.album_type);
+    spotifyUrlResult = spotifyAlbum.external_urls?.spotify ?? null;
+    if (!lookupUrl) lookupUrl = spotifyAlbum.external_urls?.spotify ?? '';
+  }
+
+  // If user pasted a URL but it wasn't a Spotify album URL, use it as the lookup URL for Odesli
+  if (!lookupUrl && url) lookupUrl = url;
 
   // ── Odesli (platform links) ────────────────────────────────────────────────
   const odesliRes = await fetch(
@@ -187,8 +205,11 @@ export async function GET(req: NextRequest) {
     const odesli: OdesliResponse = await odesliRes.json();
     links = odesli.linksByPlatform ?? {};
 
-    // For non-Spotify URL path: fill metadata from Odesli + iTunes
-    if (!upc && !extractSpotifyAlbumId(url ?? '')) {
+    // Enrich any still-missing fields from Odesli entity + iTunes-by-id lookup
+    // (Useful when input was a non-Spotify URL like Beatport/SoundCloud, OR when
+    // iTunes UPC lookup failed but Odesli could resolve via the Spotify URL.)
+    const stillMissing = !title || !artistName || !coverArt || !releaseDate || !releaseType;
+    if (stillMissing) {
       const entity = odesli.entitiesByUniqueId?.[odesli.entityUniqueId];
       if (entity) {
         title ??= (entity.title ?? '').replace(/ - (Single|EP|Album|LP)$/i, '') || null;

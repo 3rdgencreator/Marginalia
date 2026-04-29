@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { fetchShopifyProduct } from '@/lib/shopify';
 import { MERCH_PRODUCTS } from '@/lib/merch-data';
@@ -52,12 +53,12 @@ export default async function ProductPage({ params }: Props) {
     <RandomBackground>
       <Container className="py-12 md:py-16">
         <div className="mb-8">
-          <a
+          <Link
             href="/merch"
             className="text-(--text-label) text-(--color-text-muted) hover:text-(--color-text-primary) transition-colors duration-150 uppercase tracking-widest"
           >
             ← All Merch
-          </a>
+          </Link>
         </div>
         <ProductDetail product={product} />
       </Container>

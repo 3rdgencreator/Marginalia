@@ -48,7 +48,6 @@ export default async function RootLayout({
   const latestEmbedUrl = playlistUrl
     ? buildSoundCloudPlaylistEmbedUrl(playlistUrl)
     : (episodeUrl ? buildSoundCloudEmbedUrl(episodeUrl) : null);
-  const latestTitle = latest?.title ?? 'Marginalia Podcasts';
 
   return (
     <html lang="en" className="h-full antialiased">
@@ -87,7 +86,6 @@ export default async function RootLayout({
                 <FirstVisitPrompt
                   embedUrl={latestEmbedUrl}
                   scUrl={scUrl}
-                  trackTitle={latestTitle}
                 />
               </div>
             )}

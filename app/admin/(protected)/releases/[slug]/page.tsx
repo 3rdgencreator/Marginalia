@@ -6,6 +6,7 @@ import { updateRelease, deleteRelease } from '@/lib/db/actions/releases';
 import { Field, Textarea, Checkbox, Select, Section, Grid2 } from '@/components/admin/AdminField';
 import { DeleteButton } from '@/components/admin/DeleteButton';
 import { ReleaseFetchWidget } from '@/components/admin/ReleaseFetchWidget';
+import { PresaveSection } from '@/components/admin/PresaveSection';
 import Link from 'next/link';
 
 const RELEASE_TYPES = [
@@ -35,9 +36,18 @@ export default async function EditReleasePage({ params }: Props) {
           className="ml-auto text-xs text-gray-500 hover:text-[#9EFF0A] shrink-0">View ↗</a>
       </div>
 
-      <ReleaseFetchWidget />
-
       <form action={update} className="flex flex-col gap-6">
+        <Section title="Release Mode">
+          <Checkbox label="Pre-Save (release date is in the future, distributor has not pushed to iTunes yet)" name="presave" defaultChecked={r.presave ?? false} />
+          <PresaveSection defaultOpen={r.presave ?? false}>
+            <Field label="UPC" name="upc" defaultValue={r.upc} placeholder="e.g. 4099964069441" />
+            <Field label="Hypeddit URL (smart link)" name="hypedditUrl" defaultValue={r.hypedditUrl} placeholder="https://hyped.it/..." />
+            <Field label="Pre-Save Laylo URL" name="presaveLayloUrl" defaultValue={r.presaveLayloUrl} placeholder="https://laylo.com/... (pre-save campaign)" hint="Separate from the standard Join the Community link. Auto-cleared on release date." />
+          </PresaveSection>
+        </Section>
+
+        <ReleaseFetchWidget />
+
         <Section title="Basic Info">
           <Grid2>
             <Field label="Title" name="title" defaultValue={r.title} required />
@@ -60,20 +70,10 @@ export default async function EditReleasePage({ params }: Props) {
         </Section>
 
         <Section title="Flags">
-          <Grid2>
-            <Checkbox label="Featured on Homepage" name="featured" defaultChecked={r.featured ?? false} />
-            <Checkbox label="Pre-Save" name="presave" defaultChecked={r.presave ?? false} />
-          </Grid2>
+          <Checkbox label="Featured on Homepage" name="featured" defaultChecked={r.featured ?? false} />
           <Grid2>
             <Field label="Badge Text" name="badgeText" defaultValue={r.badgeText} />
             <Field label="Sort Order" name="sortOrder" type="number" defaultValue={r.sortOrder ?? 0} />
-          </Grid2>
-        </Section>
-
-        <Section title="Presave / CTA">
-          <Grid2>
-            <Field label="UPC" name="upc" defaultValue={r.upc} />
-            <Field label="Laylo URL" name="layloUrl" defaultValue={r.layloUrl} />
           </Grid2>
         </Section>
 
@@ -86,6 +86,10 @@ export default async function EditReleasePage({ params }: Props) {
             <Field label="Deezer" name="deezerUrl" defaultValue={r.deezerUrl} />
             <Field label="Bandcamp" name="bandcampUrl" defaultValue={r.bandcampUrl} />
           </Grid2>
+        </Section>
+
+        <Section title="Community">
+          <Field label="Laylo URL (Join the Community)" name="layloUrl" defaultValue={r.layloUrl} placeholder="https://laylo.com/..." hint="Always-on link shown after release. For pre-save campaigns use the Pre-Save Laylo URL above instead." />
         </Section>
 
         <Section title="More Links">
