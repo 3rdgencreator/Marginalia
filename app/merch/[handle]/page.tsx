@@ -20,16 +20,26 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { handle } = await params;
   const product = await resolveProduct(handle);
   if (!product) return {};
+
+  const title = product.seo?.title || `${product.title} | Marginalia Merch`;
+  const description =
+    product.seo?.description ||
+    product.description.slice(0, 160) ||
+    `${product.title} — official Marginalia merchandise.`;
+
   return {
-    title: `${product.title} | Marginalia Merch`,
-    description: product.description.slice(0, 160) || `${product.title} — official Marginalia merchandise.`,
+    title,
+    description,
     openGraph: {
-      title: `${product.title} | Marginalia Merch`,
-      description: product.description.slice(0, 160),
+      title,
+      description,
+      type: 'website',
+      url: `/merch/${product.handle}`,
       ...(product.images[0]
         ? { images: [{ url: product.images[0].url, alt: product.images[0].altText ?? product.title }] }
         : {}),
     },
+    twitter: { card: 'summary_large_image' },
   };
 }
 

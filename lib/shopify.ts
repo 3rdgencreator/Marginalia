@@ -8,10 +8,16 @@ export interface ShopifyImage {
 export interface ShopifyVariant {
   id: string;
   availableForSale: boolean;
+  currentlyNotInStock?: boolean;
+  quantityAvailable?: number | null;
   price: {
     amount: string;
     currencyCode: string;
   };
+  compareAtPrice?: {
+    amount: string;
+    currencyCode: string;
+  } | null;
   selectedOptions: { name: string; value: string }[];
 }
 
@@ -20,14 +26,27 @@ export interface ShopifyOption {
   values: string[];
 }
 
+export interface ShopifyMetafield {
+  key: string;
+  namespace: string;
+  value: string;
+  type: string;
+}
+
 export interface ShopifyProduct {
   id: string;
   title: string;
   handle: string;
   description: string;
+  descriptionHtml?: string;
+  productType?: string;
+  vendor?: string;
+  tags?: string[];
+  seo?: { title: string | null; description: string | null };
   images: ShopifyImage[];
   variants: ShopifyVariant[];
   options?: ShopifyOption[];
+  metafields?: ShopifyMetafield[];
 }
 
 const PRODUCTS_QUERY = `
@@ -144,13 +163,31 @@ export function formatPrice(amount: string, currencyCode: string): string {
   }).format(parseFloat(amount));
 }
 
+// Metafields we try to read from each product. Add namespace+key pairs here
+// to expose more custom fields. Missing ones come back as null and are
+// silently skipped on render.
+const PRODUCT_METAFIELDS: Array<{ namespace: string; key: string }> = [
+  { namespace: 'custom', key: 'material' },
+  { namespace: 'custom', key: 'fit' },
+  { namespace: 'custom', key: 'care' },
+  { namespace: 'custom', key: 'care_instructions' },
+  { namespace: 'custom', key: 'size_guide' },
+  { namespace: 'custom', key: 'sizing' },
+  { namespace: 'custom', key: 'release' },
+];
+
 const PRODUCT_BY_HANDLE_QUERY = `
-  query GetProductByHandle($handle: String!) {
+  query GetProductByHandle($handle: String!, $metafields: [HasMetafieldsIdentifier!]!) {
     product(handle: $handle) {
       id
       title
       handle
       description
+      descriptionHtml
+      productType
+      vendor
+      tags
+      seo { title description }
       images(first: 10) {
         edges { node { url altText } }
       }
@@ -160,10 +197,19 @@ const PRODUCT_BY_HANDLE_QUERY = `
           node {
             id
             availableForSale
+            currentlyNotInStock
+            quantityAvailable
             price { amount currencyCode }
+            compareAtPrice { amount currencyCode }
             selectedOptions { name value }
           }
         }
+      }
+      metafields(identifiers: $metafields) {
+        key
+        namespace
+        value
+        type
       }
     }
   }
@@ -183,7 +229,10 @@ export async function fetchShopifyProduct(handle: string): Promise<ShopifyProduc
           'Content-Type': 'application/json',
           'X-Shopify-Storefront-Access-Token': token,
         },
-        body: JSON.stringify({ query: PRODUCT_BY_HANDLE_QUERY, variables: { handle } }),
+        body: JSON.stringify({
+          query: PRODUCT_BY_HANDLE_QUERY,
+          variables: { handle, metafields: PRODUCT_METAFIELDS },
+        }),
         cache: 'no-store',
       }
     );
@@ -196,9 +245,17 @@ export async function fetchShopifyProduct(handle: string): Promise<ShopifyProduc
       title: node.title,
       handle: node.handle,
       description: node.description,
+      descriptionHtml: node.descriptionHtml ?? undefined,
+      productType: node.productType ?? undefined,
+      vendor: node.vendor ?? undefined,
+      tags: node.tags ?? [],
+      seo: node.seo ?? undefined,
       images: node.images.edges.map((e: { node: ShopifyImage }) => e.node),
       variants: node.variants.edges.map((e: { node: ShopifyVariant }) => e.node),
       options: node.options ?? [],
+      metafields: (node.metafields ?? []).filter(
+        (m: ShopifyMetafield | null): m is ShopifyMetafield => m !== null
+      ),
     };
   } catch {
     return null;

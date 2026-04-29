@@ -103,12 +103,46 @@ export default function ProductDetail({ product }: Props) {
       {/* Right — info + add to cart */}
       <div className="mt-8 lg:mt-0 flex flex-col gap-6 lg:w-[45%]">
         <div>
+          {product.productType && (
+            <p className="text-(--text-label) uppercase tracking-widest text-(--color-text-muted) mb-2">
+              {product.productType}
+            </p>
+          )}
           <h1 className="text-(--text-heading) font-bold text-(--color-text-primary) leading-tight">
             {product.title}
           </h1>
-          <p className="text-(--text-body) text-(--color-text-secondary) mt-2 tabular-nums">
-            {variant ? formatPrice(variant.price.amount, variant.price.currencyCode) : '—'}
-          </p>
+          {variant && (() => {
+            const isOnSale =
+              variant.compareAtPrice &&
+              parseFloat(variant.compareAtPrice.amount) > parseFloat(variant.price.amount);
+            return (
+              <div className="flex items-baseline gap-3 mt-2 tabular-nums">
+                <span className="text-(--text-body) text-(--color-text-primary) font-medium">
+                  {formatPrice(variant.price.amount, variant.price.currencyCode)}
+                </span>
+                {isOnSale && variant.compareAtPrice && (
+                  <>
+                    <span className="text-(--text-body) text-(--color-text-muted) line-through">
+                      {formatPrice(variant.compareAtPrice.amount, variant.compareAtPrice.currencyCode)}
+                    </span>
+                    <span className="text-(--text-label) uppercase tracking-widest bg-[#9EFF0A] text-black px-2 py-0.5">
+                      Sale
+                    </span>
+                  </>
+                )}
+              </div>
+            );
+          })()}
+          {variant && variant.availableForSale && typeof variant.quantityAvailable === 'number' && variant.quantityAvailable > 0 && variant.quantityAvailable <= 5 && (
+            <p className="text-(--text-label) text-[#580AFF] mt-2 uppercase tracking-widest">
+              Only {variant.quantityAvailable} left
+            </p>
+          )}
+          {variant && (variant.currentlyNotInStock || !variant.availableForSale) && (
+            <p className="text-(--text-label) text-(--color-text-muted) mt-2 uppercase tracking-widest">
+              Currently not in stock
+            </p>
+          )}
         </div>
 
         {hasRealOptions && product.options?.map((option) => (
@@ -183,9 +217,36 @@ export default function ProductDetail({ product }: Props) {
             : 'Add to Cart'}
         </button>
 
-        {product.description && (
-          <div className="text-(--text-body) text-(--color-text-secondary) leading-relaxed whitespace-pre-line pt-6 border-t border-(--color-text-primary)/15">
-            {product.description}
+        {(product.descriptionHtml || product.description) && (
+          <div className="pt-6 border-t border-(--color-text-primary)/15">
+            {product.descriptionHtml ? (
+              <div
+                className="text-(--text-body) text-(--color-text-secondary) leading-relaxed prose-product"
+                dangerouslySetInnerHTML={{ __html: product.descriptionHtml }}
+              />
+            ) : (
+              <div className="text-(--text-body) text-(--color-text-secondary) leading-relaxed whitespace-pre-line">
+                {product.description}
+              </div>
+            )}
+          </div>
+        )}
+
+        {product.metafields && product.metafields.length > 0 && (
+          <div className="flex flex-col gap-4 pt-6 border-t border-(--color-text-primary)/15">
+            {product.metafields.map((mf) => {
+              const label = mf.key.replace(/_/g, ' ');
+              return (
+                <div key={`${mf.namespace}.${mf.key}`} className="flex flex-col gap-1">
+                  <p className="text-(--text-label) uppercase tracking-widest text-(--color-text-muted)">
+                    {label}
+                  </p>
+                  <p className="text-(--text-body) text-(--color-text-secondary) whitespace-pre-line">
+                    {mf.value}
+                  </p>
+                </div>
+              );
+            })}
           </div>
         )}
       </div>
