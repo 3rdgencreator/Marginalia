@@ -1,10 +1,11 @@
 ---
 phase: 8
 slug: showcase-detail-enhancements-per-event-merch-shopify-product
-status: draft
+status: approved
 shadcn_initialized: false
 preset: none
 created: 2026-04-30
+reviewed_at: 2026-04-30
 ---
 
 # Phase 8 — UI Design Contract
@@ -50,8 +51,8 @@ Exceptions:
 
 - **Between consecutive recordings** (multi-embed): `gap-(--space-xl)` (32px) in a `flex flex-col` wrapper.
   Rationale: each embed is 166px tall; 32px breathing room prevents section from feeling dense.
-- **Admin repeater row internal padding**: 12px (0.75rem) between inputs inside one row.
-  Rationale: admin UI is dense by design; matches existing `gap-3` in admin form patterns.
+- **Admin repeater row internal gap**: `gap-(--space-sm)` (8px) between inputs inside one row.
+  Rationale: standard spacing token; admin density preserved without breaking the `{4, 8, 16, 24, 32, 48, 64}` scale.
 
 ---
 
@@ -85,13 +86,13 @@ All tokens already declared in `app/globals.css @theme {}`. No new colors.
 
 | Role | CSS Variable / Value | On-page usage |
 |------|---------------------|---------------|
-| Dominant surface (60%) | `--color-bg` (#1F1F21) | Admin form background — dark |
+| Dominant surface (60%) | `--color-bg` (#1F1F21) — light bg via RandomBackground for public pages | Public showcase bg / Admin form background |
 | Light surface (showcase public page) | `.on-light-bg` class via `RandomBackground` | Public page already uses RandomBackground |
 | Secondary surface (30%) | `--color-surface` (#2A2A2C) | Admin section separator backgrounds |
 | Accent violet (10%) | `--color-accent-violet` (#580AFF) | Admin "Save" button background (existing pattern) |
 | Accent lime | `--color-accent-lime` (#9EFF0A) | Hover state on admin "Save" and "Add" buttons |
 | Text primary | `--color-text-primary` | Recording title, link label, merch product title |
-| Text secondary | `--color-text-secondary` | Not used for new elements |
+| Text secondary | `--color-text-secondary` | Admin Merch Picker product title (subtle, paired with checkbox) |
 | Text muted | `--color-text-muted` | `dj_label` text; merch price; link URL hint in admin |
 | Destructive | `--color-destructive` (#ef6b8e) | Admin "Remove" row button |
 | Border (admin) | `white/10` (`rgba(255,255,255,0.1)`) | Admin section dividers — matches existing `border-t border-white/5` pattern |
@@ -109,6 +110,8 @@ All tokens already declared in `app/globals.css @theme {}`. No new colors.
 ---
 
 ## Section Layout Contract (Public Page)
+
+**Primary visual anchor (focal point):** the existing event flyer — it remains at the top of the page and is the dominant visual element. All new sections (Links, Merch, Listen) are secondary; their hierarchy descends in visual weight: Links (lightweight text) → Merch (image grid) → Listen (audio embeds with title text). Header, flyer, and upcoming CTAs precede every new section to preserve the existing focal hierarchy.
 
 Render order in `app/showcases/[slug]/page.tsx` after this phase:
 
