@@ -1,0 +1,12 @@
+{
+  "$schema": "../node_modules/wrangler/config-schema.json",
+  "name": "marginalia-cron",
+  "main": "src/index.ts",
+  "compatibility_date": "2025-05-05",
+  "vars": {
+    "TARGET_URL": "https://marginalia-label.norian.workers.dev/api/cron/release-day"
+  },
+  "triggers": {
+    "crons": ["1 0 * * *"]
+  }
+}
