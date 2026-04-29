@@ -46,8 +46,12 @@ export default function ProductDetail({ product }: Props) {
       toast.error('This variant is sold out.');
       return;
     }
-    await addItem(variant.id, quantity);
-    toast.success('Added to cart');
+    const ok = await addItem(variant.id, quantity);
+    if (ok) {
+      toast.success('Added to cart');
+    } else {
+      toast.error('Could not add to cart. Shopify checkout unavailable.');
+    }
   }
 
   return (

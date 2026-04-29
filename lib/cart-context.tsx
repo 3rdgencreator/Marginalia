@@ -10,7 +10,7 @@ interface CartContextValue {
   isPending: boolean;
   openCart: () => void;
   closeCart: () => void;
-  addItem: (variantId: string, quantity?: number) => Promise<void>;
+  addItem: (variantId: string, quantity?: number) => Promise<boolean>;
   updateQuantity: (lineId: string, quantity: number) => Promise<void>;
   removeItem: (lineId: string) => Promise<void>;
   refresh: () => Promise<void>;
@@ -33,14 +33,16 @@ export function CartProvider({
   const closeCart = useCallback(() => setIsOpen(false), []);
 
   const addItem = useCallback(async (variantId: string, quantity = 1) => {
-    return new Promise<void>((resolve) => {
+    return new Promise<boolean>((resolve) => {
       startTransition(async () => {
         const next = await addToCartAction(variantId, quantity);
         if (next) {
           setCart(next);
           setIsOpen(true);
+          resolve(true);
+        } else {
+          resolve(false);
         }
-        resolve();
       });
     });
   }, []);
