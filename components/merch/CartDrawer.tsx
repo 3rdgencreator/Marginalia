@@ -38,8 +38,9 @@ export default function CartDrawer() {
         role="dialog"
         aria-label="Shopping cart"
         aria-modal="true"
+        aria-hidden={!isOpen}
         className={`fixed top-0 right-0 z-[10001] h-full w-full sm:w-[420px] bg-white text-[#1F1F21] shadow-2xl transition-transform duration-300 ease-out flex flex-col ${
-          isOpen ? 'translate-x-0' : 'translate-x-full'
+          isOpen ? 'translate-x-0' : 'translate-x-full pointer-events-none'
         }`}
         style={{
           '--color-text-primary': '#1F1F21',

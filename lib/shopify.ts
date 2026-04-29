@@ -340,7 +340,10 @@ function normalizeCart(raw: RawCart | null | undefined): Cart | null {
 async function shopifyCartCall<T>(query: string, variables: Record<string, unknown>): Promise<T | null> {
   const domain = process.env.SHOPIFY_STORE_DOMAIN;
   const token = process.env.SHOPIFY_STOREFRONT_ACCESS_TOKEN;
-  if (!domain || !token) return null;
+  if (!domain || !token) {
+    console.error('[shopify cart] missing env: SHOPIFY_STORE_DOMAIN or SHOPIFY_STOREFRONT_ACCESS_TOKEN');
+    return null;
+  }
 
   try {
     const res = await fetch(
@@ -355,10 +358,17 @@ async function shopifyCartCall<T>(query: string, variables: Record<string, unkno
         cache: 'no-store',
       }
     );
-    if (!res.ok) return null;
+    if (!res.ok) {
+      console.error(`[shopify cart] HTTP ${res.status}: ${await res.text().catch(() => '')}`);
+      return null;
+    }
     const json = await res.json();
+    if (json?.errors) {
+      console.error('[shopify cart] GraphQL errors:', JSON.stringify(json.errors));
+    }
     return (json?.data ?? null) as T | null;
-  } catch {
+  } catch (err) {
+    console.error('[shopify cart] fetch failed:', err);
     return null;
   }
 }
