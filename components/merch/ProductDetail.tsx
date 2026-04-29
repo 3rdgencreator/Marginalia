@@ -103,14 +103,31 @@ export default function ProductDetail({ product }: Props) {
       {/* Right — info + add to cart */}
       <div className="mt-8 lg:mt-0 flex flex-col gap-6 lg:w-[45%]">
         <div>
-          {product.productType && (
-            <p className="text-(--text-label) uppercase tracking-widest text-(--color-text-muted) mb-2">
-              {product.productType}
-            </p>
+          {(product.productType || (product.tags && product.tags.length > 0)) && (
+            <div className="flex flex-wrap items-center gap-2 mb-3">
+              {product.productType && (
+                <span className="text-(--text-label) uppercase tracking-widest text-(--color-text-muted)">
+                  {product.productType}
+                </span>
+              )}
+              {product.tags?.slice(0, 3).map((tag) => (
+                <span
+                  key={tag}
+                  className="text-(--text-label) uppercase tracking-widest bg-[#580AFF] text-white px-2 py-0.5"
+                >
+                  {tag}
+                </span>
+              ))}
+            </div>
           )}
           <h1 className="text-(--text-heading) font-bold text-(--color-text-primary) leading-tight">
             {product.title}
           </h1>
+          {product.vendor && !['marginalia', 'marginalia store', 'mi tienda', 'my store', 'default'].includes(product.vendor.toLowerCase()) && (
+            <p className="text-(--text-label) text-(--color-text-muted) mt-1">
+              by {product.vendor}
+            </p>
+          )}
           {variant && (() => {
             const isOnSale =
               variant.compareAtPrice &&
