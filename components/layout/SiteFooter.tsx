@@ -23,9 +23,8 @@ export default async function SiteFooter() {
   ];
 
   const presaves = allBadged.map((r) => {
-      const src = resolveImageUrl(r.coverArt, '/images/releases/')
-        ?? r.artworkUrl?.replace('3000x3000bb', '600x600bb')
-        ?? null;
+      const src = (resolveImageUrl(r.coverArt, '/images/releases/') ?? r.artworkUrl)
+        ?.replace('3000x3000bb', '600x600bb') ?? null;
       const badge = r.badgeText || (r.presave ? 'Pre-Save' : null);
       return { slug: r.slug, title: r.title, artistName: r.artistName ?? null, src, badge };
     });

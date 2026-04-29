@@ -77,9 +77,8 @@ export default async function ReleaseDetailPage({ params }: Props) {
   };
 
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://marginalialabel.com';
-  const coverSrc = resolveImageUrl(r.coverArt, '/images/releases/')
-    ?? r.artworkUrl?.replace('3000x3000bb', '600x600bb')
-    ?? null;
+  const coverSrc = (resolveImageUrl(r.coverArt, '/images/releases/') ?? r.artworkUrl)
+    ?.replace('3000x3000bb', '600x600bb') ?? null;
   const coverArtAbsolute = r.coverArt
     ? (r.coverArt.startsWith('http') ? r.coverArt : `${siteUrl}/images/releases/${r.coverArt}`)
     : (r.artworkUrl ?? null);

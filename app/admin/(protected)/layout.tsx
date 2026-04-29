@@ -1,4 +1,5 @@
 import { auth, signOut } from '@/auth';
+import { redirect } from 'next/navigation';
 import Link from 'next/link';
 
 const NAV = [
@@ -16,9 +17,9 @@ const NAV = [
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {
   const session = await auth();
 
-  // No session → render children directly (login page handles its own UI)
-  // Proxy middleware already blocks unauthenticated access to other admin routes.
-  if (!session) return <>{children}</>;
+  // No valid session → redirect to login.
+  // Middleware does a fast cookie-existence check; layout validates the full JWT.
+  if (!session) redirect('/admin/login');
 
   return (
     <div className="min-h-screen bg-[#1F1F21] flex">

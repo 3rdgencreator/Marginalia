@@ -30,9 +30,8 @@ export default function ReleaseCard({ slug, entry }: CardProps) {
     >
       <div className="relative aspect-square overflow-hidden border-2 border-white/70 bg-white/10">
         {(() => {
-          const src = entry.coverArt
-            ?? entry.artworkUrl?.replace('3000x3000bb', '600x600bb')
-            ?? null;
+          const src = (entry.coverArt ?? entry.artworkUrl)
+            ?.replace('3000x3000bb', '600x600bb') ?? null;
           return src ? (
             <Image
               src={src}
