@@ -96,6 +96,9 @@ export default async function ReleaseDetailPage({ params }: Props) {
 
   return (
     <>
+      {coverSrc && (
+        <link rel="preload" as="image" href={coverSrc} fetchPriority="high" />
+      )}
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
