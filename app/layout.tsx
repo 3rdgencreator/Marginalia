@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import { Toaster } from 'sonner';
 import './globals.css';
 import SiteNav from '@/components/layout/SiteNav';
 import SiteFooter from '@/components/layout/SiteFooter';
@@ -6,6 +7,9 @@ import MiniPlayer from '@/components/layout/MiniPlayer';
 import { resolveMiniPlayerColor, resolveButtonColor } from '@/lib/navbar-colors';
 import FirstVisitPrompt from '@/components/ui/FirstVisitPrompt';
 import { PlayerProvider } from '@/lib/player-context';
+import { CartProvider } from '@/lib/cart-context';
+import CartDrawer from '@/components/merch/CartDrawer';
+import { getCart } from '@/lib/cart-actions';
 import { getAllPodcasts, getSiteConfig } from '@/lib/db/queries';
 import { buildSoundCloudPlaylistEmbedUrl, buildSoundCloudEmbedUrl } from '@/lib/releases';
 
@@ -26,9 +30,10 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const [podcasts, siteConfig] = await Promise.all([
+  const [podcasts, siteConfig, initialCart] = await Promise.all([
     getAllPodcasts(),
     getSiteConfig(),
+    getCart(),
   ]);
 
   const latest = podcasts
@@ -71,21 +76,25 @@ export default async function RootLayout({
       <body
         className="min-h-full flex flex-col font-sans text-(--color-text-primary)"
         style={{ '--color-button': resolveButtonColor(siteConfig?.buttonColor) } as React.CSSProperties}>
-        <PlayerProvider>
-          <SiteNav />
-          <main className="flex-1">{children}</main>
-          <SiteFooter />
-          <MiniPlayer bgColor={resolveMiniPlayerColor(siteConfig?.miniPlayerColor)} />
-          {latestEmbedUrl && scUrl && (
-            <div className="hidden md:block">
-              <FirstVisitPrompt
-                embedUrl={latestEmbedUrl}
-                scUrl={scUrl}
-                trackTitle={latestTitle}
-              />
-            </div>
-          )}
-        </PlayerProvider>
+        <CartProvider initialCart={initialCart}>
+          <PlayerProvider>
+            <SiteNav />
+            <main className="flex-1">{children}</main>
+            <SiteFooter />
+            <MiniPlayer bgColor={resolveMiniPlayerColor(siteConfig?.miniPlayerColor)} />
+            {latestEmbedUrl && scUrl && (
+              <div className="hidden md:block">
+                <FirstVisitPrompt
+                  embedUrl={latestEmbedUrl}
+                  scUrl={scUrl}
+                  trackTitle={latestTitle}
+                />
+              </div>
+            )}
+          </PlayerProvider>
+          <CartDrawer />
+          <Toaster theme="dark" position="bottom-right" />
+        </CartProvider>
       </body>
     </html>
   );

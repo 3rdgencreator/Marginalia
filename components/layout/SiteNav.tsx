@@ -4,6 +4,7 @@ import { getSiteConfig } from '@/lib/db/queries';
 import NavLinks from './NavLinks';
 import MobileMenu from './MobileMenu';
 import SocialIcon, { type Platform } from '@/components/ui/SocialIcon';
+import CartButton from '@/components/merch/CartButton';
 import { resolveNavbarColor } from '@/lib/navbar-colors';
 
 const PRIMARY_LINKS = [
@@ -65,7 +66,7 @@ export default async function SiteNav() {
           </div>
         </div>
 
-        {/* Right — social icons + mobile menu */}
+        {/* Right — social icons + cart + mobile menu */}
         <div style={{ display: 'flex', alignItems: 'center', flexShrink: 0 }}>
           <ul className="hidden md:flex" style={{ alignItems: 'center', listStyle: 'none', margin: 0, padding: 0 }}>
             {socials.map(({ platform, url }) => (
@@ -74,6 +75,7 @@ export default async function SiteNav() {
               </li>
             ))}
           </ul>
+          <CartButton />
           <MobileMenu links={PRIMARY_LINKS} className="md:hidden" />
         </div>
       </div>

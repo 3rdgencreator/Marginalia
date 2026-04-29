@@ -1,15 +1,13 @@
-'use client';
-
 import Image from 'next/image';
+import Link from 'next/link';
 import type { ShopifyProduct } from '@/lib/shopify';
 import { getStartingPrice } from '@/lib/shopify';
 
 interface Props {
   products: ShopifyProduct[];
-  storeDomain: string;
 }
 
-export default function MerchGrid({ products, storeDomain }: Props) {
+export default function MerchGrid({ products }: Props) {
   if (products.length === 0) {
     return (
       <p className="py-16 text-center text-(--text-body) text-(--color-text-muted)">
@@ -21,16 +19,13 @@ export default function MerchGrid({ products, storeDomain }: Props) {
   return (
     <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-6">
       {products.map((product) => {
-        const href = `https://${storeDomain}/products/${product.handle}`;
         const price = getStartingPrice(product.variants);
         const image = product.images[0];
 
         return (
-          <a
+          <Link
             key={product.id}
-            href={href}
-            target="_blank"
-            rel="noopener noreferrer"
+            href={`/merch/${product.handle}`}
             className="block group"
           >
             <div className="aspect-square overflow-hidden relative mb-3 border-2 border-white/70 bg-white/10">
@@ -57,7 +52,7 @@ export default function MerchGrid({ products, storeDomain }: Props) {
             {price && (
               <p className="text-(--text-label) text-(--color-text-muted) mt-1">{price}</p>
             )}
-          </a>
+          </Link>
         );
       })}
     </div>

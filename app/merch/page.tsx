@@ -13,14 +13,13 @@ export const metadata: Metadata = {
 };
 
 export default async function MerchPage() {
-  const storeDomain = process.env.SHOPIFY_STORE_DOMAIN ?? 'merchmarginalia.myshopify.com';
   const liveProducts = await fetchShopifyProducts();
   const products = liveProducts.length > 0 ? liveProducts : MERCH_PRODUCTS;
 
   return (
     <RandomBackground>
       <Container className="py-(--space-3xl)">
-        <MerchGrid products={products} storeDomain={storeDomain} />
+        <MerchGrid products={products} />
       </Container>
     </RandomBackground>
   );
