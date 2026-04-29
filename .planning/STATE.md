@@ -3,9 +3,9 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: planning
-last_updated: "2026-04-23T18:24:01.188Z"
+last_updated: "2026-04-29T23:34:27.754Z"
 progress:
-  total_phases: 7
+  total_phases: 8
   completed_phases: 2
   total_plans: 15
   completed_plans: 8
@@ -68,6 +68,10 @@ Phase 7 [          ] 0%
 ---
 
 ## Accumulated Context
+
+### Roadmap Evolution
+
+- Phase 8 added: Showcase Detail Enhancements — per-event merch (Shopify product handles), variable optional links (jsonb array), and multi-recording SoundCloud support
 
 ### Critical Decisions
 
