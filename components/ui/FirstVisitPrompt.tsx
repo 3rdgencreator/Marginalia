@@ -13,17 +13,21 @@ export default function FirstVisitPrompt({
   trackTitle: string;
 }) {
   const [visible, setVisible] = useState(false);
+  const [loaded, setLoaded] = useState(false);
   const { loadPlaylist, togglePlay, playOnReady, isPlaying, dismissed, hasPlayed } = usePlayer();
 
   useEffect(() => {
-    const t = setTimeout(() => {
-      setVisible(true);
-      loadPlaylist(embedUrl, scUrl);
-    }, 1500);
+    const t = setTimeout(() => setVisible(true), 1500);
     return () => clearTimeout(t);
-  }, [loadPlaylist, embedUrl, scUrl]);
+  }, []);
 
   function handleClick() {
+    if (!loaded) {
+      loadPlaylist(embedUrl, scUrl);
+      setLoaded(true);
+      playOnReady();
+      return;
+    }
     if (isPlaying) {
       togglePlay();
     } else {
