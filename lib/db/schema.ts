@@ -153,7 +153,8 @@ export const showcases = pgTable('showcases', {
   layloSignupUrl: varchar('laylo_signup_url', { length: 1000 }),
   flyer: varchar('flyer', { length: 1000 }),
   aftermovieUrl: varchar('aftermovie_url', { length: 1000 }),
-  soundcloudSetUrl: varchar('soundcloud_set_url', { length: 1000 }),
+  merchHandles: jsonb('merch_handles').$type<string[]>().default([]),
+  links: jsonb('links').$type<Array<{ label: string; url: string }>>().default([]),
   createdAt: timestamp('created_at').defaultNow().notNull(),
   updatedAt: timestamp('updated_at').defaultNow().notNull(),
 });
@@ -163,6 +164,15 @@ export const showcasePhotos = pgTable('showcase_photos', {
   showcaseId: integer('showcase_id').notNull().references(() => showcases.id, { onDelete: 'cascade' }),
   image: varchar('image', { length: 1000 }),
   caption: varchar('caption', { length: 500 }),
+  sortOrder: integer('sort_order').default(0),
+});
+
+export const showcaseRecordings = pgTable('showcase_recordings', {
+  id: serial('id').primaryKey(),
+  showcaseId: integer('showcase_id').notNull().references(() => showcases.id, { onDelete: 'cascade' }),
+  url: varchar('url', { length: 1000 }).notNull(),
+  title: varchar('title', { length: 500 }).notNull(),
+  djLabel: varchar('dj_label', { length: 500 }),
   sortOrder: integer('sort_order').default(0),
 });
 

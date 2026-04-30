@@ -28,7 +28,6 @@ export async function createShowcase(formData: FormData) {
     layloSignupUrl: formStr(formData, 'layloSignupUrl'),
     flyer: formStr(formData, 'flyer'),
     aftermovieUrl: formStr(formData, 'aftermovieUrl'),
-    soundcloudSetUrl: formStr(formData, 'soundcloudSetUrl'),
   });
 
   revalidatePath('/admin/showcases');
@@ -51,7 +50,6 @@ export async function updateShowcase(slug: string, formData: FormData) {
     layloSignupUrl: formStr(formData, 'layloSignupUrl'),
     flyer: formStr(formData, 'flyer'),
     aftermovieUrl: formStr(formData, 'aftermovieUrl'),
-    soundcloudSetUrl: formStr(formData, 'soundcloudSetUrl'),
     updatedAt: new Date(),
   }).where(eq(showcases.slug, slug));
 

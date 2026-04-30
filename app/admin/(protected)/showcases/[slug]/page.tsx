@@ -55,7 +55,6 @@ export default async function EditShowcasePage({ params }: Props) {
           </Grid2>
           <Grid2>
             <Field label="Aftermovie URL" name="aftermovieUrl" defaultValue={s.aftermovieUrl} />
-            <Field label="SoundCloud Set URL" name="soundcloudSetUrl" defaultValue={s.soundcloudSetUrl} />
           </Grid2>
           <Field label="Flyer Image URL" name="flyer" defaultValue={s.flyer} hint="R2 or external image URL" />
         </Section>

@@ -2,10 +2,8 @@ import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import Image from 'next/image';
 import { getAllShowcases, getShowcaseBySlug, getShowcasePhotos, resolveImageUrl } from '@/lib/db/queries';
-import { buildSoundCloudEmbedUrl } from '@/lib/releases';
 import Container from '@/components/layout/Container';
 import RandomBackground from '@/components/ui/RandomBackground';
-import SoundCloudEmbed from '@/components/releases/SoundCloudEmbed';
 import ShowcaseAfterMovie from '@/components/showcases/ShowcaseAfterMovie';
 
 type Props = { params: Promise<{ slug: string }> };
@@ -58,7 +56,6 @@ export default async function ShowcaseDetailPage({ params }: Props) {
   const isPast = (s.date ?? '') < today;
   const location = [s.venue, s.city, s.country].filter(Boolean).join(', ');
   const flyerSrc = resolveImageUrl(s.flyer, '/images/showcases/');
-  const scUrl = safeHref(s.soundcloudSetUrl);
   const aftermovieUrl = safeHref(s.aftermovieUrl);
 
   return (
@@ -123,16 +120,6 @@ export default async function ShowcaseDetailPage({ params }: Props) {
                 SAVE THE DATE
               </a>
             )}
-          </div>
-        )}
-
-        {/* SoundCloud set */}
-        {isPast && scUrl && (
-          <div className="mb-(--space-2xl)">
-            <h2 className="text-(--text-heading) text-(--color-text-primary) mb-(--space-md) uppercase tracking-widest">
-              Listen
-            </h2>
-            <SoundCloudEmbed embedUrl={buildSoundCloudEmbedUrl(scUrl)} height={166} />
           </div>
         )}
 
