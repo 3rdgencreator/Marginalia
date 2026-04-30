@@ -215,10 +215,10 @@ Plans:
 
 **Depends on:** Phase 7
 
-**Plans:** 4 plans
+**Plans:** 1/4 plans executed
 
 Plans:
-- [ ] 08-01-PLAN.md — DB schema (showcaseRecordings table + merch_handles + links columns) + drizzle-kit push [BLOCKING] + data migration (Wave 1)
+- [x] 08-01-PLAN.md — DB schema (showcaseRecordings table + merch_handles + links columns) + drizzle-kit push [BLOCKING] + data migration (Wave 1)
 - [ ] 08-02-PLAN.md — Server actions (recordings CRUD + links/merch in create/update) + queries (getShowcaseRecordings) (Wave 2)
 - [ ] 08-03-PLAN.md — Public components (RecordingsList + ShowcaseMerchSection + ShowcaseLinksList) + showcase detail page update (Wave 3)
 - [ ] 08-04-PLAN.md — Admin form updates ([slug] + new) + ShowcaseMerchPicker client component + /api/admin/shopify-products route (Wave 3)
