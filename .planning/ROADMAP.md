@@ -207,6 +207,24 @@ Plans:
 
 ---
 
+### Phase 8: Showcase Detail Enhancements — per-event merch (Shopify product handles), variable optional links (jsonb array), and multi-recording SoundCloud support
+
+**Goal:** Each showcase detail page can display an optional set of external links, Shopify merch products, and multiple SoundCloud recordings — all managed from the admin form — giving Elif full per-event editorial control without code changes.
+
+**Requirements:** D-01 through D-19 (tracked in 08-CONTEXT.md)
+
+**Depends on:** Phase 7
+
+**Plans:** 4 plans
+
+Plans:
+- [ ] 08-01-PLAN.md — DB schema (showcaseRecordings table + merch_handles + links columns) + drizzle-kit push [BLOCKING] + data migration (Wave 1)
+- [ ] 08-02-PLAN.md — Server actions (recordings CRUD + links/merch in create/update) + queries (getShowcaseRecordings) (Wave 2)
+- [ ] 08-03-PLAN.md — Public components (RecordingsList + ShowcaseMerchSection + ShowcaseLinksList) + showcase detail page update (Wave 3)
+- [ ] 08-04-PLAN.md — Admin form updates ([slug] + new) + ShowcaseMerchPicker client component + /api/admin/shopify-products route (Wave 3)
+
+---
+
 ## Coverage Validation
 
 All 48 v1 requirements are mapped to exactly one phase. No orphans.
@@ -282,4 +300,5 @@ All 48 v1 requirements are mapped to exactly one phase. No orphans.
 *Roadmap created: 2026-04-04*
 *Phase 2 plans added: 2026-04-22*
 *Phase 5 plans added: 2026-04-23*
-*Next: `/gsd-execute-phase 5`*
+*Phase 8 plans added: 2026-04-30*
+*Next: `/gsd-execute-phase 8`*
