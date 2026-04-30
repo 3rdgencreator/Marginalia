@@ -1,6 +1,6 @@
 import { db } from './index';
 import {
-  releases, artists, podcasts, press, showcases, showcasePhotos,
+  releases, artists, podcasts, press, showcases, showcasePhotos, showcaseRecordings,
   siteConfig, homePage, aboutPage,
 } from './schema';
 import { eq, desc, asc, and, gte, lt } from 'drizzle-orm';
@@ -72,6 +72,12 @@ export async function getShowcasePhotos(showcaseId: number) {
   return db.select().from(showcasePhotos)
     .where(eq(showcasePhotos.showcaseId, showcaseId))
     .orderBy(showcasePhotos.sortOrder);
+}
+
+export async function getShowcaseRecordings(showcaseId: number) {
+  return db.select().from(showcaseRecordings)
+    .where(eq(showcaseRecordings.showcaseId, showcaseId))
+    .orderBy(showcaseRecordings.sortOrder);
 }
 
 export function getUpcomingShowcases(all: Awaited<ReturnType<typeof getAllShowcases>>) {
