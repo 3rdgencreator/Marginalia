@@ -32,7 +32,6 @@ export default function NewShowcasePage() {
           </Grid2>
           <Grid2>
             <Field label="Aftermovie URL" name="aftermovieUrl" placeholder="https://www.youtube.com/..." />
-            <Field label="SoundCloud Set URL" name="soundcloudSetUrl" placeholder="https://soundcloud.com/..." />
           </Grid2>
           <Field label="Flyer Image URL" name="flyer" placeholder="https://..." hint="R2 or external image URL" />
         </Section>
