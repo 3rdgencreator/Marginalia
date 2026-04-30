@@ -1,10 +1,15 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import Image from 'next/image';
-import { getAllShowcases, getShowcaseBySlug, getShowcasePhotos, resolveImageUrl } from '@/lib/db/queries';
+import { getAllShowcases, getShowcaseBySlug, getShowcasePhotos, resolveImageUrl, getShowcaseRecordings } from '@/lib/db/queries';
+import { fetchShopifyProducts } from '@/lib/shopify';
+import { buildSoundCloudEmbedUrl } from '@/lib/releases';
 import Container from '@/components/layout/Container';
 import RandomBackground from '@/components/ui/RandomBackground';
 import ShowcaseAfterMovie from '@/components/showcases/ShowcaseAfterMovie';
+import RecordingsList from '@/components/showcases/RecordingsList';
+import ShowcaseMerchSection from '@/components/showcases/ShowcaseMerchSection';
+import ShowcaseLinksList from '@/components/showcases/ShowcaseLinksList';
 
 type Props = { params: Promise<{ slug: string }> };
 
@@ -51,6 +56,25 @@ export default async function ShowcaseDetailPage({ params }: Props) {
   if (!s) notFound();
 
   const photos = await getShowcasePhotos(s.id);
+
+  const recordings = await getShowcaseRecordings(s.id);
+
+  // Pre-compute embed URLs server-side (buildSoundCloudEmbedUrl imports 'server-only')
+  const recordingsWithEmbed = recordings.map(rec => ({
+    id: rec.id,
+    title: rec.title,
+    djLabel: rec.djLabel,
+    embedUrl: buildSoundCloudEmbedUrl(rec.url),
+  }));
+
+  // Resolve merch products for this showcase
+  const showcaseLinks = (s.links as Array<{ label: string; url: string }> | null) ?? [];
+  const showcaseMerchHandles = (s.merchHandles as string[] | null) ?? [];
+  let merchProducts: import('@/lib/shopify').ShopifyProduct[] = [];
+  if (showcaseMerchHandles.length > 0) {
+    const allProducts = await fetchShopifyProducts();
+    merchProducts = allProducts.filter(p => showcaseMerchHandles.includes(p.handle));
+  }
 
   const today = new Date().toISOString().slice(0, 10);
   const isPast = (s.date ?? '') < today;
@@ -121,6 +145,17 @@ export default async function ShowcaseDetailPage({ params }: Props) {
               </a>
             )}
           </div>
+        )}
+
+        {/* Links — always visible when populated (D-12) */}
+        <ShowcaseLinksList links={showcaseLinks} />
+
+        {/* Merch — always visible when populated (D-12) */}
+        <ShowcaseMerchSection products={merchProducts} />
+
+        {/* Recordings — isPast only (D-11) */}
+        {isPast && recordingsWithEmbed.length > 0 && (
+          <RecordingsList recordings={recordingsWithEmbed} />
         )}
 
         {/* Aftermovie */}
